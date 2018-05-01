@@ -1,0 +1,19 @@
+<!--pages/my/mobile/mobile.wxml-->
+<view class="container">
+    <view class="filed-mobile">
+        <view class="input-mobile">
+            <input value="{{inputMobile}}" disabled="{{hasBind}}" placeholder="手机号" type="number" confirm-type="next" bindinput="bindInputMobile" />
+        </view>
+        <view class="verify">
+            <view class="left">
+                <input value="{{verifyCode}}" placeholder="验证码" type="number" bindinput="bindInputVerify" />
+            </view>
+            <view class="right">
+                <button size="normal" disabled="{{buttonDisabled}}" bindtap="bindTapSendCode">{{buttonText}}</button>
+            </view>
+        </view>
+    </view>
+    <view class="submit">
+        <button size="normal" type="primary" bindtap="bindTapSubmit">{{txtButtonSubmit}}</button>
+    </view>
+</view>

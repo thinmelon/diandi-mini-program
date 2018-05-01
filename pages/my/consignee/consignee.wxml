@@ -1,0 +1,40 @@
+<!--pages/my/consignee/consignee.wxml-->
+<view class='container'>
+    <radio-group bindchange="radioChange">
+        <view class='consignee' wx:for="{{consignees}}" wx:key="{{item.aid}}">
+            <view class='intro'>
+                <view class='left'>
+                    <radio value='{{item.aid}}' checked='{{item.isDefault=="1"}}'></radio>
+                </view>
+                <view class='right'>
+                    <view class='top'>
+                        <text>{{item.name}}</text>
+                        <text>{{item.mobile}}</text>
+                    </view>
+                    <view class='center'>
+                        <text>{{item.district}}{{item.address}}</text>
+                    </view>
+                    <view class='bottom'>
+                        <text>{{item.postcode}}</text>
+                    </view>
+                </view>
+            </view>
+
+            <view class='operator'>
+                <view class='edit' id='{{item.aid}}' data-name='{{item.name}}' data-mobile='{{item.mobile}}' data-district='{{item.district}}' data-address='{{item.address}}' data-postcode='{{item.postcode}}' bindtap='bindTapEdit'>
+                    <image src='/icons/my/edit.png'></image>
+                    <text>编辑</text>
+                </view>
+                <view class='delete' data-aid='{{item.aid}}' bindtap='bindTapDelete'>
+                    <image src='/icons/my/delete.png'></image>
+                    <text>删除</text>
+                </view>
+            </view>
+        </view>
+    </radio-group>
+
+    <view class='add' bindtap='bindTapAdd'>
+        <image src='/icons/my/add.png'></image>
+        <text>添加新地址</text>
+    </view>
+</view>

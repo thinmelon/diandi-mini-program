@@ -1,0 +1,63 @@
+<!--pages/shopping/product/product.wxml-->
+<wxs src="../../../utils/page.config.wxs" module="config" />
+
+<swiper indicator-dots="{{config.swipe.indicatorDots}}" autoplay="{{config.swipe.autoplay}}" interval="{{config.swipe.interval}}" duration="{{config.swipe.duration}}" circular="{{config.swipe.circular}}" style='height: {{ swiperHeight }}px'>
+    <block wx:for="{{product.swiper}}" wx:key="{{item.index}}">
+        <swiper-item>
+            <image class='swiper-item' mode="aspectFill" src="{{item.url}}" />
+        </swiper-item>
+    </block>
+</swiper>
+
+<view class='intro'>
+    <view class="title">
+        <text>{{ product.name }}</text>
+    </view>
+    <view class="important">
+        <text>{{ product.price }}</text>
+    </view>
+    <view class="extra">
+        <view>
+            <text>运费：</text>
+            <text wx:if="{{ product.freight === 0 }}">免运费</text>
+        </view>
+        <view>
+            <text>剩余：{{ product.remaining }}</text>
+        </view>
+        <view>
+            <text>销量：{{ product.totalSale }}</text>
+        </view>
+    </view>
+</view>
+
+<view class="bottom-bar">
+    <view class="bar-button" bindtap="bindTapBackToMall">
+        <image src="/icons/shopping/main.png"></image>
+        <text>首页</text>
+    </view>
+    <view class="bar-button" bindtap="bindTapBackToCart">
+        <image src="/icons/shopping/cart.png"></image>
+        <text>购物车</text>
+    </view>
+    <view class="bar-add-to-cart" data-show='0' bindtap='bindTapJoinToCart'>
+        <text>加入购物车</text>
+    </view>
+    <view class="bar-buy" data-show='0' bindtap="bindTapBuy">
+        <text>立即购买</text>
+    </view>
+</view>
+
+<view>
+    <component-selector-modal id='selectorModal' style='width: 100px; height: 100px;'></component-selector-modal>
+</view>
+<!-- <view class="description">
+        <view class="standard" bindtap="bindTapSelector">
+            <view class="standard-hint">
+                <text>选择：</text>
+            </view>
+            <view class="selector">
+                <text>{{totalBuy}}</text>
+                <image src="/icons/list-item-select.png"></image>
+            </view>
+        </view>
+    </view> -->

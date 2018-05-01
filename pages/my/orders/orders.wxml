@@ -1,0 +1,119 @@
+<!--pages/my/orders/orders.wxml-->
+<view class="order-list" wx:for="{{orderList}}" wx:key="{{item.index}}">
+    <view class="status" data-description='{{item.description}}' bindtap='bindTapShowHint'>
+        <text>{{item.createTime}}</text>
+        <view wx:if="{{item.state == 'SUCCESS'}}">
+            <text>支付成功</text>
+        </view>
+        <view wx:elif="{{item.state == 'REFUND'}}">
+            <text>转入退款</text>
+        </view>
+        <view wx:elif="{{item.state == 'NOTPAY'}}">
+            <text>未支付</text>
+        </view>
+        <view wx:elif="{{item.state == 'CLOSED'}}">
+            <text>已关闭</text>
+        </view>
+        <view wx:elif="{{item.state == 'REVOKED'}}">
+            <text>已撤销（刷卡支付）</text>
+        </view>
+        <view wx:elif="{{item.state == 'USERPAYING'}}">
+            <text>用户支付中</text>
+        </view>
+        <view wx:elif="{{item.state == 'PAYERROR'}}">
+            <text>支付失败</text>
+        </view>
+    </view>
+    <view class="goods" data-tradeNo='{{item.tradeNo}}' bindtap='bindTapEnterOrderDetails'>
+        <block wx:for="{{item.skuList}}" wx:key="{{item.skuid}}">
+            <view class="thumbnail">
+                <image src="{{prefix}}{{item.thumbnail}}"></image>
+            </view>
+            <view class="description">
+                <view class="top">
+                    <view class="name">
+                        <text>{{item.name}}</text>
+                    </view>
+                    <view class="price">
+                        <text>￥{{item.unit}}</text>
+                    </view>
+                </view>
+                <view class="center">
+                    <text>{{item.attributes}}</text>
+                    <text>X {{item.amount}}</text>
+                </view>
+            </view>
+        </block>
+    </view>
+    <view class="total">
+        <text>共  {{item.quantity}}  件商品</text>
+        <text>合计</text>
+        <text class="text-price">￥{{item.subTotal}}</text>
+    </view>
+    <view class='operator'>
+        <block wx:if="{{item.state == 'SUCCESS'}}">
+            <view class="refund" data-tradeNo='{{item.tradeNo}}' data-refundfee='{{item.subTotal}}' bindtap='bindTapRefund'>
+                <text>申请退款</text>
+            </view>
+        </block>
+        <block wx:elif="{{item.state == 'REFUND'}}">
+            <view class="queryRefund" data-tradeNo='{{item.tradeNo}}' bindtap='bindTapQueryRefund'>
+                <text>查询退款单</text>
+            </view>
+        </block>
+        <block wx:elif="{{item.state == 'NOTPAY'}}">
+            <view class="repay" data-skulist='{{item.skuList}}' bindtap='bindTapRepay'>
+                <text>重新支付</text>
+            </view>
+            <view class="closed" data-tradeNo='{{item.tradeNo}}' bindtap='bindTapCloseOrder'>
+                <text>关闭订单</text>
+            </view>
+        </block>
+    </view>
+</view>
+
+<view class="mask-layer" wx:if="{{isMaskLayerShow}}" bindtap="bindTapCloseMasker"></view>
+<view class='refund-msg' wx:if="{{isMaskLayerShow}}">
+    <view class='field'>
+        <text>现金支付金额: </text>
+        <text>{{cashFee}}</text>
+    </view>
+    <view class='field'>
+        <text>退款笔数: </text>
+        <text>{{refundCount}}</text>
+    </view>
+	<view class='field'>
+        <text>退款总额: </text>
+        <text>{{totalRefundFee}}</text>
+    </view>
+    <block wx:for="{{refundList}}" wx:key="{{item.no}}">
+        <view class='field'>
+            <text>退款编号: </text>
+            <text>{{item.outRefundNo}}</text>
+        </view>
+		<view class='field'>
+            <text>退款状态: </text>
+            <text wx:if="{{item.refundStatus=='SUCCESS'}}">退款成功</text>
+			<text wx:elif="{{item.refundStatus=='FAIL'}}">退款失败</text>
+			<text wx:elif="{{item.refundStatus=='PROCESSING'}}">退款处理中</text>
+			<text wx:elif="{{item.refundStatus=='CHANGE'}}">转入代发</text>
+        </view>
+		<view class='field'>
+            <text>申请退款金额: </text>
+            <text>{{item.refundFee}}</text>
+        </view>
+		<view class='field'>
+            <text>退款渠道: </text>
+			<text wx:if="{{item.refundChannel=='ORIGINAL'}}">原路退款</text>
+			<text wx:elif="{{item.refundChannel=='BALANCE'}}">退回到余额</text>
+        </view>
+		<view class='field'>
+            <text>退款入账账户: </text>
+            <text>{{item.refundRecvAccount}}</text>
+        </view>
+		<view class='field'>
+            <text>退款入账时间: </text>
+            <text>{{item.refundSuccessTime}}</text>
+        </view>
+    </block>
+</view>

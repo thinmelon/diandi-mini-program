@@ -1,0 +1,44 @@
+<!--pages/shopping/cart/cart.wxml-->
+<view class='container'>
+    <view class='top-bar'>
+        <checkbox color='#dc143c' checked='true'>
+            <text>全选</text>
+        </checkbox>
+        <text>编辑</text>
+    </view>
+    <view class='cart-list'>
+        <view class='cart-item' wx:for="{{skuList}}" wx:key="{{item.skuid}}">
+            <checkbox color='#dc143c' checked='true'></checkbox>
+            <view class="thumbnail">
+                <image mode="aspectFill" src="{{prefix}}{{item.thumbnail}}"></image>
+            </view>
+            <view class="brief-intro">
+                <view class="name">
+                    <text>{{item.name}}</text>
+                </view>
+                <view class='standard'>
+                    <text>{{item.attributes}}</text>
+                </view>
+                <view class='price'>
+                    <view class='unit'>
+                        <text>{{item.unit}}</text>
+                    </view>
+                    <view class='quantity'>
+                        <text>X {{item.amount}}</text>
+                    </view>
+                </view>
+            </view>
+        </view>
+    </view>
+    <view class="space">
+        <text>{{hint}}</text>
+    </view>
+</view>
+<view class='bottom-bar'>
+    <view class="total">合计：
+        <text>￥{{subtotal}}</text>
+    </view>
+    <view class="submit-order" bindtap='bindTapSettleAccount'>
+        <text>结算</text>
+    </view>
+</view>

@@ -1,0 +1,23 @@
+/**app.wxss**/
+
+.cover {
+    width: 100%;
+    border-radius: 10px;
+}
+
+.title {
+    color: #353535;
+    font-size: 17pt;
+    margin: 15px 0 8px 0;
+}
+
+.brief {
+    color: #b2b2b2;
+    font-size: 11pt;
+}
+
+.important{
+    font-size: 17pt;
+    font-weight: bold;
+    color: #813c85;
+}

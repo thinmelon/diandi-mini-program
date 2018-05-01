@@ -1,0 +1,57 @@
+{
+	"description": "项目配置文件。",
+	"setting": {
+		"urlCheck": true,
+		"es6": true,
+		"postcss": true,
+		"minified": true
+	},
+	"compileType": "miniprogram",
+	"libVersion": "1.5.3",
+	"appid": "wx552f609c3ae06a00",
+	"projectname": "%E7%82%B9%E6%BB%B4",
+	"scripts": {},
+	"condition": {
+		"search": {
+			"current": -1,
+			"list": []
+		},
+		"conversation": {
+			"current": -1,
+			"list": []
+		},
+		"game": {
+			"current": -1,
+			"list": []
+		},
+		"plugin": {
+			"current": -1,
+			"list": []
+		},
+		"miniprogram": {
+			"current": 0,
+			"list": [
+				{
+					"id": -1,
+					"name": "商品详情页",
+					"pathName": "pages/shopping/product/product"
+				},
+				{
+					"id": -1,
+					"name": "待付款订单",
+					"pathName": "pages/shopping/buy/buy"
+				},
+				{
+					"id": -1,
+					"name": "购物车",
+					"pathName": "pages/shopping/cart/cart"
+				},
+				{
+					"id": -1,
+					"name": "\b订单详情",
+					"pathName": "pages/shopping/order/order"
+				}
+			]
+		}
+	}
+}

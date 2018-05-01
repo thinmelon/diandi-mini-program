@@ -1,0 +1,128 @@
+/* pages/shopping/cart/cart.wxss */
+page {
+    height: 100%;
+}
+
+.container {
+    width: 100%;
+    height: 100%;
+    background-color: #eee;
+}
+
+.top-bar {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #fff;
+    padding: 15rpx;
+}
+
+.top-bar text {
+    font-size: 11pt;
+}
+
+.cart-list {
+    background-color: #fff;
+}
+
+.cart-item {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 15rpx;
+}
+
+.cart-item .thumbnail {
+    margin: 15rpx;
+    border-radius: 8rpx;
+}
+
+.cart-item .thumbnail image {
+    width: 150rpx;
+    height: 150rpx;
+    border: 1rpx solid #ddd;
+}
+
+.cart-item .brief-intro {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    /* width: 480rpx; */
+}
+
+.brief-intro .name {
+    padding: 15rpx;
+}
+
+.brief-intro .name text, .brief-intro .standard text, .brief-intro .price text {
+    margin: 0 15rpx;
+    font-size: 11pt;
+}
+
+.standard text {
+    color: #a9a9a9;
+}
+
+.price text {
+    color: #dc143c;
+}
+
+.price {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.container .space {
+    background-color: #eee;
+    height: 400rpx;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.space text {
+    font-size: 11pt;
+    color: #a9a9a9;
+}
+
+/*  底部 - 功能栏  */
+
+.bottom-bar {
+    position: fixed;
+    width: 100%;
+    bottom: 0;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
+    background-color: #fff;
+}
+
+.bottom-bar .submit-order {
+    width: 300rpx;
+    height: 100rpx;
+    background-color: #dc143c;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.bottom-bar .submit-order text {
+    font-size: 13pt;
+    font-weight: bold;
+    color: white;
+}
+
+.bottom-bar .total {
+    margin-right: 24rpx;
+}
+
+.bottom-bar .total text {
+    color: #dc143c;
+}

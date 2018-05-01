@@ -1,0 +1,88 @@
+/* pages/my/consignee/consignee.wxss */
+
+page {
+    height: 100%;
+}
+
+.container {
+    height: 100%;
+    background-color: #eee;
+}
+
+.consignee {
+    display: flex;
+    flex-direction: column;
+    background-color: white;
+    margin-bottom: 20rpx;
+}
+
+.intro, .top, .center, .bottom, .operator, .edit, .delete {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+}
+
+.intro {
+    justify-content: center;
+    align-items: center;
+}
+
+.intro .left {
+    padding: 15rpx;
+    width: 10%;
+}
+
+.intro .right {
+    width: 90%;
+}
+
+.top, .center {
+    justify-content: space-between;
+    padding: 15rpx;
+}
+
+.bottom {
+    justify-content: flex-end;
+    padding-right: 15rpx;
+}
+
+.operator {
+    justify-content: flex-end;
+    padding: 15rpx;
+}
+
+.edit, .delete {
+    justify-content: center;
+    align-items: center;
+    padding: 15rpx 25rpx;
+}
+
+.edit image {
+    width: 86rpx;
+    height: 50rpx;
+}
+
+.delete image {
+    width: 50rpx;
+    height: 50rpx;
+}
+
+.add {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: #eee;
+    height: 400rpx;
+}
+
+.add image {
+    width: 80rpx;
+    height: 80rpx;
+    margin: 15rpx;
+}
+
+.add text {
+    font-size: 12pt;
+    color: #555;
+}

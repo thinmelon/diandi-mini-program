@@ -1,0 +1,104 @@
+<!--pages/shopping/order/order.wxml-->
+<view class="container">
+    <view class="order-status">
+        <image src="/icons/stores/order.png"></image>
+        <text>{{statusMessage}}</text>
+    </view>
+    <view class="order-process" wx:if="{{errcode == 0}}">
+        <view class="part">
+            <text>买家付款</text>
+            <image src="/icons/stores/checked.png"></image>
+        </view>
+        <view class="split-line">
+            <image src="/icons/stores/line.png"></image>
+        </view>
+        <view class="part">
+            <text>商家发货</text>
+            <image src="/icons/stores/dot.png"></image>
+        </view>
+        <view class="split-line">
+            <image src="/icons/stores/line.png"></image>
+        </view>
+        <view class="part">
+            <text>交易完成</text>
+            <image src="/icons/stores/dot.png"></image>
+        </view>
+    </view>
+    <view class="receiver-address">
+        <view class="location-icon">
+            <image src="/icons/location.png"></image>
+        </view>
+        <view class="receiver">
+            <view class="top">
+                <text>收货人：{{consignee}}</text>
+                <text>{{mobile}}</text>
+            </view>
+            <view class="bottom">
+                <text>收货地址：{{address}}</text>
+            </view>
+        </view>
+    </view>
+    <view class="order-details">
+        <view class="store">
+            <image mode="aspectFill" src="/icons/stores/main.png"></image>
+            <text>广电网络</text>
+        </view>
+        <view class="goods" wx:for="{{skuList}}" wx:key="{{item.skuid}}">
+            <view class="thumbnail">
+                <image src="{{prefix}}{{item.thumbnail}}"></image>
+            </view>
+            <view class="description">
+                <view class="top">
+                    <view class="name">
+                        <text>{{item.name}}</text>
+                    </view>
+                    <view class="price">
+                        <text>￥{{item.unit}}</text>
+                    </view>
+                </view>
+                <view class="center">
+                    <text>{{item.attributes}}</text>
+                    <text>X {{item.amount}}</text>
+                </view>
+                <view class="refund" data-skuid="{{item.skuid}}" data-refundfee='{{item.unit * item.amount}}' bindtap='bindTapRefund'>
+                    <text>申请退款</text>
+                </view>
+            </view>
+        </view>
+    </view>
+    <view class="delivery">
+        <text>配送方式</text>
+        <text>免运费</text>
+    </view>
+    <view class="message">
+        <text>买家留言</text>
+        <text>{{message}}</text>
+    </view>
+    <view class="total">
+        <text>合计</text>
+        <text class="text-price">￥{{subTotal}}</text>
+    </view>
+
+    <view class="order-total" wx:if="{{errcode == 0}}">
+        <view class="goods-fee">
+            <text>商品金额</text>
+            <text>￥{{subTotal}}</text>
+        </view>
+        <view class="delivery-fee">
+            <text>运费</text>
+            <text>+￥0.00</text>
+        </view>
+        <view class="pay-amount">
+            <text>实付金额</text>
+            <text class="text-price">￥{{cashFee}}</text>
+        </view>
+    </view>
+    <view class="order-extra">
+        <text>订单编号：{{orderID}}</text>
+        <text>创建时间：{{createTime}}</text>
+        <text wx:if="{{errcode == 0}}">付款时间：{{payTime}}</text>
+    </view>
+    <view class="space">
+        <text>花管家提供技术支持</text>
+    </view>
+</view>

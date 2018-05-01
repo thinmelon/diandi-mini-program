@@ -1,0 +1,8 @@
+<!--pages/shopping/index/index.wxml-->
+<view class='container'>
+    <view wx:for="{{ collections }}" wx:key="{{ item.id }}" class='collection'>
+        <image class='cover' src='{{ item.cover }}'></image>
+        <text class='title'>{{ item.title }}</text>
+        <text class='brief'>{{ item.brief }}</text>
+    </view>
+</view>

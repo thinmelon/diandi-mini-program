@@ -1,0 +1,12 @@
+<!--pages/my/posts/posts.wxml-->
+<view class="worksheet-list">
+    <view class="list-item" wx:for="{{workSheetList}}" wx:key="{{item.gid}}" data-gid="{{item.gid}}" bindtap="enterWorkSheetDetail">
+        <label class="worksheet-time">{{item.posttime}}</label>
+        <text class="worksheet-summary">{{item.content}}</text>
+        <view class="album">
+            <view wx:for="{{item.album}}" wx:key="{{item.mid}}">
+                <image mode="aspectFill" src="{{item.src}}"></image>
+            </view>
+        </view>
+    </view>
+</view>

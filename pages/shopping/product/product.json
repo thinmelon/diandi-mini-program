@@ -1,0 +1,6 @@
+{
+    "navigationBarTitleText": "优品",
+    "usingComponents": {
+        "component-selector-modal": "/components/selector.modal/selector.modal"
+    }
+}
