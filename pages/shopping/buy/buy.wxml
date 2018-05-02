@@ -1,7 +1,7 @@
 <!--pages/shopping/buy/buy.wxml-->
 <view class="container">
     <view class="shopping-address" bindtap="bindTapDeliveryAddress">
-        <view class='consignee' wx:if="{{isSet}}">
+        <view class='consignee' wx:if="{{isConsigneeSet}}">
             <view class='outter'>
                 <text>收件人地址：</text>
             </view>
@@ -14,14 +14,14 @@
             </view>
         </view>
         <view class='unset' wx:else>
-            <text>设置收货地址</text>
+            <text>设置收件人地址</text>
         </view>
         <view class='item-select'>
-            <image src="/icons/list-item-select.png"></image>
+            <image src="/icons/public/select.png"></image>
         </view>
     </view>
     <view class="description">
-        <view class="upper" wx:for="{{skuList}}" wx:key="{{item.skuid}}">
+        <view class="upper" wx:for="{{cart}}" wx:key="{{item.skuid}}">
             <view class="thumbnail">
                 <image mode="aspectFill" src="{{prefix}}{{item.thumbnail}}"></image>
             </view>
@@ -29,8 +29,8 @@
                 <view class="name">
                     <text>{{item.name}}</text>
                 </view>
-                <view class='standard'>
-                    <text>{{item.attributes}}</text>
+                <view class='standard' wx:for="{{item.attributes}}" wx:key="{{attribute}}" wx:for-item="attribute">
+                    <text>{{attribute}}</text>
                 </view>
                 <view class="details">
                     <text>￥{{item.unit}}</text>
@@ -38,6 +38,7 @@
                 </view>
             </view>
         </view>
+
         <view class="shipping">
             <view class="left">
                 <text>配送方式</text>
@@ -52,22 +53,6 @@
             </view>
             <view class="right">
                 <input placeholder="点击给商家留言" value='{{message}}' bindinput='bindInputFunc' />
-            </view>
-        </view>
-        <view class="subtotal">
-            <view class="left">
-                <text>小计</text>
-            </view>
-            <view class="right">
-                <text>{{subtotal}}元</text>
-            </view>
-        </view>
-        <view class="sms">
-            <view class="left">
-                <text>短信通知收件人</text>
-            </view>
-            <view class="right">
-                <switch type="switch" checked />
             </view>
         </view>
         <view class="price">

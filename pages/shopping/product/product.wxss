@@ -15,7 +15,7 @@
     justify-content: space-between;
     align-items: center;
     margin: 8px 0;
-    color: #888888;
+    color: #888;
     font-size: 11pt;
 }
 
@@ -82,3 +82,42 @@
 .bar-buy text {
     color: white;
 }
+
+/*  规格选择  */
+
+.sku-values {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.sku-values-item {
+    margin: 5px;
+    padding: 1rpx 24rpx 15rpx 24rpx;
+    border: 1rpx solid #353535;
+    font-size: 11pt;
+}
+
+.chosen-item {
+    color: #813c85;
+    font-weight: bold;
+}
+
+/*  规格选择  */
+
+.quantity {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.quantity .opera {
+    padding: 20rpx 30rpx;
+    border: 1rpx solid #808080;
+}
+
+.quantity .amount {
+    margin: 20rpx 30rpx;
+}
+
