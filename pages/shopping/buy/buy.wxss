@@ -1,8 +1,4 @@
 /* pages/shopping/buy/buy.wxss */
-.container {
-    width: 100%;
-    background-color: #eee;
-}
 
 /* 地址栏 */
 
@@ -59,128 +55,26 @@
 
 /* 已购商品简介 */
 
-.description {
-    width: 100%;
-    background-color: #fff;
-}
-
-.upper {
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-start;
-    border-bottom: 1rpx solid #dcdcdc;
-    padding-bottom: 24rpx;
-}
-
-.upper .thumbnail {
-    margin: 15rpx;
-    border-radius: 8rpx;
-    width: 25%;
-}
-
-.upper .thumbnail image {
-    width: 180rpx;
-    height: 180rpx;
-    border: 1rpx solid #ddd;
-}
-
-.upper .brief-intro {
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    width: 75%;
-}
-
-.upper .brief-intro .name {
-    padding: 15rpx;
-}
-
-.upper .brief-intro .name text {
-    margin: 0 15rpx;
-    font-size: 10pt;
-}
-
-.upper .brief-intro .standard text {
-    margin: 0 15rpx;
-    font-size: 10pt;
-    color: #a9a9a9;
-}
-
-.upper .brief-intro .details {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0 15rpx;
-}
-
-.upper .brief-intro .details {
-    font-size: 11pt;
-    font-weight: bold;
-    color: #dc143c;
-}
-
 .left text, .right text, .input-placeholder {
     font-size: 11pt;
 }
 
-.shipping, .message {
+.shipping, .message, .goods-price, .carriage {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    padding: 15rpx 24rpx;
+    width: 100%;
+}
+
+.shipping, .message {
+	padding: 15px 0 8px 0;
     border-bottom: 1rpx solid #dcdcdc;
 }
 
-.goods-price, .carriage {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-}
-
-.price {
+.subtotal {
     display: flex;
     flex-direction: column;
     padding: 15rpx 24rpx;
     border-bottom: 1rpx solid #dcdcdc;
-}
-
-.container .space {
-    background-color: #eee;
-    height: 400rpx;
-}
-
-/*  底部 - 功能栏  */
-
-.bottom-bar {
-    position: fixed;
     width: 100%;
-    bottom: 0;
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-end;
-    align-items: center;
-    background-color: #fff;
-}
-
-.bottom-bar .submit-order {
-    width: 300rpx;
-    height: 100rpx;
-    background-color: #813c85;
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-}
-
-.bottom-bar .submit-order text {
-    font-size: 13pt;
-    font-weight: bold;
-    color: white;
-}
-
-.bottom-bar .total {
-	color: #813c85;
-    margin-right: 24rpx;
 }

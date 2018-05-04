@@ -8,6 +8,7 @@
         "pages/shopping/buy/buy",
         "pages/shopping/order/order",
         "pages/my/index/index",
+		"pages/my/address/address",
         "pages/my/consignee/consignee",
         "pages/my/mobile/mobile",
         "pages/my/orders/orders",

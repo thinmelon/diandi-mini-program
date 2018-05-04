@@ -1,32 +1,32 @@
 <!--pages/shopping/order/order.wxml-->
 <view class="container">
     <view class="order-status">
-        <image src="/icons/stores/order.png"></image>
+        <image src="/icons/shopping/order.png"></image>
         <text>{{statusMessage}}</text>
     </view>
-    <view class="order-process" wx:if="{{errcode == 0}}">
+    <view class="order-process">
         <view class="part">
             <text>买家付款</text>
-            <image src="/icons/stores/checked.png"></image>
+            <image src="/icons/shopping/checked.png"></image>
         </view>
         <view class="split-line">
-            <image src="/icons/stores/line.png"></image>
+            <image src="/icons/shopping/line.png"></image>
         </view>
         <view class="part">
             <text>商家发货</text>
-            <image src="/icons/stores/dot.png"></image>
+            <image src="/icons/shopping/dot.png"></image>
         </view>
         <view class="split-line">
-            <image src="/icons/stores/line.png"></image>
+            <image src="/icons/shopping/line.png"></image>
         </view>
         <view class="part">
             <text>交易完成</text>
-            <image src="/icons/stores/dot.png"></image>
+            <image src="/icons/shopping/dot.png"></image>
         </view>
     </view>
     <view class="receiver-address">
         <view class="location-icon">
-            <image src="/icons/location.png"></image>
+            <image src="/icons/public/location.png"></image>
         </view>
         <view class="receiver">
             <view class="top">
@@ -38,34 +38,32 @@
             </view>
         </view>
     </view>
-    <view class="order-details">
-        <view class="store">
-            <image mode="aspectFill" src="/icons/stores/main.png"></image>
-            <text>广电网络</text>
-        </view>
-        <view class="goods" wx:for="{{skuList}}" wx:key="{{item.skuid}}">
+    <view class="cart-list">
+        <view class="cart-item" wx:for="{{cart}}" wx:key="{{item.skuid}}">
             <view class="thumbnail">
-                <image src="{{prefix}}{{item.thumbnail}}"></image>
+                <image mode="aspectFill" src=""></image>
             </view>
-            <view class="description">
-                <view class="top">
-                    <view class="name">
-                        <text>{{item.name}}</text>
-                    </view>
-                    <view class="price">
-                        <text>￥{{item.unit}}</text>
-                    </view>
+            <view class="brief-intro">
+                <view class="name">
+                    <text>{{ item.name }}</text>
                 </view>
-                <view class="center">
-                    <text>{{item.attributes}}</text>
-                    <text>X {{item.amount}}</text>
+                <view class='standard' wx:for="{{ item.attributes }}" wx:key="{{ attribute }}" wx:for-item="attribute">
+                    <text>{{attribute}}</text>
                 </view>
-                <view class="refund" data-skuid="{{item.skuid}}" data-refundfee='{{item.unit * item.amount}}' bindtap='bindTapRefund'>
-                    <text>申请退款</text>
+                <view class='price'>
+                    <view>
+                        <text>{{item.unit}}</text>
+                    </view>
+                    <view>
+                        <text>X {{item.amount}}</text>
+                    </view>
                 </view>
             </view>
         </view>
     </view>
+    <!-- <view class="refund" data-skuid="{{item.skuid}}" data-refundfee='{{item.unit * item.amount}}' bindtap='bindTapRefund'>
+        <text>申请退款</text>
+    </view> -->
     <view class="delivery">
         <text>配送方式</text>
         <text>免运费</text>
@@ -74,15 +72,10 @@
         <text>买家留言</text>
         <text>{{message}}</text>
     </view>
-    <view class="total">
-        <text>合计</text>
-        <text class="text-price">￥{{subTotal}}</text>
-    </view>
-
-    <view class="order-total" wx:if="{{errcode == 0}}">
+    <view class="order-total">
         <view class="goods-fee">
             <text>商品金额</text>
-            <text>￥{{subTotal}}</text>
+            <text>￥{{subtotal}}</text>
         </view>
         <view class="delivery-fee">
             <text>运费</text>
@@ -96,9 +89,9 @@
     <view class="order-extra">
         <text>订单编号：{{orderID}}</text>
         <text>创建时间：{{createTime}}</text>
-        <text wx:if="{{errcode == 0}}">付款时间：{{payTime}}</text>
+        <text>付款时间：{{payTime}}</text>
     </view>
-    <view class="space">
+    <view class="cut-off-rule">
         <text>花管家提供技术支持</text>
     </view>
 </view>

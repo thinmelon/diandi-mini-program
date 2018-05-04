@@ -61,6 +61,18 @@
 					"name": "我的帖子",
 					"pathName": "pages/my/posts/posts",
 					"query": ""
+				},
+				{
+					"id": -1,
+					"name": "收货人地址管理",
+					"pathName": "pages/my/consignee/consignee",
+					"query": ""
+				},
+				{
+					"id": 6,
+					"name": "新增收件人地址",
+					"pathName": "pages/my/address/address",
+					"query": ""
 				}
 			]
 		}

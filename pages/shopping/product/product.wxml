@@ -60,10 +60,10 @@
         <image src="/icons/shopping/cart.png"></image>
         <text>购物车</text>
     </view>
-    <view class="bar-add-to-cart" data-show='0' bindtap='bindTapJoinToCart'>
+    <view class="bar-add-to-cart" bindtap='bindTapJoinToCart'>
         <text>加入购物车</text>
     </view>
-    <view class="bar-buy" data-show='0' bindtap="bindTapBuy">
+    <view class="bar-buy" bindtap="bindTapBuy">
         <text>立即购买</text>
     </view>
 </view>

@@ -1,12 +1,5 @@
 /* pages/shopping/index/index.wxss */
 
-.container {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-}
-
 .collection {
     display: flex;
     flex-direction: column;

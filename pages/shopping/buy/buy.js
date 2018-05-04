@@ -1,4 +1,7 @@
 // pages/shopping/buy/buy.js
+
+const __PRICE__ = require('../../../utils/math.price.js');
+
 Page({
 
 	/**
@@ -17,29 +20,19 @@ Page({
 	 * 生命周期函数--监听页面加载
 	 */
 	onLoad: function (options) {
-		var i,
-			length,
-			name,
-			unit,
-			amount,
-			cart,
+		var
 			subtotal = 0,
 			total = 0;
 
-		cart = this.data.cart = JSON.parse(options.cart);
-
-		for (i = 0, length = cart.length; i < length; i++) {
-			unit = cart[i].unit;
-			amount = cart[i].amount;
-			subtotal += Math.round((unit * amount) * 100) / 100;
-		}
-
-		total = subtotal + this.data.carriage;      // 总金额（包含运费）
+		this.data.cart = JSON.parse(options.cart);
+		this.data.subtotal = __PRICE__.totalPrice(this.data.cart);
+		// 总金额（包含运费）
+		this.data.total = Math.round((this.data.subtotal + this.data.carriage) * 100) / 100;
 
 		this.setData({
-			cart: cart,
-			subtotal: subtotal,
-			total: total
+			cart: this.data.cart,
+			subtotal: this.data.subtotal,
+			total: this.data.total
 		});
 	},
 

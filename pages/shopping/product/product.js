@@ -258,8 +258,6 @@ Page({
 				for (i = 0, length = this.data.chosenItems.length; i < length; i++) {
 					attributes.push(this.getSku(this.data.chosenItems[i]));
 				}
-				console.log(attributes);
-
 				_cart.push({
 					skuid: this.data.chosenSkuId,
 					name: this.data.product.name,
