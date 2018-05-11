@@ -16,14 +16,17 @@
     ],
     "window": {
         "backgroundTextStyle": "light",
-        "navigationBarBackgroundColor": "#8076a3",
+        "navigationBarBackgroundColor": "#813c85",
         "navigationBarTitleText": "萌主驾到",
         "navigationBarTextStyle": "white"
     },
     "tabBar": {
         "color": "#888888",
-        "selectedColor": "#FFFFFF",
-        "backgroundColor": "#8076a3",
+        "selectedColor": "#FFFFFF"    
+		
+		
+		 ,
+        "backgroundColor": "#813c85",
         "borderStyle": "white",
         "list": [
             {

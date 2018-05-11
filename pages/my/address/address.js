@@ -19,11 +19,11 @@ Page({
 		console.info(options);
 
 		this.setData({
-			aid: options.aid,
-			receiver: options.name,
-			mobile: options.mobile,
-			address: options.address,
-			postcode: options.postcode
+			aid: options.aid || this.data.aid,
+			receiver: options.name || this.data.receiver,
+			mobile: options.mobile || this.data.mobile,
+			address: options.address || this.data.address,
+			postcode: options.postcode || this.data.postcode
 		});
 	},
 

@@ -24,84 +24,87 @@ const mockData = [
 ];
 
 const __PRICE__ = require('../../../utils/math.price.js');
+const __WX_PAY_SERVICE__ = require('../../../services/wechat.pay.service.js');
 
 Page({
 
-  /**
-   * 页面的初始数据
-   */
-  data: {
-	  cart: [],
-	  subtotal: 0.00,
-	  consignee: '',
-	  mobile: '',
-	  address: '',
-	  message: '',
-	  cashFee: 0.00
-  },
+	/**
+	 * 页面的初始数据
+	 */
+	data: {
+		cart: [],
+		subtotal: 0.00,
+		consignee: '',
+		mobile: '',
+		address: '',
+		message: '',
+		cashFee: 0.00
+	},
 
-  /**
-   * 生命周期函数--监听页面加载
-   */
-  onLoad: function (options) {
-	  if (mockData.length > 0) {
-		  this.setData({
-			  subtotal: __PRICE__.checkedPrice(mockData),
-			  cart: mockData,
-			  consignee: '李云鹏',
-			  mobile: '18159393355',
-			  address: '福建省莆田市城厢区凤凰山街道学园南街宝厦日月潭2504室',
-			  message: '请在非工作日时间内送达'
-		  });
-	  }
-  },
+	/**
+	 * 生命周期函数--监听页面加载
+	 */
+	onLoad: function (options) {
+		if (mockData.length > 0) {
+			this.setData({
+				subtotal: __PRICE__.checkedPrice(mockData),
+				cart: mockData,
+				consignee: '李云鹏',
+				mobile: '18159393355',
+				address: '福建省莆田市城厢区凤凰山街道学园南街宝厦日月潭2504室',
+				message: '请在非工作日时间内送达'
+			});
+		}
+	},
 
-  /**
-   * 生命周期函数--监听页面初次渲染完成
-   */
-  onReady: function () {
-  
-  },
+	/**
+	 * 生命周期函数--监听页面初次渲染完成
+	 */
+	onReady: function () {
 
-  /**
-   * 生命周期函数--监听页面显示
-   */
-  onShow: function () {
-  
-  },
+	},
 
-  /**
-   * 生命周期函数--监听页面隐藏
-   */
-  onHide: function () {
-  
-  },
+	/**
+	 * 生命周期函数--监听页面显示
+	 */
+	onShow: function () {
+		__WX_PAY_SERVICE__
+			.queryOrder('13297414012018050609541')
+			.then(res => console.log(res));
+	},
 
-  /**
-   * 生命周期函数--监听页面卸载
-   */
-  onUnload: function () {
-  
-  },
+	/**
+	 * 生命周期函数--监听页面隐藏
+	 */
+	onHide: function () {
 
-  /**
-   * 页面相关事件处理函数--监听用户下拉动作
-   */
-  onPullDownRefresh: function () {
-  
-  },
+	},
 
-  /**
-   * 页面上拉触底事件的处理函数
-   */
-  onReachBottom: function () {
-  
-  },
+	/**
+	 * 生命周期函数--监听页面卸载
+	 */
+	onUnload: function () {
 
-  /**
-   * 用户点击右上角分享
-   */
-  onShareAppMessage: function () {
-  
-  }
+	},
+
+	/**
+	 * 页面相关事件处理函数--监听用户下拉动作
+	 */
+	onPullDownRefresh: function () {
+
+	},
+
+	/**
+	 * 页面上拉触底事件的处理函数
+	 */
+	onReachBottom: function () {
+
+	},
+
+	/**
+	 * 用户点击右上角分享
+	 */
+	onShareAppMessage: function () {
+
+	}
 })

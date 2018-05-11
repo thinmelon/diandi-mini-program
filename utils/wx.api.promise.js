@@ -89,8 +89,48 @@ function wxSetStoragePromise(data) {
 /**
  * 调用接口wx.login() 获取临时登录凭证（code）
  */
-function wxLoginPromise(){
-    return wxPromisify(wx.login)();
+function wxLoginPromise() {
+	return wxPromisify(wx.login)();
+}
+
+/**
+ * 调用wx.requestPayment(OBJECT)发起微信支付
+ * 
+ */
+function wxRequestPaymentPromise(options) {
+	return wxPromisify(wx.requestPayment)({
+		'timeStamp': options.data.timeStamp,	//	时间戳从1970年1月1日00:00:00至今的秒数,即当前的时间
+		'nonceStr': options.data.nonceStr,			//	随机字符串，长度为32个字符以下
+		'package': options.data.package,			  // 统一下单接口返回的 prepay_id 参数值
+		'signType': 'MD5',									//	签名类型，默认为MD5
+		'paySign': options.data.paySign				//	签名
+	});
+}
+
+/**
+ *   显示消息提示框
+ *   时长3秒，结束后执行下一步
+ */
+function wxShowToastPromise(title, icon, image) {
+	wx.showToast({
+		title: title,
+		icon: icon,
+		image: image,
+		duration: 3000,
+		mask: true
+	})
+	return new Promise((resolve, reject) => {
+		setTimeout(() => resolve('Time out.'), 3000);
+	});
+}
+
+/**
+ *   关闭当前页面，跳转到应用内的某个页面。
+ */
+function wxRedirectToPromise(url) {
+	return wxPromisify(wx.redirectTo)({
+		url: url
+	});
 }
 
 module.exports = {
@@ -98,5 +138,8 @@ module.exports = {
 	postRequest: wxPostRequestPromise,
 	getSystemInfo: wxGetSystemInfoPromise,
 	setStorage: wxSetStoragePromise,
-    login: wxLoginPromise
+	login: wxLoginPromise,
+	requestPayment: wxRequestPaymentPromise,
+	showToast: wxShowToastPromise,
+	redirectTo: wxRedirectToPromise
 }
