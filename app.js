@@ -1,18 +1,24 @@
 //app.js
 const wxApiPromise = require('./utils/wx.api.promise.js');
+const __CREDENTIAL__ = require('./services/credential.service.js');
 
 App({
 	onLaunch: function () {
-		wxApiPromise
-			.login()
-			.then(result => {
-				console.log(result);
-			});
-
-		wxApiPromise
-			.getSystemInfo()
-			.then(result => {
+		wxApiPromise.login()										//	调用登录接口获取临时登录凭证（code）
+			.then(__CREDENTIAL__.userLogin)		   //  	访问后端，用code获取session key
+			.then(result => {											  //   对结果进行转换
 				return new Promise((resolve, reject) => {
+					resolve({
+						key: '__SESSION_KEY__',
+						data: result.data.nonceStr
+					})
+				})
+			})
+			.then(wxApiPromise.setStorage);					  //  存入本地
+
+		wxApiPromise.getSystemInfo()						  //  获取设备信息
+			.then(result => {
+				return new Promise((resolve, reject) => {	 //  获取屏宽高
 					resolve({
 						key: '__WindowScale__',
 						data: {
@@ -22,6 +28,6 @@ App({
 					})
 				});
 			})
-			.then(wxApiPromise.setStorage);
+			.then(wxApiPromise.setStorage);						//  存入本地
 	}
 })

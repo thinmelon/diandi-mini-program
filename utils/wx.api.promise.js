@@ -1,30 +1,4 @@
-const Promise = require('../lib/es6-promise.js').Promise;
-
-/**
- *  封装
- */
-function wxPromisify(fn) {
-	return function (options = {}) {
-		return new Promise((resolve, reject) => {
-			options.success = function (result) {
-				resolve(result);
-			}
-			options.fail = function (reason) {
-				reject(reason);
-			}
-			fn(options);
-		});
-	}
-}
-
-//无论promise对象最后状态如何都会执行
-// Promise.prototype.finally = function (callback) {
-// 	let P = this.constructor;
-// 	return this.then(
-// 		value => P.resolve(callback()).then(() => value),
-// 		reason => P.resolve(callback()).then(() => { throw reason })
-// 	);
-// };
+const Promisify = require('./promisify.js').Promisify;
 
 /**
  * 微信请求get方法
@@ -32,7 +6,7 @@ function wxPromisify(fn) {
  * data 以对象的格式传入
  */
 function wxGetRequestPromise(url, data) {
-	return wxPromisify(wx.request)({
+	return Promisify(wx.request)({
 		url: url,
 		method: 'GET',
 		data: data,
@@ -46,7 +20,7 @@ function wxGetRequestPromise(url, data) {
  * 微信请求post方法封装
  */
 function wxPostRequestPromise(url, data) {
-	return wxPromisify(wx.request)({
+	return Promisify(wx.request)({
 		url: url,
 		method: 'POST',
 		data: data,
@@ -74,7 +48,7 @@ function wxPostRequestPromise(url, data) {
  * SDKVersion	客户端基础库版本
  */
 function wxGetSystemInfoPromise() {
-	return wxPromisify(wx.getSystemInfo)();
+	return Promisify(wx.getSystemInfo)();
 }
 
 /**
@@ -82,15 +56,15 @@ function wxGetSystemInfoPromise() {
  * 将数据存储在本地缓存中指定的 key 中，会覆盖掉原来该 key 对应的内容
  */
 function wxSetStoragePromise(data) {
-	wx.clearStorageSync();
-	return wxPromisify(wx.setStorage)(data);
+	wx.removeStorageSync(data.key);
+	return Promisify(wx.setStorage)(data);
 }
 
 /**
  * 调用接口wx.login() 获取临时登录凭证（code）
  */
 function wxLoginPromise() {
-	return wxPromisify(wx.login)();
+	return Promisify(wx.login)();
 }
 
 /**
@@ -98,7 +72,7 @@ function wxLoginPromise() {
  * 
  */
 function wxRequestPaymentPromise(options) {
-	return wxPromisify(wx.requestPayment)({
+	return Promisify(wx.requestPayment)({
 		'timeStamp': options.data.timeStamp,	//	时间戳从1970年1月1日00:00:00至今的秒数,即当前的时间
 		'nonceStr': options.data.nonceStr,			//	随机字符串，长度为32个字符以下
 		'package': options.data.package,			  // 统一下单接口返回的 prepay_id 参数值
@@ -128,7 +102,7 @@ function wxShowToastPromise(title, icon, image) {
  *   关闭当前页面，跳转到应用内的某个页面。
  */
 function wxRedirectToPromise(url) {
-	return wxPromisify(wx.redirectTo)({
+	return Promisify(wx.redirectTo)({
 		url: url
 	});
 }

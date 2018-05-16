@@ -3,21 +3,28 @@
  */
 const PROTOCOL = 'https://';
 const HOST = 'www.thinmelon.cc:3000';
-const API = '/shopping';
-const PREFIX = PROTOCOL + HOST + API;
+const PREFIX_SHOPPING = PROTOCOL + HOST + '/shopping';
+const PREFIX_USER = PROTOCOL + HOST + '/user';
 
-// const ChinaBondYieldRate = (from, to) => {
-// 	return `${PREFIX}/bond/${from}-${to}`;
-// }
+const fetchProductList = () => {
+	return `${PREFIX_SHOPPING}/product/list`;
+}
+
 const submitUnifiedOrder = () => {
-	return `${PREFIX}/order/new`;
+	return `${PREFIX_SHOPPING}/order/new`;
 }
 
 const queryWechatPayOrder = (out_trade_no) => {
-	return `${PREFIX}/order/${out_trade_no}`;
+	return `${PREFIX_SHOPPING}/order/${out_trade_no}`;
+}
+
+const userLogin = () => {
+	return `${PREFIX_USER}/login`;
 }
 
 module.exports = {
 	submitUnifiedOrder: submitUnifiedOrder,
-	queryWechatPayOrder: queryWechatPayOrder
+	queryWechatPayOrder: queryWechatPayOrder,
+	userLogin: userLogin,
+	fetchProductList: fetchProductList
 }

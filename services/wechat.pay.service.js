@@ -17,7 +17,13 @@ const queryWechatPayOrder = (out_trade_no) => {
 	return __WX_API_PROMISE__.getRequest(url, {});
 }
 
+const fetchProductList = () => {
+	const url = __URI__.fetchProductList();
+	return __WX_API_PROMISE__.getRequest(url, {});
+}
+
 module.exports = {
 	submitUnifiedOrder: submitUnifiedOrder,
-	queryOrder: queryWechatPayOrder
+	queryOrder: queryWechatPayOrder,
+	fetchProductList: fetchProductList
 }
