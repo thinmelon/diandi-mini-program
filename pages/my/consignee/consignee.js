@@ -1,23 +1,5 @@
 // pages/my/consignee/consignee.js
-const mockData = [
-	{
-		aid: 1,
-		isDefault: 1,
-		name: '李云鹏',
-		mobile: '18159393355',
-		address: '福建省莆田市城厢区凤凰山街道学园南街宝厦日月潭2504室',
-		postcode: '351100'
-	},
-	{
-		aid: 2,
-		isDefault: 0,
-		name: '李小鹏',
-		mobile: '18159393355',
-		address: '福建省莆田市涵江区凤凰山街道学园南街宝厦日月潭2504室',
-		postcode: '351111'
-	}
-
-];
+const __USER__ = require('../../../services/credential.service.js');
 Page({
 
 	/**
@@ -31,9 +13,6 @@ Page({
 	 * 生命周期函数--监听页面加载
 	 */
 	onLoad: function (options) {
-		this.setData({
-			consignees: mockData
-		})
 	},
 
 	/**
@@ -47,7 +26,18 @@ Page({
 	 * 生命周期函数--监听页面显示
 	 */
 	onShow: function () {
-
+		const that = this;
+		const session = wx.getStorageSync('__SESSION_KEY__');
+		__USER__.
+			fetchMyConsignee(session)
+			.then(res => {
+				console.log(res);
+				if (res.data.code === 0) {
+					that.setData({
+						consignees: res.data.msg
+					})
+				}
+			});
 	},
 
 	/**
@@ -88,13 +78,13 @@ Page({
 	bindTapAdd: function (e) {
 		console.info(e);
 		wx.navigateTo({
-			url: '/pages/my/address/address?aid=0'
+			url: '/pages/my/address/address'
 		});
 	},
 
 	bindTapEdit: function (e) {
 		wx.navigateTo({
-			url: '/pages/my/address/address?aid=' + e.currentTarget.id +
+			url: '/pages/my/address/address?consignee_no=' + e.currentTarget.id +
 			'&name=' + e.currentTarget.dataset.name +
 			'&mobile=' + e.currentTarget.dataset.mobile +
 			'&address=' + e.currentTarget.dataset.address +
@@ -107,9 +97,12 @@ Page({
 	},
 
 	radioChange: function (e) {
-		wx.showToast({
-			title: '设置默认地址',
-		})
+		console.log(e);
+		const that = this;
+		const session = wx.getStorageSync('__SESSION_KEY__');
+		__USER__.
+			setAsDefaultConsignee(session, e.detail.value)
+			.then(() => { wx.navigateBack(); });
 	}
 
 })

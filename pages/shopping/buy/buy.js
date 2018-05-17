@@ -1,7 +1,8 @@
 // pages/shopping/buy/buy.js
 
 const __PRICE__ = require('../../../utils/math.price.js');
-const __WX_PAY_SERVICE__ = require('../../../services/wechat.pay.service.js');
+const __USER__ = require('../../../services/credential.service.js');
+const __SHOPPING__ = require('../../../services/wechat.pay.service.js');
 const __WX_API_PROMISE__ = require('../../../utils/wx.api.promise.js');
 
 Page({
@@ -15,27 +16,28 @@ Page({
 		carriage: 0.00,
 		total: 0.00,
 		message: '',
-		isConsigneeSet: false
+		isConsigneeSet: false,
+		consignee: {}
 	},
 
 	/**
 	 * 生命周期函数--监听页面加载
 	 */
 	onLoad: function (options) {
-		// var
-		// 	subtotal = 0,
-		// 	total = 0;
+		var
+			subtotal = 0,
+			total = 0;
 
-		// this.data.cart = JSON.parse(options.cart);
-		// this.data.subtotal = __PRICE__.totalPrice(this.data.cart);
-		// // 总金额（包含运费）
-		// this.data.total = Math.round((this.data.subtotal + this.data.carriage) * 100) / 100;
+		this.data.cart = JSON.parse(options.cart);
+		this.data.subtotal = __PRICE__.totalPrice(this.data.cart);
+		// 总金额（包含运费）
+		this.data.total = Math.round((this.data.subtotal + this.data.carriage) * 100) / 100;
 
-		// this.setData({
-		// 	cart: this.data.cart,
-		// 	subtotal: this.data.subtotal,
-		// 	total: this.data.total
-		// });
+		this.setData({
+			cart: this.data.cart,
+			subtotal: this.data.subtotal,
+			total: this.data.total
+		});
 	},
 
 	/**
@@ -49,7 +51,19 @@ Page({
 	 * 生命周期函数--监听页面显示
 	 */
 	onShow: function () {
-		
+		const that = this;
+		const session = wx.getStorageSync('__SESSION_KEY__');
+		__USER__.
+			fetchDefaultConsignee(session)
+			.then(res => {
+				console.log(res);
+				if (0 === res.data.code) {
+					this.setData({
+						isConsigneeSet: true,
+						consignee: res.data.msg[0]
+					})
+				}
+			});
 	},
 
 	/**
@@ -108,20 +122,20 @@ Page({
 	 *     --  微信支付
 	 */
 	bindTapSubmitOrder: function () {
-		// if (false === this.data.isConsigneeSet) {
-		// 	__WX_API_PROMISE__
-		// 		.showToast('收件地址未设置', 'none', '/icons/public/hint.png')		//	提示
-		// 	return;
-		// }
+		if (false === this.data.isConsigneeSet) {
+			__WX_API_PROMISE__
+				.showToast('收件地址未设置', 'none', '/icons/public/hint.png')											//	提示
+			return;
+		}
 
-		__WX_PAY_SERVICE__
+		__SHOPPING__
 			.submitUnifiedOrder('---- 13297414012018050609541', 1, 'oX9I95Tz_AOX-oAdgAIYvE0lYDjc')
 			.then(__WX_API_PROMISE__.requestPayment)
 			.then(res => {
 				// 支付成功
 				if (res.errMsg === 'requestPayment:ok') {
 					__WX_API_PROMISE__
-						.showToast('支付成功', 'success', '')			//	提示
+						.showToast('支付成功', 'success', '')																			  //  提示
 						.then(() => __WX_API_PROMISE__.redirectTo('/pages/shopping/order/order'))	//	跳转
 				}
 			}, res => {

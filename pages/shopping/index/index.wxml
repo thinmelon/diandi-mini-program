@@ -1,6 +1,6 @@
 <!--pages/shopping/index/index.wxml-->
 <view class='container'>
-    <view wx:for="{{ collections }}" wx:key="{{ item.pid }}" class='collection' data-product='{{ item.pid }}' bindtap='bindTapCollections'>
+    <view wx:for="{{ collections }}" wx:key="{{ item.pid }}" class='collection' data-product='{{ item }}' bindtap='bindTapCollections'>
         <image class='cover' src='{{ item.cover }}'></image>
         <text class='title'>{{ item.name }}</text>
         <text class='brief'>{{ item.description }}</text>

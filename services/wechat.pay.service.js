@@ -22,8 +22,14 @@ const fetchProductList = () => {
 	return __WX_API_PROMISE__.getRequest(url, {});
 }
 
+const fetchProductDetail = (product_id) => {
+	const url = __URI__.fetchProductDetail(product_id);
+	return __WX_API_PROMISE__.getRequest(url, {});
+}
+
 module.exports = {
 	submitUnifiedOrder: submitUnifiedOrder,
 	queryOrder: queryWechatPayOrder,
-	fetchProductList: fetchProductList
+	fetchProductList: fetchProductList,
+	fetchProductDetail: fetchProductDetail
 }

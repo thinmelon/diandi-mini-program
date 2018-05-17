@@ -33,7 +33,7 @@
 			"list": []
 		},
 		"miniprogram": {
-			"current": -1,
+			"current": 3,
 			"list": [
 				{
 					"id": -1,
@@ -51,6 +51,18 @@
 					"id": -1,
 					"name": "订单详情",
 					"pathName": "pages/shopping/order/order",
+					"query": ""
+				},
+				{
+					"id": 3,
+					"name": "商品详情",
+					"pathName": "pages/shopping/product/product",
+					"query": "product={\"pid\":\"lJfQQu4AQGmxNCwfwrpzBnvxk9nRus2z\",\"name\":\"Test\",\"description\":\"Test\",\"sales\":0,\"status\":0}"
+				},
+				{
+					"id": -1,
+					"name": "我的收件人",
+					"pathName": "pages/my/consignee/consignee",
 					"query": ""
 				}
 			]

@@ -6,11 +6,11 @@
                 <text>收件人地址：</text>
             </view>
             <view class='top'>
-                <text>{{receiver}}</text>
-                <text>{{mobile}}</text>
+                <text>{{consignee.name}}</text>
+                <text>{{consignee.mobile}}</text>
             </view>
             <view class='center'>
-                <text>{{address}}</text>
+                <text>{{consignee.address}}</text>
             </view>
         </view>
         <view class='unset' wx:else>

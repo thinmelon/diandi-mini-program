@@ -1,11 +1,14 @@
 // pages/my/address/address.js
+const __USER__ = require('../../../services/credential.service.js');
+const __WX_API_PROMISE__ = require('../../../utils/wx.api.promise.js');
+
 Page({
 
 	/**
 	 * 页面的初始数据
 	 */
 	data: {
-		aid: 0,
+		consignee_no: '',
 		receiver: "",
 		mobile: "",
 		address: "",
@@ -19,7 +22,7 @@ Page({
 		console.info(options);
 
 		this.setData({
-			aid: options.aid || this.data.aid,
+			consignee_no: options.consignee_no || this.data.consignee_no,
 			receiver: options.name || this.data.receiver,
 			mobile: options.mobile || this.data.mobile,
 			address: options.address || this.data.address,
@@ -89,7 +92,18 @@ Page({
 	},
 
 	bindTapSubmit: function () {
-
+		const that = this;
+		const session = wx.getStorageSync('__SESSION_KEY__');
+		console.log(this.data.consignee_no);
+		if (this.data.consignee_no === '') {
+			__USER__.
+				addNewConsignee(session, this.data.receiver, this.data.mobile, this.data.address, this.data.postcode)
+				.then(() => { wx.navigateBack(); });
+		} else {
+			__USER__.
+				editConsignee(session, this.data.consignee_no, this.data.receiver, this.data.mobile, this.data.address, this.data.postcode)
+				.then(() => { wx.navigateBack(); });
+		}
 	},
 
 	bindInputFunc: function (e) {

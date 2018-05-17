@@ -29,20 +29,7 @@ Page({
      */
 	onShow: function () {
 		let that = this;
-		// let mockData = [
-		// 	{
-		// 		id: 1,
-		// 		cover: 'https://pusu.oss-cn-shenzhen.aliyuncs.com/baby/sample/pc_271079.jpg?Expires=1525082290&OSSAccessKeyId=TMP.AQHeQVYf2TPuA1r0ANA3Ke85y9fQrG_J9wqVBP86n8m9idxdBccdLprhFKDvADAtAhQo-_0AAE-ARSvgi4QfzS0oNtn4ugIVALzhUWCyFem-oW0t_Ybs_uZYfo5K&Signature=4DvnPvzTvgXDc52GmcR6tKcYLj0%3D',
-		// 		title: '有机食物大集合 | 健康过冬',
-		// 		brief: '来自：墨刀模板城 | 19人已购买'
-		// 	},
-		// 	{
-		// 		id: 2,
-		// 		cover: 'https://pusu.oss-cn-shenzhen.aliyuncs.com/baby/sample/pc_321868.jpg?Expires=1525082347&OSSAccessKeyId=TMP.AQHeQVYf2TPuA1r0ANA3Ke85y9fQrG_J9wqVBP86n8m9idxdBccdLprhFKDvADAtAhQo-_0AAE-ARSvgi4QfzS0oNtn4ugIVALzhUWCyFem-oW0t_Ybs_uZYfo5K&Signature=HDRa8Ne6zESGYYfpHGdGnOMf2Os%3D',
-		// 		title: '春风十里不如你 | 女神心机衣着style',
-		// 		brief: '来自：瞎说呗 | 21人已购买'
-		// 	}
-		// ];
+
 		__SHOPPING__
 			.fetchProductList()
 			.then(res => {
@@ -90,9 +77,8 @@ Page({
 	},
 
 	bindTapCollections: function (e) {
-		// TODO:  跳转至商品详情页
 		wx.navigateTo({
-			url: '/pages/shopping/product/product'
+			url: '/pages/shopping/product/product?product=' + JSON.stringify(e.currentTarget.dataset.product)
 		})
 	}
 })

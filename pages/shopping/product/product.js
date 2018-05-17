@@ -1,133 +1,5 @@
 // pages/shopping/product/product.js
-const mockData = {
-	swiper: [
-		{
-			index: 1,
-			url: 'https://pusu.oss-cn-shenzhen.aliyuncs.com/baby/sample/pc_787568.jpg?Expires=1525170192&OSSAccessKeyId=TMP.AQH35oip0f6dF452hdLstMN3hl3Y1gbGvKl79lDURhLRjweekYNOu8vHzaaCADAtAhRuL_Zrjqdlgn7wT8he9o-nvS6DyQIVAJIflK-2iqOTzF2bWa6uusBT-Se4&Signature=aVUocTR%2FqiaU75Y9fsG%2BjyAe7%2Bc%3D'
-		},
-		{
-			index: 2,
-			url: 'https://pusu.oss-cn-shenzhen.aliyuncs.com/baby/sample/pc_882754.jpg?Expires=1525170181&OSSAccessKeyId=TMP.AQH35oip0f6dF452hdLstMN3hl3Y1gbGvKl79lDURhLRjweekYNOu8vHzaaCADAtAhRuL_Zrjqdlgn7wT8he9o-nvS6DyQIVAJIflK-2iqOTzF2bWa6uusBT-Se4&Signature=KfAJ94rs9vtrp9W4msdeB7HNP5U%3D'
-		},
-		{
-			index: 3,
-			url: 'https://pusu.oss-cn-shenzhen.aliyuncs.com/baby/sample/pc_909252.jpg?Expires=1525170204&OSSAccessKeyId=TMP.AQH35oip0f6dF452hdLstMN3hl3Y1gbGvKl79lDURhLRjweekYNOu8vHzaaCADAtAhRuL_Zrjqdlgn7wT8he9o-nvS6DyQIVAJIflK-2iqOTzF2bWa6uusBT-Se4&Signature=lCX5W%2F09RBfFuKBzGJwF9FsLeqw%3D'
-		}
-	],
-	name: '有机食物大集合 | 健康过冬',
-	freight: 0,
-	totalSale: 0,
-	standards: [
-		{
-			attribute: '颜色',
-			collections: [
-				{
-					skuValueId: 1,
-					value: '红'
-				},
-				{
-					skuValueId: 2,
-					value: '黄'
-				},
-				{
-					skuValueId: 3,
-					value: '蓝'
-				}
-			]
-		},
-		{
-			attribute: '规格',
-			collections: [
-				{
-					skuValueId: 4,
-					value: 'S'
-				},
-				{
-					skuValueId: 5,
-					value: 'M'
-				},
-				{
-					skuValueId: 6,
-					value: 'L'
-				}
-			]
-		}
-	],
-	sku: [
-		{
-			skuId: 1,
-			unit: 0.01,
-			stock: 0,
-			sales: 0,
-			attributes: '1,4',
-			productId: 1
-		},
-		{
-			skuId: 2,
-			unit: 0.02,
-			stock: 20,
-			sales: 0,
-			attributes: '1,5',
-			productId: 1
-		},
-		{
-			skuId: 3,
-			unit: 0.03,
-			stock: 30,
-			sales: 0,
-			attributes: '1,6',
-			productId: 1
-		},
-		{
-			skuId: 4,
-			unit: 0.04,
-			stock: 40,
-			sales: 0,
-			attributes: '2,4',
-			productId: 1
-		},
-		{
-			skuId: 5,
-			unit: 0.05,
-			stock: 50,
-			sales: 0,
-			attributes: '2,5',
-			productId: 1
-		},
-		{
-			skuId: 6,
-			unit: 0.06,
-			stock: 60,
-			sales: 0,
-			attributes: '2,6',
-			productId: 1
-		},
-		{
-			skuId: 7,
-			unit: 0.07,
-			stock: 70,
-			sales: 0,
-			attributes: '3,4',
-			productId: 1
-		},
-		{
-			skuId: 8,
-			unit: 0.08,
-			stock: 80,
-			sales: 0,
-			attributes: '3,5',
-			productId: 1
-		},
-		{
-			skuId: 9,
-			unit: 0.09,
-			stock: 90,
-			sales: 0,
-			attributes: '3,6',
-			productId: 1
-		}
-	]
-};
+const __SHOPPING__ = require('../../../services/wechat.pay.service.js');
 
 Page({
 
@@ -150,6 +22,51 @@ Page({
      * 生命周期函数--监听页面加载
      */
 	onLoad: function (options) {
+		const that = this;
+		console.log(options);
+		const product = JSON.parse(options.product);
+		this.data.product.name = product.name;
+		this.data.product.description = product.description;
+		this.data.product.freight = 0;																	 // 初始设置运费为 0
+		// 获取详细数据
+		__SHOPPING__
+			.fetchProductDetail(product.pid)
+			.then(res => {
+				console.log(res)
+				if (0 === res.data.code) {																	//	code: 0 返回正确结果
+					that.data.product.sku = res.data.msg.skuList;							   //  赋值 skuList
+					let isHit, standards = [];
+					for (let i = 0; i < res.data.msg.standards.length; i++) {				  //  遍历规格数组
+						isHit = false;
+						for (let j = 0; j < standards.length; j++) {
+							if (standards[j].attribute === res.data.msg.standards[i].name) {
+								isHit = true;
+								standards[j].collections.push({											//	聚集有相同的 attribute 的 属性值 
+									skuValueId: res.data.msg.standards[i].vid,
+									value: res.data.msg.standards[i].value
+								})
+							}	/** end of if */
+						}  /** end of for */
+						if (!isHit) {																				// 如果未命中
+							standards.push({																  // 则添加为新元素 属性名 + 值 
+								attribute: res.data.msg.standards[i].name,
+								collections: [
+									{
+										skuValueId: res.data.msg.standards[i].vid,
+										value: res.data.msg.standards[i].value
+									}
+								]
+							})
+						}	/** end of if */
+					}	/**	end of for */
+					that.data.product.standards = standards;														 //  赋值 standards
+					const units = that.data.product.sku.map((item) => { return item.unit; });		//  获取SKU的单价数组
+					that.setData({
+						product: that.data.product,
+						price: Math.min.apply(null, units) + ' ~ ' + Math.max.apply(null, units)
+					});
+				}
+			});
 	},
 
     /**
@@ -165,8 +82,9 @@ Page({
 	onShow: function () {
 		const scale = wx.getStorageSync('__WindowScale__');
 
+
 		this.setData({
-			product: mockData,
+			// product: mockData,
 			scrollViewHeight: scale.height,
 			swiperHeight: scale.width
 		})
@@ -320,11 +238,11 @@ Page({
 			// 命中
 			// 设置为对应的SKU参数
 			this.setData({
-				amount: 1,
-				product: this.data.product,
-				chosenSkuId: this.data.product.sku[index].skuId,
-				price: this.data.product.sku[index].unit,
-				remaining: this.data.product.sku[index].stock
+				amount: 1,																			   //  初始化购买数量 
+				product: this.data.product,													   //  选中的规格底色发生变化 
+				chosenSkuId: this.data.product.sku[index].stock_no,			 //  stock_no
+				price: this.data.product.sku[index].unit,								//  单价
+				remaining: this.data.product.sku[index].stock					   //  库存
 			})
 		}
 	},
@@ -366,6 +284,9 @@ Page({
 		return -1;
 	},
 
+	/**
+	 *   获取SKU的属性名及属性值
+	 */
 	getSku: function (skuValueId) {
 		var i,
 			j,

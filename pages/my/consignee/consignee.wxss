@@ -5,6 +5,7 @@
     flex-direction: column;
     background-color: white;
     margin-bottom: 20rpx;
+	border-bottom: 1px solid #CCCCCC;
 }
 
 .intro, .top, .center, .bottom, .operator, .edit, .delete {
@@ -27,14 +28,9 @@
     width: 90%;
 }
 
-.top, .center {
+.top, .center,.bottom {
     justify-content: space-between;
     padding: 15rpx;
-}
-
-.bottom {
-    justify-content: flex-end;
-    padding-right: 15rpx;
 }
 
 .operator {
