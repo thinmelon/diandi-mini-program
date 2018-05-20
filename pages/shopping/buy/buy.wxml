@@ -87,4 +87,5 @@
             <text>提交订单</text>
         </view>
     </view>
+    <view class='cut-off-rule'></view>
 </view>

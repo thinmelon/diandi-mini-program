@@ -1,8 +1,8 @@
 <!--pages/shopping/cart/cart.wxml-->
 <view class='container'>
     <checkbox-group class='cart-list' bindchange="cartCheckboxChange">
-        <view class='cart-item' wx:for="{{ cart }}" wx:key="{{ item.skuid }}">
-            <checkbox color='#813c85' value='{{ item.skuid }}' checked='{{ item.checked }}' wx:if="{{!editModal}}"></checkbox>
+        <view class='cart-item' wx:for="{{ cart }}" wx:key="{{ item.stock_no }}">
+            <checkbox color='#813c85' value='{{ item.stock_no }}' checked='{{ item.checked }}' wx:if="{{!editModal}}"></checkbox>
             <view class="thumbnail">
                 <image mode="aspectFill" src=""></image>
             </view>
@@ -17,12 +17,17 @@
                     <view>
                         <text>{{item.unit}}</text>
                     </view>
-                    <view>
+                    <view wx:if="{{!editModal}}">
                         <text>X {{item.amount}}</text>
+                    </view>
+                    <view class='amount' wx:else>
+                        <view class='operator' bindtap='bindTapMinus' data-product='{{item}}'>-</view>
+                        <input type='number' maxlength='5' confirm-type='next' value='{{item.amount}}' bindinput='bindInputFunc' data-stock_no='{{item.stock_no}}'></input>
+                        <view class='operator' bindtap='bindTapAdd' data-product='{{item}}'>+</view>
                     </view>
                 </view>
             </view>
-            <view class='delete' wx:if="{{editModal}}" data-skuid='{{ item.skuid }}' bindtap='bindTapDelete'>
+            <view class='delete' wx:if="{{editModal}}" data-stock_no='{{ item.stock_no }}' bindtap='bindTapDelete'>
                 <image mode="aspectFill" src="/icons/public/delete.png"></image>
             </view>
         </view>

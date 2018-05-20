@@ -18,4 +18,23 @@
     margin: 0 15px;
 }
 
+.amount{
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    margin-left: 17px;
+}
+
+.amount .operator{
+    width: 36px;
+    height: 30px;
+    text-align: center;
+    border: 1px solid #CCCCCC;
+}
+
+.amount input{
+    width: 64px;
+    text-align: center;
+}
 

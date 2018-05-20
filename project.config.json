@@ -33,14 +33,8 @@
 			"list": []
 		},
 		"miniprogram": {
-			"current": 3,
+			"current": 4,
 			"list": [
-				{
-					"id": -1,
-					"name": "新增收件人地址",
-					"pathName": "pages/my/address/address",
-					"query": ""
-				},
 				{
 					"id": -1,
 					"name": "待支付订单",
@@ -63,6 +57,12 @@
 					"id": -1,
 					"name": "我的收件人",
 					"pathName": "pages/my/consignee/consignee",
+					"query": ""
+				},
+				{
+					"id": -1,
+					"name": "购物车",
+					"pathName": "pages/shopping/cart/cart",
 					"query": ""
 				}
 			]
