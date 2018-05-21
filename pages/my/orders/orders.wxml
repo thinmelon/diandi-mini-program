@@ -1,78 +1,37 @@
 <!--pages/my/orders/orders.wxml-->
-<view class="order-list" wx:for="{{orderList}}" wx:key="{{item.index}}">
-    <view class="status" data-description='{{item.description}}' bindtap='bindTapShowHint'>
+<view class="order-list" wx:for="{{orderList}}" wx:key="{{item.out_trade_no}}">
+     <view class="status">
         <text>{{item.createTime}}</text>
-        <view wx:if="{{item.state == 'SUCCESS'}}">
-            <text>支付成功</text>
-        </view>
-        <view wx:elif="{{item.state == 'REFUND'}}">
-            <text>转入退款</text>
-        </view>
-        <view wx:elif="{{item.state == 'NOTPAY'}}">
-            <text>未支付</text>
-        </view>
-        <view wx:elif="{{item.state == 'CLOSED'}}">
-            <text>已关闭</text>
-        </view>
-        <view wx:elif="{{item.state == 'REVOKED'}}">
-            <text>已撤销（刷卡支付）</text>
-        </view>
-        <view wx:elif="{{item.state == 'USERPAYING'}}">
-            <text>用户支付中</text>
-        </view>
-        <view wx:elif="{{item.state == 'PAYERROR'}}">
-            <text>支付失败</text>
-        </view>
+		<text>{{item.status}}</text>
     </view>
-    <view class="goods" data-tradeNo='{{item.tradeNo}}' bindtap='bindTapEnterOrderDetails'>
-        <block wx:for="{{item.skuList}}" wx:key="{{item.skuid}}">
+    <view class="sku-list" data-order='{{item}}' bindtap='bindTapOrderDetail'>
+        <view class='sku' wx:for="{{ item.skuList }}" wx:key="{{ item.stock_no }}" wx:for-item="sku">
             <view class="thumbnail">
-                <image src="{{prefix}}{{item.thumbnail}}"></image>
+                <image src="{{sku.thumbnail}}"></image>
             </view>
             <view class="description">
                 <view class="top">
                     <view class="name">
-                        <text>{{item.name}}</text>
+                        <text>{{sku.name}}</text>
                     </view>
                     <view class="price">
-                        <text>￥{{item.unit}}</text>
+                        <text>￥{{sku.unit}}</text>
                     </view>
                 </view>
                 <view class="center">
-                    <text>{{item.attributes}}</text>
-                    <text>X {{item.amount}}</text>
+                    <text>{{sku.attributes}}</text>
+                    <text>X {{sku.amount}}</text>
                 </view>
             </view>
-        </block>
+        </view>
     </view>
     <view class="total">
-        <text>共  {{item.quantity}}  件商品</text>
         <text>合计</text>
-        <text class="text-price">￥{{item.subTotal}}</text>
-    </view>
-    <view class='operator'>
-        <block wx:if="{{item.state == 'SUCCESS'}}">
-            <view class="refund" data-tradeNo='{{item.tradeNo}}' data-refundfee='{{item.subTotal}}' bindtap='bindTapRefund'>
-                <text>申请退款</text>
-            </view>
-        </block>
-        <block wx:elif="{{item.state == 'REFUND'}}">
-            <view class="queryRefund" data-tradeNo='{{item.tradeNo}}' bindtap='bindTapQueryRefund'>
-                <text>查询退款单</text>
-            </view>
-        </block>
-        <block wx:elif="{{item.state == 'NOTPAY'}}">
-            <view class="repay" data-skulist='{{item.skuList}}' bindtap='bindTapRepay'>
-                <text>重新支付</text>
-            </view>
-            <view class="closed" data-tradeNo='{{item.tradeNo}}' bindtap='bindTapCloseOrder'>
-                <text>关闭订单</text>
-            </view>
-        </block>
+        <text class="text-price">￥{{item.totalFee}}</text>
     </view>
 </view>
 
-<view class="mask-layer" wx:if="{{isMaskLayerShow}}" bindtap="bindTapCloseMasker"></view>
+<!-- <view class="mask-layer" wx:if="{{isMaskLayerShow}}" bindtap="bindTapCloseMasker"></view>
 <view class='refund-msg' wx:if="{{isMaskLayerShow}}">
     <view class='field'>
         <text>现金支付金额: </text>
@@ -116,4 +75,4 @@
             <text>{{item.refundSuccessTime}}</text>
         </view>
     </block>
-</view>
+</view> -->

@@ -13,6 +13,13 @@ Page({
 	 * 生命周期函数--监听页面加载
 	 */
 	onLoad: function (options) {
+		if (getApp().isLogIn) {
+			this.fetchMyConsignee();
+		} else {
+			setTimeout(() => {
+				this.fetchMyConsignee();
+			}, 1000);
+		}
 	},
 
 	/**
@@ -26,18 +33,7 @@ Page({
 	 * 生命周期函数--监听页面显示
 	 */
 	onShow: function () {
-		const that = this;
-		const session = wx.getStorageSync('__SESSION_KEY__');
-		__USER__.
-			fetchMyConsignee(session)
-			.then(res => {
-				console.log(res);
-				if (res.data.code === 0) {
-					that.setData({
-						consignees: res.data.msg
-					})
-				}
-			});
+
 	},
 
 	/**
@@ -75,6 +71,21 @@ Page({
 
 	},
 
+	fetchMyConsignee: function () {
+		const that = this;
+
+		__USER__
+			.fetchMyConsignee(wx.getStorageSync('__SESSION_KEY__'))
+			.then(res => {
+				console.log(res);
+				if (res.data.code === 0) {
+					that.setData({
+						consignees: res.data.msg
+					})
+				}
+			});
+	},
+
 	bindTapAdd: function (e) {
 		console.info(e);
 		wx.navigateTo({
@@ -97,11 +108,13 @@ Page({
 	},
 
 	radioChange: function (e) {
-		console.log(e);
 		const that = this;
-		const session = wx.getStorageSync('__SESSION_KEY__');
+
 		__USER__.
-			setAsDefaultConsignee(session, e.detail.value)
+			setAsDefaultConsignee(
+				wx.getStorageSync('__SESSION_KEY__'),
+				e.detail.value
+			)
 			.then(() => { wx.navigateBack(); });
 	}
 

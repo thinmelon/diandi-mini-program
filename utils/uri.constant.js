@@ -104,6 +104,13 @@ const removeMyCart = () => {
     return `${PREFIX_USER}/cart/remove`;
 }
 
+/**
+ *   获取我的历史订单
+ */
+const fetchMyOrders = () => {
+	return `${PREFIX_USER}/my/order`;
+}
+
 module.exports = {
     submitUnifiedOrder: submitUnifiedOrder,
     queryWechatPayOrder: queryWechatPayOrder,
@@ -118,5 +125,6 @@ module.exports = {
     updateMyCart: updateMyCart,
     removeMyCart: removeMyCart,
     fetchProductList: fetchProductList,
-    fetchProductDetail: fetchProductDetail
+    fetchProductDetail: fetchProductDetail,
+	fetchMyOrders: fetchMyOrders
 }

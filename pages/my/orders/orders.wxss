@@ -5,14 +5,15 @@
     padding: 15rpx 0;
 }
 
-.goods {
+.sku-list {
     width: 100%;
     padding: 15rpx 0;
     background-color: #eee;
+	display: flex;
+	flex-direction: column;
 }
 
-.status, .store, .goods, .thumbnail, .description .top, .description .center,
-.operator, .delivery, .message, .total, .goods-fee, .delivery-fee, .pay-amount,
+.status, .store, .sku,.thumbnail, .description .top, .description .center, .delivery, .message, .total, .goods-fee, .delivery-fee, .pay-amount,
 .total {
     display: flex;
     flex-direction: row;
@@ -28,23 +29,6 @@
 }
 
 .description .top text, .description .center text {
-    font-size: 10pt;
-}
-
-.operator {
-    justify-content: space-around;
-    align-items: center;
-    padding: 15rpx 0;
-}
-
-.operator .refund, .operator .closed, .operator .queryRefund, .operator .repay {
-    border: 1rpx solid #dc143c;
-    padding: 15rpx;
-}
-
-.operator .refund text, .operator .closed text, .operator .queryRefund text,
-.operator .repay text {
-    color: #dc143c;
     font-size: 10pt;
 }
 

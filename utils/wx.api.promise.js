@@ -107,6 +107,20 @@ function wxRedirectToPromise(url) {
 	});
 }
 
+/**
+ * 	  显示加载框
+ */
+function wxShowLoadingPromise(options){
+	return Promisify(wx.showLoading)(options);
+}
+
+/**
+ *    关闭加载框
+ */
+function wxHideLoadingPromise(){
+	return Promisify(wx.hideLoading)();
+}
+
 module.exports = {
 	getRequest: wxGetRequestPromise,
 	postRequest: wxPostRequestPromise,
@@ -115,5 +129,7 @@ module.exports = {
 	login: wxLoginPromise,
 	requestPayment: wxRequestPaymentPromise,
 	showToast: wxShowToastPromise,
-	redirectTo: wxRedirectToPromise
+	redirectTo: wxRedirectToPromise,
+	showLoading: wxShowLoadingPromise,
+	hideLoading: wxHideLoadingPromise
 }

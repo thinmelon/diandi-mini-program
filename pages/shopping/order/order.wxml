@@ -1,20 +1,30 @@
 <!--pages/shopping/order/order.wxml-->
 <view class="container">
-    <view class="order-status">
+    <!-- <view class="order-status">
         <image src="/icons/shopping/order.png"></image>
         <text>{{statusMessage}}</text>
-    </view>
+    </view> -->
     <view class="order-process">
         <view class="part">
             <text>买家付款</text>
-            <image src="/icons/shopping/checked.png"></image>
+			<block wx:if="{{ order.status !== '支付成功' }}">
+            	<image src="/icons/shopping/checked.png"></image>
+			</block>
+			<block wx:else>
+            	<image src="/icons/shopping/dot.png"></image>
+			</block>
         </view>
         <view class="split-line">
             <image src="/icons/shopping/line.png"></image>
         </view>
         <view class="part">
             <text>商家发货</text>
-            <image src="/icons/shopping/dot.png"></image>
+            <block wx:if="{{ order.status === '支付成功' }}">
+            	<image src="/icons/shopping/checked.png"></image>
+			</block>
+			<block wx:else>
+            	<image src="/icons/shopping/dot.png"></image>
+			</block>
         </view>
         <view class="split-line">
             <image src="/icons/shopping/line.png"></image>
@@ -30,16 +40,16 @@
         </view>
         <view class="receiver">
             <view class="top">
-                <text>收货人：{{consignee}}</text>
+                <text>收货人：{{order.consignee.receiver}}</text>
                 <text>{{mobile}}</text>
             </view>
             <view class="bottom">
-                <text>收货地址：{{address}}</text>
+                <text>收货地址：{{order.consignee.address}}</text>
             </view>
         </view>
     </view>
     <view class="cart-list">
-        <view class="cart-item" wx:for="{{cart}}" wx:key="{{item.skuid}}">
+        <view class="cart-item" wx:for="{{order.skuList}}" wx:key="{{item.stock_no}}">
             <view class="thumbnail">
                 <image mode="aspectFill" src=""></image>
             </view>
@@ -70,7 +80,7 @@
     </view>
     <view class="message">
         <text>买家留言</text>
-        <text>{{message}}</text>
+        <text>{{order.attach}}</text>
     </view>
     <view class="order-total">
         <view class="goods-fee">
@@ -79,17 +89,39 @@
         </view>
         <view class="delivery-fee">
             <text>运费</text>
-            <text>+￥0.00</text>
+            <text>+￥{{order.freight}}</text>
         </view>
         <view class="pay-amount">
             <text>实付金额</text>
-            <text class="text-price">￥{{cashFee}}</text>
+            <text class="text-price">￥{{order.totalFee}}</text>
         </view>
     </view>
+	<view class='operator'>
+        <block wx:if="{{order.status == '支付成功'}}">
+            <view class="refund" data-tradeNo='{{item.tradeNo}}' data-refundfee='{{item.subTotal}}' bindtap='bindTapRefund'>
+                <text>申请退款</text>
+            </view>
+        </block>
+        <block wx:elif="{{order.status == '转入退款'}}">
+            <view class="queryRefund" data-tradeNo='{{item.tradeNo}}' bindtap='bindTapQueryRefund'>
+                <text>查询退款单</text>
+            </view>
+        </block>
+        <block wx:elif="{{order.status == '未支付'}}">
+            <view class="repay" data-skulist='{{item.skuList}}' bindtap='bindTapRepay'>
+                <text>重新支付</text>
+            </view>
+            <view class="closed" data-tradeNo='{{item.tradeNo}}' bindtap='bindTapCloseOrder'>
+                <text>关闭订单</text>
+            </view>
+        </block>
+    </view>
     <view class="order-extra">
-        <text>订单编号：{{orderID}}</text>
-        <text>创建时间：{{createTime}}</text>
-        <text>付款时间：{{payTime}}</text>
+        <text>订单编号：{{order.out_trade_no}}</text>
+        <text>创建时间：{{order.createTime}}</text>
+		<block wx:if="{{ order.status === '支付成功' }}">
+        	<text>付款时间：{{order.payTime}}</text>
+		</block>
     </view>
     <view class="cut-off-rule">
         <text>花管家提供技术支持</text>

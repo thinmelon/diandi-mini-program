@@ -116,6 +116,14 @@ const removeMyCart = (session, stock_no) => {
     });
 }
 
+const fetchMyOrders = (session, startTime) => {
+	const url = __URI__.fetchMyOrders();
+	return __WX_API_PROMISE__.postRequest(url, {
+		session: session,
+		startTime: startTime
+	});
+}
+
 module.exports = {
     userLogin: userLogin,
     addNewConsignee: addNewConsignee,
@@ -127,5 +135,6 @@ module.exports = {
     fetchMyCart: fetchMyCart,
     joinToCart: joinToCart,
     updateMyCart: updateMyCart,
-    removeMyCart: removeMyCart
+    removeMyCart: removeMyCart,
+	fetchMyOrders: fetchMyOrders
 }

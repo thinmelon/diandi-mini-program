@@ -108,6 +108,25 @@
     font-size: 11pt;
 }
 
+.operator {
+	 display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    padding: 15rpx 0;
+}
+
+.operator .refund, .operator .closed, .operator .queryRefund, .operator .repay {
+    border: 1rpx solid #dc143c;
+    padding: 15rpx;
+}
+
+.operator .refund text, .operator .closed text, .operator .queryRefund text,
+.operator .repay text {
+    color: #dc143c;
+    font-size: 10pt;
+}
+
 /* -------------------------------------- */
 
 /*  			    订单额外信息                     */

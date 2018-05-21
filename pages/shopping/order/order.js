@@ -1,28 +1,4 @@
 // pages/shopping/order/order.js
-const mockData = [
-	{
-		"skuid": 4,
-		"name": "有机食物大集合 | 健康过冬",
-		"unit": 0.04,
-		"amount": 2,
-		"attributes": ["颜色: 黄", "规格: S"]
-	},
-	{
-		"skuid": 3,
-		"name": "有机食物大集合 | 健康过冬",
-		"unit": 0.03,
-		"amount": 3,
-		"attributes": ["颜色: 黄", "规格: S"]
-	},
-	{
-		"skuid": 2,
-		"name": "有机食物大集合 | 健康过冬",
-		"unit": 0.02,
-		"amount": 1,
-		"attributes": ["颜色: 黄", "规格: S"]
-	}
-];
-
 const __PRICE__ = require('../../../utils/math.price.js');
 const __WX_PAY_SERVICE__ = require('../../../services/wechat.pay.service.js');
 
@@ -32,29 +8,39 @@ Page({
 	 * 页面的初始数据
 	 */
 	data: {
-		cart: [],
-		subtotal: 0.00,
-		consignee: '',
-		mobile: '',
-		address: '',
-		message: '',
-		cashFee: 0.00
+		order: {},
+		subtotal: 0.00
 	},
 
 	/**
 	 * 生命周期函数--监听页面加载
 	 */
 	onLoad: function (options) {
-		if (mockData.length > 0) {
-			this.setData({
-				subtotal: __PRICE__.checkedPrice(mockData),
-				cart: mockData,
-				consignee: '李云鹏',
-				mobile: '18159393355',
-				address: '福建省莆田市城厢区凤凰山街道学园南街宝厦日月潭2504室',
-				message: '请在非工作日时间内送达'
+		const that = this;
+		const order = JSON.parse(options.order);
+		// console.log(order);
+
+		__WX_PAY_SERVICE__
+			.queryOrder(order.out_trade_no)
+			.then(res => {
+				console.log(res)
+				if(res.data.code === 0){
+					order.freight = res.data.msg[0].freight;
+					order.attach = res.data.msg[0].attach;
+					order.payTime = res.data.msg[0].payTime;
+					order.consignee = {
+						receiver: res.data.msg[0].name,
+						address: res.data.msg[0].address,
+						mobile: res.data.msg[0].mobile,
+						postcode: res.data.msg[0].postcode
+					}
+
+					that.setData({
+						subtotal: __PRICE__.totalPrice(order.skuList),
+						order: order
+					})
+				}	/** end of if */
 			});
-		}
 	},
 
 	/**
@@ -68,9 +54,7 @@ Page({
 	 * 生命周期函数--监听页面显示
 	 */
 	onShow: function () {
-		__WX_PAY_SERVICE__
-			.queryOrder('13297414012018050609541')
-			.then(res => console.log(res));
+		
 	},
 
 	/**
@@ -106,5 +90,9 @@ Page({
 	 */
 	onShareAppMessage: function () {
 
+	},
+
+	bindTapRefund: function(){
+		
 	}
 })
