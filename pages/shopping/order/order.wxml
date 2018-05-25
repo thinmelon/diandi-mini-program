@@ -40,8 +40,8 @@
         </view>
         <view class="receiver">
             <view class="top">
-                <text>收货人：{{order.consignee.receiver}}</text>
-                <text>{{mobile}}</text>
+                <text>收货人：{{order.consignee.name}}</text>
+                <text>{{order.consignee.mobile}}</text>
             </view>
             <view class="bottom">
                 <text>收货地址：{{order.consignee.address}}</text>
@@ -98,20 +98,20 @@
     </view>
 	<view class='operator'>
         <block wx:if="{{order.status == '支付成功'}}">
-            <view class="refund" data-tradeNo='{{item.tradeNo}}' data-refundfee='{{item.subTotal}}' bindtap='bindTapRefund'>
+            <view class="refund" bindtap='bindTapRefund'>
                 <text>申请退款</text>
             </view>
         </block>
         <block wx:elif="{{order.status == '转入退款'}}">
-            <view class="queryRefund" data-tradeNo='{{item.tradeNo}}' bindtap='bindTapQueryRefund'>
+            <view class="queryRefund" bindtap='bindTapQueryRefund'>
                 <text>查询退款单</text>
             </view>
         </block>
         <block wx:elif="{{order.status == '未支付'}}">
-            <view class="repay" data-skulist='{{item.skuList}}' bindtap='bindTapRepay'>
+            <view class="repay" data-skulist='{{order.skuList}}' bindtap='bindTapRepay'>
                 <text>重新支付</text>
             </view>
-            <view class="closed" data-tradeNo='{{item.tradeNo}}' bindtap='bindTapCloseOrder'>
+            <view class="closed" data-tradeNo='{{order.out_trade_no}}' bindtap='bindTapCloseOrder'>
                 <text>关闭订单</text>
             </view>
         </block>

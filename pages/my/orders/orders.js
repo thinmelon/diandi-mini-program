@@ -1,6 +1,6 @@
 // pages/my/orders/orders.js
 const __USER__ = require('../../../services/credential.service.js');
-const __WX_PAY__ = require('../../../services/wechat.pay.service.js');
+const __WX_PAY_SERVICE__ = require('../../../services/wechat.pay.service.js');
 Page({
 
 	/**
@@ -79,7 +79,7 @@ Page({
 		__USER__
 			.fetchMyOrders(
 			wx.getStorageSync('__SESSION_KEY__'),
-			'20180520')
+			'20180526')
 			.then(res => {
 				console.log(res);
 				if (res.data.code === 0) {
@@ -113,7 +113,7 @@ Page({
 								//	创建时间
 								createTime: res.data.msg.order[key].createTime,
 								//  找到状态值相应的文字描述
-								status: __WX_PAY__.__ENUM_ORDER_STATUS__[res.data.msg.order[key].status],
+								status: __WX_PAY_SERVICE__.__ENUM_ORDER_STATUS__[res.data.msg.order[key].status],
 								//  订单总金额，保留小数点后两位，单位：元
 								totalFee: (res.data.msg.order[key].totalFee / 100).toFixed(2),
 								//  SKU列表
@@ -142,8 +142,6 @@ Page({
 	},
 
 	bindTapOrderDetail: function (e) {
-		// console.log(e);
-		console.log(JSON.stringify(e.currentTarget.dataset.order));
 		wx.navigateTo({
 			url: '/pages/shopping/order/order?order=' + JSON.stringify(e.currentTarget.dataset.order)
 		})

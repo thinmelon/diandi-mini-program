@@ -205,7 +205,7 @@ Page({
                     attributes.push(this.getSku(this.data.chosenItems[i]));
                 }
                 _cart.push({
-                    skuid: this.data.chosenSkuId,
+					stock_no: this.data.chosenSkuId,
                     name: this.data.product.name,
                     unit: this.data.price,
                     amount: this.data.amount,
