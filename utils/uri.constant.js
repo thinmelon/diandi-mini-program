@@ -5,6 +5,7 @@ const PROTOCOL = 'https://';
 const HOST = 'www.thinmelon.cc:3000';
 const PREFIX_SHOPPING = PROTOCOL + HOST + '/shopping';
 const PREFIX_USER = PROTOCOL + HOST + '/user';
+const PREFIX_STORAGE = PROTOCOL + HOST + '/oss';
 
 /**
  *  商品列表
@@ -118,6 +119,27 @@ const submitRefund = () => {
 	return `${PREFIX_USER}/my/refund`;
 }
 
+/**
+ * 	
+ */
+const fetchSTSToken = (session) => {
+	return `${PREFIX_STORAGE}/${session}`;
+}
+
+/**
+ *   上传图片
+ */
+const uploadImage = () => {
+	return `${PREFIX_STORAGE}/image/new`;
+}
+
+/**
+ *   上传图片
+ */
+const uploadVideo = () => {
+	return `${PREFIX_STORAGE}/video/new`;
+}
+
 module.exports = {
 	submitUnifiedOrder: submitUnifiedOrder,
 	submitRefund: submitRefund,
@@ -132,7 +154,10 @@ module.exports = {
 	joinToCart: joinToCart,
 	updateMyCart: updateMyCart,
 	removeMyCart: removeMyCart,
+	uploadImage: uploadImage,
+	uploadVideo: uploadVideo,
 	fetchProductList: fetchProductList,
 	fetchProductDetail: fetchProductDetail,
-	fetchMyOrders: fetchMyOrders
+	fetchMyOrders: fetchMyOrders,
+	fetchSTSToken: fetchSTSToken
 }

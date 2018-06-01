@@ -12,7 +12,8 @@
         "pages/my/consignee/consignee",
         "pages/my/mobile/mobile",
         "pages/my/orders/orders",
-        "pages/my/posts/posts"
+        "pages/my/posts/posts",
+		"pages/history/index/index"
     ],
     "window": {
         "backgroundTextStyle": "light",

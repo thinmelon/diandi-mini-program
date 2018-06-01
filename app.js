@@ -20,7 +20,7 @@ App({
 				return new Promise((resolve, reject) => {
 					resolve({
 						key: '__SESSION_KEY__',
-						data: result.data.nonceStr
+						data: result.data
 					})
 				})
 			})
@@ -29,7 +29,13 @@ App({
 				that.isLogIn = true;
 				return new Promise((resolve, reject) => { resolve('Log in.') })
 			})
-			.then(wxApiPromise.hideLoading);				//  关闭加载框
+			// .then(wxApiPromise.hideLoading)  				//  关闭加载框
+			.catch(exception => {
+				console.error(exception);
+			})
+			.finally(() => {
+				wxApiPromise.hideLoading();
+			})
 
 
 		wxApiPromise.getSystemInfo()						  //  获取设备信息

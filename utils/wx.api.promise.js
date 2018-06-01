@@ -110,15 +110,52 @@ function wxRedirectToPromise(url) {
 /**
  * 	  显示加载框
  */
-function wxShowLoadingPromise(options){
+function wxShowLoadingPromise(options) {
 	return Promisify(wx.showLoading)(options);
 }
 
 /**
  *    关闭加载框
  */
-function wxHideLoadingPromise(){
+function wxHideLoadingPromise() {
 	return Promisify(wx.hideLoading)();
+}
+
+/**
+ * 		从本地相册选择图片或使用相机拍照。
+ * 		注：文件的临时路径，在小程序本次启动期间可以正常使用
+ * 	    如需持久保存，需在主动调用 wx.saveFile，在小程序下次启动时才能访问得到。
+ */
+function wxChooseImagePromise(options) {
+	return Promisify(wx.chooseImage)({
+		count: options.count || 9, 												 		// 默认9
+		sizeType: options.sizeType || ['original', 'compressed'], 		// 可以指定是原图还是压缩图，默认二者都有
+		sourceType: options.sourceType || ['album', 'camera'] 		  // 可以指定来源是相册还是相机，默认二者都有
+	});
+}
+
+/**
+ * 		拍摄视频或从手机相册中选视频，返回视频的临时文件路径。
+ */
+function wxChooseVideoPromise(options) {
+	return Promisify(wx.chooseVideo)({
+		sourceType: options.sourceType || ['album', 'camera'], 		  // album 从相册选视频，camera 使用相机拍摄，默认为：['album', 'camera']
+		compressed: options.compressed || true,								 //	是否压缩所选的视频源文件，默认值为true，需要压缩
+		maxDuration: options.maxDuration || 60							 //	拍摄视频最长拍摄时间，单位秒。最长支持 60 秒
+	});
+}
+
+/**
+ * 		将本地资源上传到开发者服务器，客户端发起一个 HTTPS POST 请求
+ * 		其中 content-type 为 multipart/form-data
+ */
+function wxUploadFilePromise(options) {
+	return Promisify(wx.uploadFile)({
+		url: options.url,														//	  开发者服务器 url
+		filePath: options.filePath,										  //	要上传文件资源的路径	
+		name: options.name,												 //	   文件对应的 key , 开发者在服务器端通过这个 key 可以获取到文件二进制内容	
+		formData: options.formData || {}						  //	HTTP 请求中其他额外的 form data	
+	});
 }
 
 module.exports = {
@@ -131,5 +168,8 @@ module.exports = {
 	showToast: wxShowToastPromise,
 	redirectTo: wxRedirectToPromise,
 	showLoading: wxShowLoadingPromise,
-	hideLoading: wxHideLoadingPromise
+	hideLoading: wxHideLoadingPromise,
+	chooseImage: wxChooseImagePromise,
+	chooseVideo: wxChooseVideoPromise,
+	uploadFile: wxUploadFilePromise
 }

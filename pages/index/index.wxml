@@ -1,4 +1,6 @@
 <!--index.wxml-->
 <view class="container">
-  
+    <button bindtap='fetchSTSToken'>获取临时凭证</button>
+	<button bindtap='chooseImage'>选择上传图片</button>
+	<button bindtap='chooseVideo'>选择上传视频</button>
 </view>
