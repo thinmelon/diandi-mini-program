@@ -16,47 +16,89 @@ const __ENUM_ORDER_STATUS__ = [
  *  提交统一订单
  */
 const submitUnifiedOrder = (order) => {
-    const url = __URI__.submitUnifiedOrder();
-    return __WX_API_PROMISE__.postRequest(
-        url,
-        {
-            body: order.body,
-            attach: order.attach,
-            total_fee: order.total_fee,
-            session: order.session,
-            consignee_no: order.consignee_no,
-            skuList: order.sku_list
-        });
+	const url = __URI__.submitUnifiedOrder();
+	return __WX_API_PROMISE__.postRequest(
+		url,
+		{
+			body: order.body,
+			attach: order.attach,
+			total_fee: order.total_fee,
+			session: order.session,
+			consignee_no: order.consignee_no,
+			skuList: order.sku_list
+		});
+}
+
+/**
+ * 	重新支付
+ */
+const repay = (session, out_trade_no) => {
+	const url = __URI__.repay();
+	return __WX_API_PROMISE__.postRequest(
+		url,
+		{
+			session: session,
+			out_trade_no: out_trade_no
+		});
+}
+
+/**
+ *  关闭订单
+ */
+const closeOrder = (session, out_trade_no) => {
+	const url = __URI__.closeOrder();
+	return __WX_API_PROMISE__.postRequest(
+		url,
+		{
+			session: session,
+			out_trade_no: out_trade_no
+		});
 }
 
 /**
  *   查询支付结果
  */
 const queryWechatPayOrder = (out_trade_no) => {
-    const url = __URI__.queryWechatPayOrder(out_trade_no);
-    return __WX_API_PROMISE__.getRequest(url, {});
+	const url = __URI__.queryWechatPayOrder(out_trade_no);
+	return __WX_API_PROMISE__.getRequest(url, {});
+}
+
+/**
+ * 	 查询退款进度
+ */
+const queryRefundInfo = (session, out_trade_no) => {
+	const url = __URI__.queryRefundInfo();
+	return __WX_API_PROMISE__.postRequest(
+		url,
+		{
+			session: session,
+			out_trade_no: out_trade_no
+		});
 }
 
 /**
  *   获取商品列表
  */
 const fetchProductList = () => {
-    const url = __URI__.fetchProductList();
-    return __WX_API_PROMISE__.getRequest(url, {});
+	const url = __URI__.fetchProductList();
+	return __WX_API_PROMISE__.getRequest(url, {});
 }
 
 /**
  *   获取商品详情
  */
 const fetchProductDetail = (product_id) => {
-    const url = __URI__.fetchProductDetail(product_id);
-    return __WX_API_PROMISE__.getRequest(url, {});
+	const url = __URI__.fetchProductDetail(product_id);
+	return __WX_API_PROMISE__.getRequest(url, {});
 }
 
 module.exports = {
 	__ENUM_ORDER_STATUS__: __ENUM_ORDER_STATUS__,
-    submitUnifiedOrder: submitUnifiedOrder,
-    queryOrder: queryWechatPayOrder,
-    fetchProductList: fetchProductList,
-    fetchProductDetail: fetchProductDetail
+	submitUnifiedOrder: submitUnifiedOrder,
+	repay: repay,
+	closeOrder: closeOrder,
+	queryOrder: queryWechatPayOrder,
+	queryRefundInfo: queryRefundInfo,
+	fetchProductList: fetchProductList,
+	fetchProductDetail: fetchProductDetail
 }

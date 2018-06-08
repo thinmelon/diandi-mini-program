@@ -29,10 +29,31 @@ const submitUnifiedOrder = () => {
 }
 
 /**
+ * 	重新支付
+ */
+const repay = () => {
+	return `${PREFIX_SHOPPING}/order/repay`;
+}
+
+/**
+ * 	关闭订单
+ */
+const closeOrder = () => {
+	return `${PREFIX_SHOPPING}/order/dead`;
+}
+
+/**
  *   查询微信支付订单
  */
 const queryWechatPayOrder = (out_trade_no) => {
 	return `${PREFIX_SHOPPING}/order/${out_trade_no}`;
+}
+
+/**
+ * 	获取退款进度
+ */
+const queryRefundInfo = () => {
+	return `${PREFIX_SHOPPING}/refund/progress`;
 }
 
 /**
@@ -142,8 +163,11 @@ const uploadVideo = () => {
 
 module.exports = {
 	submitUnifiedOrder: submitUnifiedOrder,
+	repay: repay,
+	closeOrder: closeOrder,
 	submitRefund: submitRefund,
 	queryWechatPayOrder: queryWechatPayOrder,
+	queryRefundInfo: queryRefundInfo,
 	userLogin: userLogin,
 	addNewConsignee: addNewConsignee,
 	editConsignee: editConsignee,

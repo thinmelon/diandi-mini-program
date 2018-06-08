@@ -1,39 +1,5 @@
 <!--pages/shopping/order/order.wxml-->
 <view class="container">
-    <!-- <view class="order-status">
-        <image src="/icons/shopping/order.png"></image>
-        <text>{{statusMessage}}</text>
-    </view> -->
-    <view class="order-process">
-        <view class="part">
-            <text>买家付款</text>
-			<block wx:if="{{ order.status !== '支付成功' }}">
-            	<image src="/icons/shopping/checked.png"></image>
-			</block>
-			<block wx:else>
-            	<image src="/icons/shopping/dot.png"></image>
-			</block>
-        </view>
-        <view class="split-line">
-            <image src="/icons/shopping/line.png"></image>
-        </view>
-        <view class="part">
-            <text>商家发货</text>
-            <block wx:if="{{ order.status === '支付成功' }}">
-            	<image src="/icons/shopping/checked.png"></image>
-			</block>
-			<block wx:else>
-            	<image src="/icons/shopping/dot.png"></image>
-			</block>
-        </view>
-        <view class="split-line">
-            <image src="/icons/shopping/line.png"></image>
-        </view>
-        <view class="part">
-            <text>交易完成</text>
-            <image src="/icons/shopping/dot.png"></image>
-        </view>
-    </view>
     <view class="receiver-address">
         <view class="location-icon">
             <image src="/icons/public/location.png"></image>

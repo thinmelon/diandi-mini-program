@@ -1,7 +1,6 @@
 // pages/shopping/order/order.js
 const __PRICE__ = require('../../../utils/math.price.js');
 const __WX_PAY_SERVICE__ = require('../../../services/wechat.pay.service.js');
-const __USER_SERVICE__ = require('../../../services/credential.service.js');
 const __WX_API_PROMISE__ = require('../../../utils/wx.api.promise.js');
 
 Page({
@@ -109,31 +108,66 @@ Page({
 	 *  申请退款
 	 */
 	bindTapRefund: function () {
-		var i, length, skuList = [];
+		wx.navigateTo({
+			url: '/pages/shopping/refund-reason/refund-reason?order=' + JSON.stringify(this.data.order)
+		})
+	},
 
-		for (i = 0, length = this.data.order.skuList.length; i < length; i++) {
-			skuList.push(this.data.order.skuList[i].stock_no);
-		}
+	/**
+	 * 	查询退款单
+	 */
+	bindTapQueryRefund: function () {
+		wx.navigateTo({
+			url: '/pages/shopping/refund/refund?order=' + JSON.stringify(this.data.order)
+		})
+	},
 
-		__USER_SERVICE__
-			.submitRefund(
-			wx.getStorageSync('__SESSION_KEY__'),      //  用户 session
-			this.data.order.out_trade_no,
-			Math.round(this.data.order.totalFee * 100),
-			Math.round(this.data.order.totalFee * 100),
-			'拍错了，不是我想要的。。。',
-			JSON.stringify(skuList))
+	/**
+	 * 	重新支付
+	 */
+	bindTapRepay: function () {
+		__WX_PAY_SERVICE__
+			.repay(																				  //  发起重新支付的动作
+			wx.getStorageSync('__SESSION_KEY__'),      				//  用户 session
+			this.data.order.out_trade_no
+			)
+			.then(__WX_API_PROMISE__.requestPayment)        //  调用支付接口
+			.then(res => {
+				// 支付成功
+				if (res.errMsg === 'requestPayment:ok') {
+					__WX_API_PROMISE__
+						.showToast('支付成功', 'success', '')   //  提示
+						.then(() => __WX_API_PROMISE__.redirectTo('/pages/my/orders/orders'))	//	跳转至 我的订单
+				}
+			}, res => {
+				if (res.errMsg === "requestPayment:fail cancel") {
+					// 用户取消支付
+					__WX_API_PROMISE__
+						.showToast('支付已取消', 'none', '/icons/public/hint.png')		//	提示
+				} else {
+					// 订单已过期，请重新下单
+					__WX_API_PROMISE__
+						.showToast(res.err_desc, 'none', '/icons/public/hint.png')		//	提示
+				}
+			})
+	},
+
+	/**
+	 *  关闭订单
+	 */
+	bindTapCloseOrder: function () {
+		__WX_PAY_SERVICE__
+			.closeOrder(																		//  发起重新支付的动作
+			wx.getStorageSync('__SESSION_KEY__'),      				//  用户 session
+			this.data.order.out_trade_no
+			)
 			.then(res => {
 				console.log(res);
 				if (res.data.code === 0) {
 					__WX_API_PROMISE__
-						.showToast('已申请退款', 'success', '')   //  提示
-						.then(() => __WX_API_PROMISE__.redirectTo('/pages/my/orders/orders'))	//	跳转至 我的订单
-				} else if (res.data.code === -500) {
-					__WX_API_PROMISE__
-						.showToast('已提交，请等待', 'none', '/icons/public/hint.png')		//	提示
+						.showToast('已关闭', 'success', '')   //  提示
 						.then(() => __WX_API_PROMISE__.redirectTo('/pages/my/orders/orders'))	//	跳转至 我的订单
 				}
-			})
+			});
 	}
 })

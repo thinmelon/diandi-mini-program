@@ -79,7 +79,7 @@ Page({
 		__USER__
 			.fetchMyOrders(
 			wx.getStorageSync('__SESSION_KEY__'),
-			'20180526')
+			'20180608')
 			.then(res => {
 				console.log(res);
 				if (res.data.code === 0) {
