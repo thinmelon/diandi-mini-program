@@ -1,7 +1,15 @@
 <!--pages/shopping/index/index.wxml-->
+<wxs src="../../../utils/page.config.wxs" module="config" />
+
 <view class='container'>
     <view wx:for="{{ collections }}" wx:key="{{ item.pid }}" class='collection' data-product='{{ item }}' bindtap='bindTapCollections'>
-        <image class='cover' src='{{ item.cover }}'></image>
+        <swiper indicator-dots="{{config.swipe.indicatorDots}}" autoplay="{{config.swipe.autoplay}}" interval="{{config.swipe.interval}}" duration="{{config.swipe.duration}}" circular="{{config.swipe.circular}}" style='height: {{ swiperHeight }}px'>
+            <block wx:for="{{item.thumbnails}}" wx:for-item="thumbnail" wx:key="thumbnail.url">
+                <swiper-item>
+                    <image class='swiper-item' mode="aspectFill" src="{{thumbnail.url}}" />
+                </swiper-item>
+            </block>
+        </swiper>
         <text class='title'>{{ item.name }}</text>
         <text class='brief'>{{ item.description }}</text>
     </view>

@@ -2,7 +2,8 @@
  *  访问地址前缀
  */
 const PROTOCOL = 'https://';
-const HOST = 'www.thinmelon.cc:3000';
+// const HOST = 'www.thinmelon.cc:3000';
+const HOST = 'www.pusudo.cn';
 const PREFIX_SHOPPING = PROTOCOL + HOST + '/shopping';
 const PREFIX_USER = PROTOCOL + HOST + '/user';
 const PREFIX_STORAGE = PROTOCOL + HOST + '/oss';
@@ -11,7 +12,7 @@ const PREFIX_STORAGE = PROTOCOL + HOST + '/oss';
  *  商品列表
  */
 const fetchProductList = () => {
-	return `${PREFIX_SHOPPING}/product/list`;
+    return `${PREFIX_SHOPPING}/product/list?startTime=2018-06-19&number=1`;
 }
 
 /** 
