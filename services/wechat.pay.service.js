@@ -78,9 +78,12 @@ const queryRefundInfo = (session, out_trade_no) => {
 
 /**
  *   获取商品列表
+ * 		--	传入参数
+ * 			startTime: 起始时间
+ * 			n: 返回数目
  */
-const fetchProductList = () => {
-	const url = __URI__.fetchProductList();
+const fetchProductList = (startTime, n) => {
+	const url = __URI__.fetchProductList(startTime, n);
 	return __WX_API_PROMISE__.getRequest(url, {});
 }
 

@@ -4,13 +4,12 @@
 <view class='container'>
     <view wx:for="{{ collections }}" wx:key="{{ item.pid }}" class='collection' data-product='{{ item }}' bindtap='bindTapCollections'>
         <swiper indicator-dots="{{config.swipe.indicatorDots}}" autoplay="{{config.swipe.autoplay}}" interval="{{config.swipe.interval}}" duration="{{config.swipe.duration}}" circular="{{config.swipe.circular}}" style='height: {{ swiperHeight }}px'>
-            <block wx:for="{{item.thumbnails}}" wx:for-item="thumbnail" wx:key="thumbnail.url">
+            <block wx:for="{{item.thumbnails}}" wx:for-item="thumbnail" wx:key="thumbnail.name">
                 <swiper-item>
-                    <image class='swiper-item' mode="aspectFill" src="{{thumbnail.url}}" />
+                    <image mode="widthFix" src="{{thumbnail.name}}" style='width: 100%' />
                 </swiper-item>
             </block>
         </swiper>
         <text class='title'>{{ item.name }}</text>
-        <text class='brief'>{{ item.description }}</text>
     </view>
 </view>

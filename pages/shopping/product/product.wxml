@@ -2,9 +2,9 @@
 <wxs src="../../../utils/page.config.wxs" module="config" />
 <scroll-view scroll-y style="height: {{ scrollViewHeight }}px;" scroll-into-view="{{toView}}">
     <swiper indicator-dots="{{config.swipe.indicatorDots}}" autoplay="{{config.swipe.autoplay}}" interval="{{config.swipe.interval}}" duration="{{config.swipe.duration}}" circular="{{config.swipe.circular}}" style='height: {{ swiperHeight }}px'>
-        <block wx:for="{{product.swiper}}" wx:key="{{item.index}}">
+        <block wx:for="{{product.thumbnails}}" wx:for-item="thumbnail" wx:key="thumbnail.name">
             <swiper-item>
-                <image class='swiper-item' mode="aspectFill" src="{{item.url}}" />
+                <image mode="widthFix" src="{{thumbnail.name}}" style='width: 100%'/>
             </swiper-item>
         </block>
     </swiper>
@@ -21,12 +21,12 @@
                 <text>运费：</text>
                 <text wx:if="{{ product.freight === 0 }}">免运费</text>
             </view>
-            <view>
+            <!-- <view>
                 <text>剩余：{{ remaining }}</text>
             </view>
             <view>
                 <text>销量：{{ product.totalSale }}</text>
-            </view>
+            </view> -->
         </view>
         <view wx:for="{{product.standards}}" wx:key="{{item.attribute}}">
             <view class='regular'>
@@ -46,6 +46,14 @@
             <view class="opera" bindtap='bindTapMinus'>-</view>
             <view class="amount">{{amount}}</view>
             <view class="opera" bindtap='bindTapAdd'>+</view>
+        </view>
+    </view>
+    <view>
+        <text class='brief'>{{ product.description }}</text>
+    </view>
+    <view>
+        <view wx:for="{{product.gallery}}" wx:for-item="image" wx:key="image.name">
+            <image mode="widthFix" src="{{image.name}}" style='width: 100%' />
         </view>
     </view>
     <view class="cut-off-rule"></view>
