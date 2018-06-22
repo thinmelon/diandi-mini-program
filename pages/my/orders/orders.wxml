@@ -1,13 +1,13 @@
 <!--pages/my/orders/orders.wxml-->
 <view class="order-list" wx:for="{{orderList}}" wx:key="{{item.out_trade_no}}">
-     <view class="status">
+    <view class="status">
         <text>{{item.createTime}}</text>
-		<text>{{item.status}}</text>
+        <text>{{item.status}}</text>
     </view>
     <view class="sku-list" data-order='{{item}}' bindtap='bindTapOrderDetail'>
         <view class='sku' wx:for="{{ item.skuList }}" wx:key="{{ item.stock_no }}" wx:for-item="sku">
             <view class="thumbnail">
-                <image src="{{sku.thumbnail}}"></image>
+                <image src="{{ sku.thumbnails[0] }}"></image>
             </view>
             <view class="description">
                 <view class="top">

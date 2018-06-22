@@ -17,7 +17,7 @@
     <view class="cart-list">
         <view class="cart-item" wx:for="{{order.skuList}}" wx:key="{{item.stock_no}}">
             <view class="thumbnail">
-                <image mode="aspectFill" src=""></image>
+                <image mode="aspectFill" src="{{ item.thumbnails[0].name }}"></image>
             </view>
             <view class="brief-intro">
                 <view class="name">

@@ -65,7 +65,7 @@ Page({
                         return item.unit;
                     }); //  获取SKU的单价数组
                     that.data.product.gallery = res.data.msg.gallery.map(image => {
-						image.name = __URI__.imageUrlPrefix(image.name);
+                        image.name = __URI__.imageUrlPrefix(image.name);
                         return image;
                     })
                     console.log(that.data.product);
@@ -196,6 +196,7 @@ Page({
             _cart = [];
 
         index = this.isHit();
+        console.log(index)
         // 如果商品参数未全部设定，则将页面滚动至指定位置
         if (index === -1) {
             this.setData({
@@ -216,11 +217,10 @@ Page({
                     name: this.data.product.name,
                     unit: this.data.price,
                     amount: this.data.amount,
-                    attributes: attributes
-                    // thumbnail: this.data.product.swiper[0].url
+                    attributes: attributes,
+                    thumbnails: this.data.product.thumbnails
                 });
 
-                // TODO:  跳转至 待付款订单 页面
                 wx.navigateTo({
                     url: '/pages/shopping/buy/buy?cart=' + JSON.stringify(_cart)
                 })
@@ -311,7 +311,9 @@ Page({
             currentStandards = this.data.chosenItems.sort().join(',');
             //  遍历sku数组，找到对应参数的 SKU
             for (i = 0, count = this.data.product.sku.length; i < count; i++) {
-                if (currentStandards === this.data.product.sku[i].attributes.split(',').sort().join(',')) {
+                if (currentStandards === this.data.product.sku[i].attributes.split(',').filter(char => {
+                        return char !== '';
+                    }).sort().join(',')) {
                     return i; // 返回sku数组的索引值 
                 }
             }
