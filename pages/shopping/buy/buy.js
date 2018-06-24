@@ -23,7 +23,7 @@ Page({
     /**
      * 生命周期函数--监听页面加载
      */
-    onLoad: function(options) {
+    onLoad: function (options) {
         var
             subtotal = 0,
             total = 0;
@@ -44,18 +44,18 @@ Page({
     /**
      * 生命周期函数--监听页面初次渲染完成
      */
-    onReady: function() {
+    onReady: function () {
 
     },
 
     /**
      * 生命周期函数--监听页面显示
      */
-    onShow: function() {
+    onShow: function () {
         const that = this;
         const session = wx.getStorageSync('__SESSION_KEY__');
         __USER__.
-        fetchDefaultConsignee(session)
+            fetchDefaultConsignee(session)
             .then(res => {
                 if (0 === res.data.code) {
                     this.setData({
@@ -69,42 +69,42 @@ Page({
     /**
      * 生命周期函数--监听页面隐藏
      */
-    onHide: function() {
+    onHide: function () {
 
     },
 
     /**
      * 生命周期函数--监听页面卸载
      */
-    onUnload: function() {
+    onUnload: function () {
 
     },
 
     /**
      * 页面相关事件处理函数--监听用户下拉动作
      */
-    onPullDownRefresh: function() {
+    onPullDownRefresh: function () {
 
     },
 
     /**
      * 页面上拉触底事件的处理函数
      */
-    onReachBottom: function() {
+    onReachBottom: function () {
 
     },
 
     /**
      * 用户点击右上角分享
      */
-    onShareAppMessage: function() {
+    onShareAppMessage: function () {
 
     },
 
     /**
      *  添加 收件人地址
      */
-    bindTapDeliveryAddress: function() {
+    bindTapDeliveryAddress: function () {
         wx.navigateTo({
             url: '/pages/my/consignee/consignee'
         })
@@ -113,7 +113,7 @@ Page({
     /**
      *   记录用户留言
      */
-    bindInputFunc: function(e) {
+    bindInputFunc: function (e) {
         this.data.message = e.detail.value;
     },
 
@@ -121,7 +121,7 @@ Page({
      *   提交订单
      *     --  微信支付
      */
-    bindTapSubmitOrder: function() {
+    bindTapSubmitOrder: function () {
         if (false === this.data.isConsigneeSet) {
             //	提示
             __WX_API_PROMISE__
@@ -185,7 +185,9 @@ Page({
                 }
             })
             .finally(result => {
-                console.log('从购物车中移除商品');
+                __USER__
+                    .renewMyCart(wx.getStorageSync('__SESSION_KEY__'), JSON.stringify(sku_list))
+                    .then((res) => { console.log(res) });
             });
     }
 })

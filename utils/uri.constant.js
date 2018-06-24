@@ -128,6 +128,13 @@ const removeMyCart = () => {
 }
 
 /**
+ *   提交订单后从购物车移除要买的商品
+ */
+const renewMyCart = () => {
+    return `${PREFIX_USER}/cart/renew`;
+}
+
+/**
  *   获取我的历史订单
  */
 const fetchMyOrders = () => {
@@ -183,6 +190,7 @@ module.exports = {
     joinToCart: joinToCart,
     updateMyCart: updateMyCart,
     removeMyCart: removeMyCart,
+    renewMyCart: renewMyCart,
     uploadImage: uploadImage,
     uploadVideo: uploadVideo,
     fetchProductList: fetchProductList,

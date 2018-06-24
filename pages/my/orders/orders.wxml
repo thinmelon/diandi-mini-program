@@ -7,7 +7,7 @@
     <view class="sku-list" data-order='{{item}}' bindtap='bindTapOrderDetail'>
         <view class='sku' wx:for="{{ item.skuList }}" wx:key="{{ item.stock_no }}" wx:for-item="sku">
             <view class="thumbnail">
-                <image src="{{ sku.thumbnails[0] }}"></image>
+                <image src="{{ sku.thumbnails[0].name }}"></image>
             </view>
             <view class="description">
                 <view class="top">

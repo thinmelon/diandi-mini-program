@@ -117,6 +117,18 @@ const removeMyCart = (session, stock_no) => {
 }
 
 /**
+ *   
+ */
+const renewMyCart = (session, skuList) => {
+    const url = __URI__.renewMyCart();
+    console.log(url)
+    return __WX_API_PROMISE__.postRequest(url, {
+        session: session,
+        skuList: skuList
+    });
+}
+
+/**
  * 	获取我的历史订单列表
  */
 const fetchMyOrders = (session, startTime) => {
@@ -154,6 +166,7 @@ module.exports = {
 	joinToCart: joinToCart,
 	updateMyCart: updateMyCart,
 	removeMyCart: removeMyCart,
+    renewMyCart: renewMyCart,
 	fetchMyOrders: fetchMyOrders,
 	submitRefund: submitRefund
 }

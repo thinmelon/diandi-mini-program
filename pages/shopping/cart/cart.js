@@ -108,8 +108,9 @@ Page({
                                 return thumbnail.productid === res.data.msg.cart[key].pid;
                             })
                             .map(image => {
-                                image.name = __URI__.imageUrlPrefix(image.name);
-                                return image;
+                                return {
+                                    name: __URI__.imageUrlPrefix(image.name)
+                                };
                             });
 
                         cart.push({
