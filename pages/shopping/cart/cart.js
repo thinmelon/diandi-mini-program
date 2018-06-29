@@ -115,7 +115,7 @@ Page({
 
                         cart.push({
                             "stock_no": res.data.msg.cart[key].stock_no,
-                            "name": res.data.msg.cart[key].name,
+                            "name": decodeURIComponent(res.data.msg.cart[key].name),
                             "unit": res.data.msg.cart[key].unit,
                             "amount": res.data.msg.cart[key].amount,
                             "attributes": attributes,

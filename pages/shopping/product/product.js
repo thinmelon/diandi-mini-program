@@ -25,10 +25,10 @@ Page({
      */
     onLoad: function(options) {
         const that = this;
-        // console.log(options);
+        console.log(options);
         const product = JSON.parse(options.product);
         this.data.product.name = product.name;
-        this.data.product.description = product.description;
+		this.data.product.description = decodeURIComponent(product.description);
         this.data.product.freight = 0; // 初始设置运费为 0
         this.data.product.thumbnails = product.thumbnails;
         // 获取详细数据

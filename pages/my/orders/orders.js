@@ -110,7 +110,7 @@ Page({
                             });
 
                         let sku = {
-                            name: res.data.msg.order[key].name,					//	商品名称
+                            name: decodeURIComponent(res.data.msg.order[key].name),					//	商品名称
                             stock_no: res.data.msg.order[key].stock_no,		//	SKU ID
                             unit: res.data.msg.order[key].unit,						//	SKU 单价
                             attributes: attributes,											 //	SKU 属性值 
