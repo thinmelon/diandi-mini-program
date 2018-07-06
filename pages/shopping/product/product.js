@@ -17,7 +17,10 @@ Page({
         chosenSkuId: 0, //  选中的SKU的ID
         chosenItems: [], //  已选择的参数
         toView: '', //  定位至View的Id
-        scrollViewHeight: 0 //  ScrollView的高度
+        scrollViewHeight: 0, //  ScrollView的高度
+        isHidden: true, //	是否隐藏video组件
+        videoContext: null, //  视频模块上下文
+        videoUrl: ''//	视频播放地址
     },
 
     /**
@@ -25,26 +28,31 @@ Page({
      */
     onLoad: function(options) {
         const that = this;
-        console.log(options);
-        const product = JSON.parse(options.product);
-        this.data.product.name = product.name;
-		this.data.product.description = decodeURIComponent(product.description);
-        this.data.product.freight = 0; // 初始设置运费为 0
-        this.data.product.thumbnails = product.thumbnails;
+
+        //	商品ID
+        that.data.product.pid = options.pid;
         // 获取详细数据
         __SHOPPING__
-            .fetchProductDetail(product.pid)
+            .fetchProductDetail(options.pid)
             .then(res => {
                 console.log(res)
                 if (0 === res.data.code) { //	code: 0 返回正确结果
-                    that.data.product.sku = res.data.msg.skuList; //  赋值 skuList
+                    //	商品标题
+                    that.data.product.name = decodeURIComponent(res.data.msg.product[0].name);
+                    //  商品详情
+                    that.data.product.description = decodeURIComponent(res.data.msg.product[0].description);
+                    that.data.product.freight = 0; // 初始设置运费为 0
+                    //  赋值 skuList
+                    that.data.product.sku = res.data.msg.skuList;
                     let isHit, standards = [];
-                    for (let i = 0; i < res.data.msg.standards.length; i++) { //  遍历规格数组
+                    //  遍历规格数组
+                    for (let i = 0; i < res.data.msg.standards.length; i++) {
                         isHit = false;
                         for (let j = 0; j < standards.length; j++) {
                             if (standards[j].attribute === res.data.msg.standards[i].name) {
                                 isHit = true;
-                                standards[j].collections.push({ //	聚集有相同的 attribute 的 属性值 
+                                //	聚集有相同的 attribute 的 属性值 
+                                standards[j].collections.push({
                                     skuValueId: res.data.msg.standards[i].vid,
                                     value: res.data.msg.standards[i].value
                                 })
@@ -60,14 +68,40 @@ Page({
                             })
                         } /** end of if */
                     } /**	end of for */
-                    that.data.product.standards = standards; //  赋值 standards
+                    //  赋值 standards
+                    that.data.product.standards = standards;
+                    //  获取SKU的单价数组
                     const units = that.data.product.sku.map((item) => {
                         return item.unit;
-                    }); //  获取SKU的单价数组
-                    that.data.product.gallery = res.data.msg.gallery.map(image => {
-                        image.name = __URI__.imageUrlPrefix(image.name);
-                        return image;
-                    })
+                    });
+                    //  商品微缩图
+                    that.data.product.thumbnails = res.data.msg.gallery
+                        .filter(image => {
+                            return image.type === 0;
+                        })
+                        .map(image => {
+                            image.name = __URI__.imageUrlPrefix(image.name);
+                            return image;
+                        })
+                    //  商品详情图
+                    that.data.product.gallery = res.data.msg.gallery
+                        .filter(image => {
+                            return image.type === 1;
+                        })
+                        .map(image => {
+                            image.name = __URI__.imageUrlPrefix(image.name);
+                            return image;
+                        })
+                    //  商品视频
+                    that.data.product.videos = res.data.msg.gallery
+                        .filter(image => {
+                            return image.type === 2;
+                        })
+                        .map(image => {
+                            image.name = __URI__.imageUrlPrefix(image.name);
+                            that.data.product.thumbnails.unshift(image);
+                            return image;
+                        })
                     console.log(that.data.product);
                     that.setData({
                         product: that.data.product,
@@ -81,7 +115,11 @@ Page({
      * 生命周期函数--监听页面初次渲染完成
      */
     onReady: function() {
-
+        /**
+         * 创建并返回 video 上下文 videoContext 对象。
+         * 在自定义组件下，第二个参数传入组件实例this，以操作组件内 <video/> 组件
+         */
+        this.videoContext = wx.createVideoContext('productIntroVideo', this)
     },
 
     /**
@@ -91,7 +129,6 @@ Page({
         const scale = wx.getStorageSync('__WindowScale__');
 
         this.setData({
-            // product: mockData,
             scrollViewHeight: scale.height,
             swiperHeight: scale.width
         })
@@ -128,7 +165,12 @@ Page({
     /**
      * 用户点击右上角分享
      */
-    onShareAppMessage: function() {
+    onShareAppMessage: function(options) {
+        return {
+            title: this.data.product.name,
+            path: '/pages/shopping/product/product?pid=' + this.data.product.pid,
+            imageUrl: this.data.product.thumbnails[0].name
+        }
 
     },
 
@@ -338,5 +380,26 @@ Page({
             }
         }
         return "";
+    },
+
+	/**
+	 * 	播放视频
+	 */
+    onPlayVideo: function(evt) {
+        this.setData({
+            videoUrl: evt.currentTarget.dataset.url,
+            isHidden: false
+        })
+        this.videoContext.play();
+    },
+
+	/**
+	 * 	退出播放
+	 */
+    onCloseVideo: function() {
+        this.videoContext.pause();
+        this.setData({
+            isHidden: true
+        });
     }
 })

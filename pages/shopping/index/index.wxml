@@ -1,16 +1,8 @@
 <!--pages/shopping/index/index.wxml-->
 <wxs src="../../../utils/page.config.wxs" module="config" />
-
 <view class='container'>
     <view wx:for="{{ collections }}" wx:key="{{ item.pid }}" class='collection' data-product='{{ item }}' bindtap='bindTapCollections'>
-        <!-- <swiper indicator-dots="{{config.swipe.indicatorDots}}" autoplay="{{config.swipe.autoplay}}" interval="{{config.swipe.interval}}" duration="{{config.swipe.duration}}" circular="{{config.swipe.circular}}" style='height: {{ swiperHeight }}px'>
-            <block wx:for="{{item.thumbnails}}" wx:for-item="thumbnail" wx:key="thumbnail.name">
-                <swiper-item>
-                    <image mode="widthFix" src="{{thumbnail.name}}" style='width: 100%' />
-                </swiper-item>
-            </block>
-        </swiper> -->
-		<image mode="widthFix" src="{{item.thumbnails[0].name}}" style='width: 100%' />
+        <image mode="widthFix" src="{{item.thumbnails[0].name}}" style='width: 100%' />
         <text class='title'>{{ item.name }}</text>
     </view>
 </view>
