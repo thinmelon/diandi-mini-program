@@ -30,7 +30,7 @@ const addNewConsignee = (session, receiver, mobile, address, postcode) => {
  */
 const editConsignee = (session, consignee_no, receiver, mobile, address, postcode) => {
 	const url = __URI__.editConsignee(session);
-	return __WX_API_PROMISE__.postRequest(url, {
+	return __WX_API_PROMISE__.putRequest(url, {
 		'consignee_no': consignee_no,
 		'name': receiver,
 		'mobile': mobile,
@@ -44,7 +44,7 @@ const editConsignee = (session, consignee_no, receiver, mobile, address, postcod
  */
 const removeConsignee = (session) => {
 	const url = __URI__.removeConsignee(session);
-	return __WX_API_PROMISE__.postRequest(url, {
+	return __WX_API_PROMISE__.deleteRequest(url, {
 
 	});
 }
@@ -99,7 +99,7 @@ const joinToCart = (session, cart) => {
  */
 const updateMyCart = (session, cart) => {
 	const url = __URI__.updateMyCart();
-	return __WX_API_PROMISE__.postRequest(url, {
+    return __WX_API_PROMISE__.putRequest(url, {
 		session: session,
 		cart: cart
 	});
@@ -110,7 +110,7 @@ const updateMyCart = (session, cart) => {
  */
 const removeMyCart = (session, stock_no) => {
 	const url = __URI__.removeMyCart();
-	return __WX_API_PROMISE__.postRequest(url, {
+    return __WX_API_PROMISE__.deleteRequest(url, {
 		session: session,
 		stock_no: stock_no
 	});
@@ -122,7 +122,7 @@ const removeMyCart = (session, stock_no) => {
 const renewMyCart = (session, skuList) => {
     const url = __URI__.renewMyCart();
     console.log(url)
-    return __WX_API_PROMISE__.postRequest(url, {
+    return __WX_API_PROMISE__.putRequest(url, {
         session: session,
         skuList: skuList
     });

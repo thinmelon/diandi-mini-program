@@ -26,7 +26,7 @@ const fetchProductDetail = (product_id) => {
  *   提交统一订单
  */
 const submitUnifiedOrder = () => {
-    return `${PREFIX_SHOPPING}/order/new`;
+    return `${PREFIX_SHOPPING}/order`;
 }
 
 /**
@@ -40,7 +40,7 @@ const repay = () => {
  * 	关闭订单
  */
 const closeOrder = () => {
-    return `${PREFIX_SHOPPING}/order/dead`;
+    return `${PREFIX_SHOPPING}/order`;
 }
 
 /**
@@ -68,21 +68,21 @@ const userLogin = () => {
  *   添加新的收件人
  */
 const addNewConsignee = (session) => {
-    return `${PREFIX_USER}/new/consignee/${session}`;
+    return `${PREFIX_USER}/consignee/${session}`;
 }
 
 /**
  *   编辑收件人
  */
 const editConsignee = (session) => {
-    return `${PREFIX_USER}/edit/consignee/${session}`;
+    return `${PREFIX_USER}/consignee/${session}`;
 }
 
 /**
  *   移除收件人
  */
 const removeConsignee = (session) => {
-    return `${PREFIX_USER}/remove/consignee/${session}`;
+    return `${PREFIX_USER}/consignee/${session}`;
 }
 
 /**
@@ -110,28 +110,28 @@ const myCart = (session) => {
  *   添加至购物车
  */
 const joinToCart = () => {
-    return `${PREFIX_USER}/cart/new`;
+    return `${PREFIX_USER}/cart`;
 }
 
 /**
  *   添加至购物车
  */
 const updateMyCart = () => {
-    return `${PREFIX_USER}/cart/update`;
+    return `${PREFIX_USER}/cart`;
 }
 
 /**
  *   从购物车移除商品
  */
 const removeMyCart = () => {
-    return `${PREFIX_USER}/cart/remove`;
+    return `${PREFIX_USER}/cart`;
 }
 
 /**
  *   提交订单后从购物车移除要买的商品
  */
 const renewMyCart = () => {
-    return `${PREFIX_USER}/cart/renew`;
+    return `${PREFIX_USER}/cart/afterSubmit`;
 }
 
 /**
@@ -159,14 +159,14 @@ const fetchSTSToken = (session) => {
  *   上传图片
  */
 const uploadImage = () => {
-    return `${PREFIX_STORAGE}/image/new`;
+    return `${PREFIX_STORAGE}/image`;
 }
 
 /**
  *   上传图片
  */
 const uploadVideo = () => {
-    return `${PREFIX_STORAGE}/video/new`;
+    return `${PREFIX_STORAGE}/video`;
 }
 
 const imageUrlPrefix = (name) => {

@@ -47,7 +47,7 @@ const repay = (session, out_trade_no) => {
  */
 const closeOrder = (session, out_trade_no) => {
 	const url = __URI__.closeOrder();
-	return __WX_API_PROMISE__.postRequest(
+    return __WX_API_PROMISE__.deleteRequest(
 		url,
 		{
 			session: session,

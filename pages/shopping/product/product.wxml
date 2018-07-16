@@ -1,5 +1,6 @@
 <!--pages/shopping/product/product.wxml-->
 <wxs src="../../../utils/page.config.wxs" module="config" />
+<button open-type="contact">联系客服</button>
 <view class='videoPlayWrapper' hidden='{{isHidden}}'>
     <video id='productIntroVideo' src="{{ videoUrl }}" style='width: 100%'>
     </video>

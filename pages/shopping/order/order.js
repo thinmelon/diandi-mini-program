@@ -157,8 +157,8 @@ Page({
 	 */
 	bindTapCloseOrder: function () {
 		__WX_PAY_SERVICE__
-			.closeOrder(																		//  发起重新支付的动作
-			wx.getStorageSync('__SESSION_KEY__'),      				//  用户 session
+			.closeOrder(                            //  发起重新支付的动作
+			wx.getStorageSync('__SESSION_KEY__'),   //  用户 session
 			this.data.order.out_trade_no
 			)
 			.then(res => {
