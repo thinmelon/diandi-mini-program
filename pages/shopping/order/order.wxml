@@ -1,6 +1,6 @@
 <!--pages/shopping/order/order.wxml-->
 <view class="container">
-    <view class="receiver-address">
+    <view class="receiver-address" wx:if="{{isConsigneeShown}}">
         <view class="location-icon">
             <image src="/icons/public/location.png"></image>
         </view>
@@ -62,7 +62,7 @@
             <text class="text-price">￥{{order.totalFee}}</text>
         </view>
     </view>
-	<view class='operator'>
+    <view class='operator'>
         <block wx:if="{{order.status == '支付成功'}}">
             <view class="refund" bindtap='bindTapRefund'>
                 <text>申请退款</text>
@@ -85,9 +85,9 @@
     <view class="order-extra">
         <text>订单编号：{{order.out_trade_no}}</text>
         <text>创建时间：{{order.createTime}}</text>
-		<block wx:if="{{ order.status === '支付成功' }}">
-        	<text>付款时间：{{order.payTime}}</text>
-		</block>
+        <block wx:if="{{ order.status === '支付成功' }}">
+            <text>付款时间：{{order.payTime}}</text>
+        </block>
     </view>
     <view class="cut-off-rule">
         <text>花管家提供技术支持</text>

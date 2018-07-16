@@ -17,6 +17,7 @@ Page({
         total: 0.00,
         message: '',
         isConsigneeSet: false,
+        isConsigneeShow: true,
         consignee: {}
     },
 
@@ -24,18 +25,30 @@ Page({
      * 生命周期函数--监听页面加载
      */
     onLoad: function(options) {
-        var
+        let
+            index,
+            length,
             subtotal = 0,
-            total = 0;
+            total = 0,
+            isConsigneeShow = false;
 
         this.data.cart = JSON.parse(options.cart);
         console.log(this.data.cart);
+        // 判断是否需要显示收件人（虚拟物品无需收货）
+        for (index = 0, length = this.data.cart.length; index < length; index++) {
+            if (this.data.cart[index].type === 0) {
+                isConsigneeShow = true;
+                break;
+            }
+        }
+        // 小计
         this.data.subtotal = __PRICE__.totalPrice(this.data.cart);
         // 总金额（包含运费）
         this.data.total = Math.round((this.data.subtotal + this.data.carriage) * 100) / 100;
 
         this.setData({
             cart: this.data.cart,
+            isConsigneeShow: isConsigneeShow,
             subtotal: this.data.subtotal,
             total: this.data.total
         });
@@ -52,18 +65,20 @@ Page({
      * 生命周期函数--监听页面显示
      */
     onShow: function() {
-        const that = this;
-        const session = wx.getStorageSync('__SESSION_KEY__');
-        __USER__.
-        fetchDefaultConsignee(session)
-            .then(res => {
-                if (0 === res.data.code) {
-                    this.setData({
-                        isConsigneeSet: true,
-                        consignee: res.data.msg[0]
-                    })
-                }
-            });
+        if (this.data.isConsigneeShow) {
+            const that = this;
+            const session = wx.getStorageSync('__SESSION_KEY__');
+            __USER__.
+            fetchDefaultConsignee(session)
+                .then(res => {
+                    if (0 === res.data.code) {
+                        this.setData({
+                            isConsigneeSet: true,
+                            consignee: res.data.msg[0]
+                        })
+                    }
+                });
+        }
     },
 
     /**
@@ -122,7 +137,7 @@ Page({
      *     --  微信支付
      */
     bindTapSubmitOrder: function() {
-        if (false === this.data.isConsigneeSet) {
+        if (this.data.isConsigneeShow && false === this.data.isConsigneeSet) {
             //	提示
             __WX_API_PROMISE__
                 .showToast('收件地址未设置', 'none', '/icons/public/hint.png')
@@ -147,12 +162,12 @@ Page({
 
         __SHOPPING__
             .submitUnifiedOrder({
-                body: body.substr(0, 32), 														//  商品描述，最大长度128
-                attach: this.data.message, 														//  用户留言
-                total_fee: Math.round(this.data.total * 100), 						  //  总金额
-                session: wx.getStorageSync('__SESSION_KEY__'), 			 //  用户 session
-                consignee_no: this.data.consignee.consignee_no, 				//  地址
-                sku_list: JSON.stringify(sku_list) 											//  SKU 列表 
+                body: body.substr(0, 32), //  商品描述，最大长度128
+                attach: this.data.message, //  用户留言
+                total_fee: Math.round(this.data.total * 100), //  总金额
+                session: wx.getStorageSync('__SESSION_KEY__'), //  用户 session
+                consignee_no: this.data.consignee.consignee_no, //  地址
+                sku_list: JSON.stringify(sku_list) //  SKU 列表 
             })
             .then(result => {
                 console.log(result);

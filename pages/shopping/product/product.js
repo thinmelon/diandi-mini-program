@@ -20,7 +20,7 @@ Page({
         scrollViewHeight: 0, //  ScrollView的高度
         isHidden: true, //	是否隐藏video组件
         videoContext: null, //  视频模块上下文
-        videoUrl: ''//	视频播放地址
+        videoUrl: '' //	视频播放地址
     },
 
     /**
@@ -41,6 +41,8 @@ Page({
                     that.data.product.name = decodeURIComponent(res.data.msg.product[0].name);
                     //  商品详情
                     that.data.product.description = decodeURIComponent(res.data.msg.product[0].description);
+                    //  商品类型
+                    that.data.product.type = res.data.msg.product[0].type;
                     that.data.product.freight = 0; // 初始设置运费为 0
                     //  赋值 skuList
                     that.data.product.sku = res.data.msg.skuList;
@@ -238,7 +240,6 @@ Page({
             _cart = [];
 
         index = this.isHit();
-        console.log(index)
         // 如果商品参数未全部设定，则将页面滚动至指定位置
         if (index === -1) {
             this.setData({
@@ -257,6 +258,7 @@ Page({
                 _cart.push({
                     stock_no: this.data.chosenSkuId,
                     name: this.data.product.name,
+                    type: this.data.product.type,
                     unit: this.data.price,
                     amount: this.data.amount,
                     attributes: attributes,
@@ -382,9 +384,9 @@ Page({
         return "";
     },
 
-	/**
-	 * 	播放视频
-	 */
+    /**
+     * 	播放视频
+     */
     onPlayVideo: function(evt) {
         this.setData({
             videoUrl: evt.currentTarget.dataset.url,
@@ -393,9 +395,9 @@ Page({
         this.videoContext.play();
     },
 
-	/**
-	 * 	退出播放
-	 */
+    /**
+     * 	退出播放
+     */
     onCloseVideo: function() {
         this.videoContext.pause();
         this.setData({

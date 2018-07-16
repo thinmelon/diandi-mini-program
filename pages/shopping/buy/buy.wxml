@@ -1,6 +1,6 @@
 <!--pages/shopping/buy/buy.wxml-->
 <view class="container">
-    <view class="shopping-address" bindtap="bindTapDeliveryAddress">
+    <view class="shopping-address" wx:if="{{isConsigneeShow}}" bindtap="bindTapDeliveryAddress">
         <view class='consignee' wx:if="{{isConsigneeSet}}">
             <view class='outter'>
                 <text>收件人地址：</text>
