@@ -14,13 +14,12 @@
         "pages/my/mobile/mobile",
         "pages/my/orders/orders",
         "pages/my/posts/posts",
-		"pages/history/index/index",
 		"pages/index/index"
     ],
     "window": {
         "backgroundTextStyle": "light",
         "navigationBarBackgroundColor": "#813c85",
-        "navigationBarTitleText": "萌主驾到",
+        "navigationBarTitleText": "自媒体",
         "navigationBarTextStyle": "white"
     }
 }

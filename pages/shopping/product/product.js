@@ -105,10 +105,22 @@ Page({
                             return image;
                         })
                     console.log(that.data.product);
-                    that.setData({
-                        product: that.data.product,
-                        price: Math.min.apply(null, units) + ' ~ ' + Math.max.apply(null, units)
-                    });
+
+                    /**
+                     * 如果商品当前的属性，以及属性下的值个数仅为1
+                     * 则默认选中
+                     */
+                    if (that.data.product.standards.length === 1 &&
+                        that.data.product.standards[0].collections.length === 1) {
+                        that.selectSKU(that.data.product.standards[0].attribute,
+                            that.data.product.standards[0].collections[0].skuValueId
+                        );
+                    } else {
+                        that.setData({
+                            product: that.data.product,
+                            price: Math.min.apply(null, units) + ' ~ ' + Math.max.apply(null, units)
+                        });
+                    }
                 }
             });
     },
@@ -121,7 +133,7 @@ Page({
          * 创建并返回 video 上下文 videoContext 对象。
          * 在自定义组件下，第二个参数传入组件实例this，以操作组件内 <video/> 组件
          */
-        this.videoContext = wx.createVideoContext('productIntroVideo', this)
+        this.videoContext = wx.createVideoContext('productIntroVideo', this);
     },
 
     /**
@@ -276,10 +288,50 @@ Page({
      *   选择规格参数
      */
     bindTapChooseItem: function(e) {
-        var i, j, count, length, vid, index;
+        this.selectSKU(e.currentTarget.dataset.attribute, e.currentTarget.dataset.valueid);
+    },
 
-        const currentChosenAttribute = e.currentTarget.dataset.attribute;
-        const currentChosenValueId = e.currentTarget.dataset.valueid;
+    bindTapMinus: function() {
+        if (this.data.amount > 1) {
+            this.data.amount--;
+            this.setData({
+                amount: this.data.amount
+            });
+        }
+    },
+
+    bindTapAdd: function() {
+        if (this.data.amount < this.data.remaining) {
+            this.data.amount++;
+            this.setData({
+                amount: this.data.amount
+            });
+        }
+    },
+
+    /**
+     *   判断是否已选择全部参数
+     */
+    isHit: function() {
+        let i, count, currentStandards;
+
+        //  如果已选参数数组长度不足，直接返回 -1
+        if (this.data.chosenItems.length === this.data.product.standards.length) {
+            currentStandards = this.data.chosenItems.sort().join(',');
+            //  遍历sku数组，找到对应参数的 SKU
+            for (i = 0, count = this.data.product.sku.length; i < count; i++) {
+                if (currentStandards === this.data.product.sku[i].attributes.split(',').filter(char => {
+                        return char !== '';
+                    }).sort().join(',')) {
+                    return i; // 返回sku数组的索引值 
+                }
+            }
+        }
+        return -1;
+    },
+
+    selectSKU: function(currentChosenAttribute, currentChosenValueId) {
+        let i, j, count, length, vid, index;
 
         // 遍历standards数组
         for (i = 0, count = this.data.product.standards.length; i < count; i++) {
@@ -324,45 +376,6 @@ Page({
                 remaining: this.data.product.sku[index].stock //  库存
             })
         }
-    },
-
-    bindTapMinus: function() {
-        if (this.data.amount > 1) {
-            this.data.amount--;
-            this.setData({
-                amount: this.data.amount
-            });
-        }
-    },
-
-    bindTapAdd: function() {
-        if (this.data.amount < this.data.remaining) {
-            this.data.amount++;
-            this.setData({
-                amount: this.data.amount
-            });
-        }
-    },
-
-    /**
-     *   判断是否已选择全部参数
-     */
-    isHit: function() {
-        var i, count, currentStandards;
-
-        //  如果已选参数数组长度不足，直接返回 -1
-        if (this.data.chosenItems.length === this.data.product.standards.length) {
-            currentStandards = this.data.chosenItems.sort().join(',');
-            //  遍历sku数组，找到对应参数的 SKU
-            for (i = 0, count = this.data.product.sku.length; i < count; i++) {
-                if (currentStandards === this.data.product.sku[i].attributes.split(',').filter(char => {
-                        return char !== '';
-                    }).sort().join(',')) {
-                    return i; // 返回sku数组的索引值 
-                }
-            }
-        }
-        return -1;
     },
 
     /**

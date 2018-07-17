@@ -2,7 +2,6 @@
  *  访问地址前缀
  */
 const PROTOCOL = 'https://';
-// const HOST = 'www.thinmelon.cc:3000';
 const HOST = 'www.pusudo.cn';
 const PREFIX_SHOPPING = PROTOCOL + HOST + '/shopping';
 const PREFIX_USER = PROTOCOL + HOST + '/user';

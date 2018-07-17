@@ -1,6 +1,6 @@
 <!--pages/shopping/product/product.wxml-->
 <wxs src="../../../utils/page.config.wxs" module="config" />
-<button open-type="contact">联系客服</button>
+<!-- <button open-type="contact">联系客服</button> -->
 <view class='videoPlayWrapper' hidden='{{isHidden}}'>
     <video id='productIntroVideo' src="{{ videoUrl }}" style='width: 100%'>
     </video>
@@ -49,6 +49,7 @@
                 </view>
             </view>
         </view>
+        <block wx:if='{{product.type === 0}}'>
         <view class='regular'>
             <text>购买数量:</text>
         </view>
@@ -57,21 +58,8 @@
             <view class="amount">{{amount}}</view>
             <view class="opera" bindtap='bindTapAdd'>+</view>
         </view>
+        </block>
     </view>
-
-    <!-- <view wx:for="{{product.videos}}" wx:for-item="video" wx:key="video.name">
-        <video src="{{ video.name }}" objectFit='fill' style='position: relative; width: 100%'>
-            <cover-view class="controls">
-                <cover-view class="play" bindtap="play">
-                    <cover-image class="img" src="/icons/video/play.png" />
-                </cover-view>
-                <cover-view class="pause" bindtap="pause">
-                    <cover-image class="img" src="/icons/video/pause.png" />
-                </cover-view>
-                <cover-view class="time">00:00</cover-view>
-            </cover-view>
-        </video>
-    </view> -->
 
     <view>
         <text class='brief'>{{ product.description }}</text>
@@ -89,14 +77,21 @@
         <image src="/icons/shopping/main.png"></image>
         <text>首页</text>
     </view>
-    <view class="bar-button" bindtap="bindTapBackToCart">
-        <image src="/icons/shopping/cart.png"></image>
-        <text>购物车</text>
-    </view>
-    <view class="bar-add-to-cart" bindtap='bindTapJoinToCart'>
-        <text>加入购物车</text>
-    </view>
-    <view class="bar-buy" bindtap="bindTapBuy">
-        <text>立即购买</text>
-    </view>
+    <block wx:if='{{product.type === 0}}'>
+        <view class="bar-button" bindtap="bindTapBackToCart">
+            <image src="/icons/shopping/cart.png"></image>
+            <text>购物车</text>
+        </view>
+        <view class="bar-add-to-cart" bindtap='bindTapJoinToCart'>
+            <text>加入购物车</text>
+        </view>
+        <view class="bar-buy" bindtap="bindTapBuy">
+            <text>立即购买</text>
+        </view>
+    </block>
+    <block wx:elif='{{product.type === 1}}'>
+        <view class="bar-buy" bindtap="bindTapBuy">
+            <text>立即抢购</text>
+        </view>
+    </block>
 </view>
