@@ -15,31 +15,32 @@
         </view>
     </view>
     <view class="cart-list">
-        <view class="cart-item" wx:for="{{order.skuList}}" wx:key="{{item.stock_no}}">
-            <view class="thumbnail">
-                <image mode="aspectFill" src="{{ item.thumbnails[0].name }}"></image>
-            </view>
-            <view class="brief-intro">
-                <view class="name">
-                    <text>{{ item.name }}</text>
+        <view wx:for="{{order.skuList}}" wx:key="{{item.stock_no}}">
+            <view class="cart-item">
+                <view class="thumbnail">
+                    <image mode="aspectFill" src="{{ item.thumbnails[0].name }}"></image>
                 </view>
-                <view class='standard' wx:for="{{ item.attributes }}" wx:key="{{ attribute }}" wx:for-item="attribute">
-                    <text>{{attribute}}</text>
-                </view>
-                <view class='price'>
-                    <view>
-                        <text>{{item.unit}}</text>
+                <view class="brief-intro">
+                    <view class="name">
+                        <text>{{ item.name }}</text>
                     </view>
-                    <view>
-                        <text>X {{item.amount}}</text>
+                    <view class='standard' wx:for="{{ item.attributes }}" wx:key="{{ attribute }}" wx:for-item="attribute">
+                        <text>{{attribute}}</text>
+                    </view>
+                    <view class='price'>
+                        <view>
+                            <text>{{item.unit}}</text>
+                        </view>
+                        <view>
+                            <text>X {{item.amount}}</text>
+                        </view>
                     </view>
                 </view>
             </view>
+            <button type='warn' wx:if="{{ item.type === 1 && order.status == '支付成功'}}" data-pid='{{ item.pid }}' bindtap='bindTapCardHolder'>领取至微信卡包</button>
         </view>
     </view>
-    <!-- <view class="refund" data-skuid="{{item.skuid}}" data-refundfee='{{item.unit * item.amount}}' bindtap='bindTapRefund'>
-        <text>申请退款</text>
-    </view> -->
+
     <view class="delivery">
         <text>配送方式</text>
         <text>免运费</text>
@@ -90,6 +91,5 @@
         </block>
     </view>
     <view class="cut-off-rule">
-        <text>花管家提供技术支持</text>
     </view>
 </view>

@@ -6,17 +6,17 @@ const __WX_PAY_SERVICE__ = require('../../../services/wechat.pay.service.js');
 
 Page({
 
-	/**
-	 * 页面的初始数据
-	 */
+    /**
+     * 页面的初始数据
+     */
     data: {
         orderList: []
     },
 
-	/**
-	 * 生命周期函数--监听页面加载
-	 */
-    onLoad: function (options) {
+    /**
+     * 生命周期函数--监听页面加载
+     */
+    onLoad: function(options) {
         if (getApp().isLogIn) {
             this.fetchMyOrders();
         } else {
@@ -26,62 +26,62 @@ Page({
         }
     },
 
-	/**
-	 * 生命周期函数--监听页面初次渲染完成
-	 */
-    onReady: function () {
+    /**
+     * 生命周期函数--监听页面初次渲染完成
+     */
+    onReady: function() {
 
     },
 
-	/**
-	 * 生命周期函数--监听页面显示
-	 */
-    onShow: function () {
+    /**
+     * 生命周期函数--监听页面显示
+     */
+    onShow: function() {
+        
+    },
+
+    /**
+     * 生命周期函数--监听页面隐藏
+     */
+    onHide: function() {
 
     },
 
-	/**
-	 * 生命周期函数--监听页面隐藏
-	 */
-    onHide: function () {
+    /**
+     * 生命周期函数--监听页面卸载
+     */
+    onUnload: function() {
 
     },
 
-	/**
-	 * 生命周期函数--监听页面卸载
-	 */
-    onUnload: function () {
+    /**
+     * 页面相关事件处理函数--监听用户下拉动作
+     */
+    onPullDownRefresh: function() {
 
     },
 
-	/**
-	 * 页面相关事件处理函数--监听用户下拉动作
-	 */
-    onPullDownRefresh: function () {
+    /**
+     * 页面上拉触底事件的处理函数
+     */
+    onReachBottom: function() {
 
     },
 
-	/**
-	 * 页面上拉触底事件的处理函数
-	 */
-    onReachBottom: function () {
+    /**
+     * 用户点击右上角分享
+     */
+    onShareAppMessage: function() {
 
     },
 
-	/**
-	 * 用户点击右上角分享
-	 */
-    onShareAppMessage: function () {
-
-    },
-
-    fetchMyOrders: function () {
+    fetchMyOrders: function() {
         let orders = [],
             that = this;
 
         __USER__
             .fetchMyOrders(
-            wx.getStorageSync('__SESSION_KEY__'), __DATE__.formatTime(new Date()))
+                wx.getStorageSync('__SESSION_KEY__'), __DATE__.formatTime(new Date()))
             .then(res => {
                 console.log(res);
                 if (res.data.code === 0) {
@@ -97,12 +97,12 @@ Page({
                                     attributes.push(res.data.msg.sku[j].name + ": " + res.data.msg.sku[j].value);
                                     break;
                                 }
-                            }   /** end of for */
-                        }	/** end of for */
+                            } /** end of for */
+                        } /** end of for */
 
                         let thumbnails = res.data.msg.thumbnails.filter(thumbnail => {
-                            return thumbnail.productid === res.data.msg.order[key].pid;
-                        })
+                                return thumbnail.productid === res.data.msg.order[key].pid;
+                            })
                             .map(image => {
                                 return {
                                     name: __URI__.imageUrlPrefix(image.name)
@@ -110,11 +110,11 @@ Page({
                             });
 
                         let sku = {
-                            name: decodeURIComponent(res.data.msg.order[key].name),					//	商品名称
-                            stock_no: res.data.msg.order[key].stock_no,		//	SKU ID
-                            unit: res.data.msg.order[key].unit,						//	SKU 单价
-                            attributes: attributes,											 //	SKU 属性值 
-                            amount: res.data.msg.order[key].amount,			//	购买数量
+                            name: decodeURIComponent(res.data.msg.order[key].name), //	商品名称
+                            stock_no: res.data.msg.order[key].stock_no, //	SKU ID
+                            unit: res.data.msg.order[key].unit, //	SKU 单价
+                            attributes: attributes, //	SKU 属性值 
+                            amount: res.data.msg.order[key].amount, //	购买数量
                             thumbnails: thumbnails
                         };
 
@@ -147,12 +147,12 @@ Page({
                         });
                     }
 
-                }   /** end of if */
+                } /** end of if */
 
             });
     },
 
-    bindTapOrderDetail: function (e) {
+    bindTapOrderDetail: function(e) {
         wx.navigateTo({
             url: '/pages/shopping/order/order?order=' + JSON.stringify(e.currentTarget.dataset.order)
         })

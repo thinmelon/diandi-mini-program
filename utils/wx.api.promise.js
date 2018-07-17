@@ -186,6 +186,30 @@ function wxUploadFilePromise(options) {
     });
 }
 
+/**
+ * 		批量添加卡券
+ * 		-	cardList	ObjectArray	是	需要添加的卡券列表
+ * 		请求对象说明
+ * 		-	cardId	String	卡券 Id
+ * 		-	cardExt	String	卡券的扩展参数
+ * 		cardExt 说明
+ * 			参数	类型	必填	是否参与签名	说明
+ * 		-	code	String	否	是	用户领取的 code，仅自定义 code 模式的卡券须填写
+ * 		-	openid	String	否	是	指定领取者的openid，只有该用户能领取。
+ * 		-	timestamp	Number	是	是	时间戳，东八区时间,UTC+8，单位为秒
+ * 		-	nonce_str	String	否	是	随机字符串，由开发者设置传入，加强安全性，不长于 32 位
+ * 		-	fixed_begintimestamp	Number	否	否	卡券在第三方系统的实际领取时间
+ * 		-	outer_str	String	否	否	领取渠道参数，用于标识本次领取的渠道值
+ * 		-	signature	String	是	-	签名
+ * 		注：cardExt 需进行 JSON 序列化为字符串传入
+ */
+function wxAddCardPromise(options) {
+	console.log(options);
+    return Promisify(wx.addCard)({
+        cardList: options.cardList
+    });
+}
+
 module.exports = {
     getRequest: wxGetRequestPromise,
     postRequest: wxPostRequestPromise,
@@ -201,5 +225,6 @@ module.exports = {
     hideLoading: wxHideLoadingPromise,
     chooseImage: wxChooseImagePromise,
     chooseVideo: wxChooseVideoPromise,
-    uploadFile: wxUploadFilePromise
+    uploadFile: wxUploadFilePromise,
+	addCard: wxAddCardPromise
 }

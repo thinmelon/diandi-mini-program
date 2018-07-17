@@ -29,31 +29,42 @@ Page({
                 console.log(res)
                 if (res.data.code === 0) {
                     //	创建时间
-                    order.createTime = res.data.msg[0].createTime;
+                    order.createTime = res.data.msg.detail[0].createTime;
                     //  支付时间
-                    order.payTime = res.data.msg[0].payTime;
+                    order.payTime = res.data.msg.detail[0].payTime;
                     //  找到状态值相应的文字描述
-                    order.status = __WX_PAY_SERVICE__.__ENUM_ORDER_STATUS__[res.data.msg[0].status];
+                    order.status = __WX_PAY_SERVICE__.__ENUM_ORDER_STATUS__[res.data.msg.detail[0].status];
                     //  订单总金额，保留小数点后两位，单位：元
-                    order.totalFee = (res.data.msg[0].totalFee / 100).toFixed(2);
+                    order.totalFee = (res.data.msg.detail[0].totalFee / 100).toFixed(2);
                     //  运费
-                    order.freight = res.data.msg[0].freight;
+                    order.freight = res.data.msg.detail[0].freight;
                     //  附加信息，如用户留言
-                    order.attach = res.data.msg[0].attach;
+                    order.attach = res.data.msg.detail[0].attach;
                     //	收件人信息
-                    if (res.data.msg[0].name && res.data.msg[0].address) {
+                    if (res.data.msg.detail[0].name && res.data.msg.detail[0].address) {
                         order.consignee = {
-                            receiver: res.data.msg[0].name, //	姓名
-                            address: res.data.msg[0].address, //	地址
-                            mobile: res.data.msg[0].mobile, //	手机号码
-                            postcode: res.data.msg[0].postcode //  邮政编码
+                            receiver: res.data.msg.detail[0].name, //	姓名
+                            address: res.data.msg.detail[0].address, //	地址
+                            mobile: res.data.msg.detail[0].mobile, //	手机号码
+                            postcode: res.data.msg.detail[0].postcode //  邮政编码
                         }
                     } else {
                         that.data.isConsigneeShown = false;
                     }
+                    // 为SKU添加商品类型属性
+                    // 若是卡券类，则显示领取至微信卡包
+                    order.skuList = order.skuList.map(sku => {
+                        for (let i = 0; i < res.data.msg.product.length; i++) {
+                            if (res.data.msg.product[i].stock_no === sku.stock_no) {
+                                sku.pid = res.data.msg.product[i].pid;
+                                sku.type = res.data.msg.product[i].type;
+                            }
+                        }
+                        return sku;
+                    })
 
                     that.setData({
-						isConsigneeShown: that.data.isConsigneeShown,
+                        isConsigneeShown: that.data.isConsigneeShown,
                         subtotal: __PRICE__.totalPrice(order.skuList),
                         order: order
                     })
@@ -175,5 +186,39 @@ Page({
                         .then(() => __WX_API_PROMISE__.redirectTo('/pages/my/orders/orders')) //	跳转至 我的订单
                 }
             });
+    },
+
+    /**
+     * 	领取至微信卡包
+     */
+    bindTapCardHolder: function(evt) {
+        __WX_PAY_SERVICE__
+            .putIntoCardHolder(													//	放入微信卡包
+                wx.getStorageSync('__SESSION_KEY__'), 		  //  用户 session
+                evt.currentTarget.dataset.pid,									
+                this.data.order.out_trade_no
+            )
+            .then(res => {
+                return new Promise((resolve, reject) => {			     //	构建接口参数
+                    resolve({
+                        cardList: [{
+                            cardId: res.data.card_id,
+                            cardExt: JSON.stringify({
+                                "openid": res.data.openid,
+                                "nonce_str": res.data.nonceStr,
+                                "timestamp": res.data.timestamp,
+                                "signature": res.data.signature
+                            })
+                        }]
+                    });
+                });
+            })
+			.then(__WX_API_PROMISE__.addCard)		//	调用 wx.addCard
+            .then(result => {
+                console.log(result)
+            })
+            .catch(err => {
+                console.error(err);
+            })
     }
 })

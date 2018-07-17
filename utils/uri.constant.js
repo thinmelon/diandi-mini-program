@@ -58,6 +58,13 @@ const queryRefundInfo = () => {
 }
 
 /**
+ * 	将卡券放入卡包
+ */
+const putIntoCardHolder = () => {
+    return `${PREFIX_SHOPPING}/card/holder`;
+}
+
+/**
  *   用户登录
  */
 const userLogin = () => {
@@ -180,6 +187,7 @@ module.exports = {
     submitRefund: submitRefund,
     queryWechatPayOrder: queryWechatPayOrder,
     queryRefundInfo: queryRefundInfo,
+	putIntoCardHolder: putIntoCardHolder,
     userLogin: userLogin,
     addNewConsignee: addNewConsignee,
     editConsignee: editConsignee,
