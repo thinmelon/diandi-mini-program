@@ -9,9 +9,11 @@ Page({
      * 页面的初始数据
      */
     data: {
-        isConsigneeShown: true,
-        order: {},
-        subtotal: 0.00
+        isReady: false, //是否已加载完成
+        isConsigneeShown: true, //是否显示收件人信息
+        order: {}, //订单信息
+        subtotal: 0.00, //小计
+        card: [] //已领取的卡券信息
     },
 
     /**
@@ -19,9 +21,8 @@ Page({
      */
     onLoad: function(options) {
         const that = this;
-        console.log(options);
         const order = JSON.parse(options.order);
-        // console.log(order);
+        console.log(order);
 
         __WX_PAY_SERVICE__
             .queryOrder(order.out_trade_no)
@@ -64,6 +65,7 @@ Page({
                     })
 
                     that.setData({
+                        isReady: true,
                         isConsigneeShown: that.data.isConsigneeShown,
                         subtotal: __PRICE__.totalPrice(order.skuList),
                         order: order
@@ -76,7 +78,7 @@ Page({
      * 生命周期函数--监听页面初次渲染完成
      */
     onReady: function() {
-
+        this.queryUserCardsWrapper();
     },
 
     /**
@@ -192,33 +194,107 @@ Page({
      * 	领取至微信卡包
      */
     bindTapCardHolder: function(evt) {
+        let that = this;
+
         __WX_PAY_SERVICE__
-            .putIntoCardHolder(													//	放入微信卡包
-                wx.getStorageSync('__SESSION_KEY__'), 		  //  用户 session
-                evt.currentTarget.dataset.pid,									
+            .putIntoCardHolder( //	放入微信卡包
+                wx.getStorageSync('__SESSION_KEY__'), //  用户 session
+                evt.currentTarget.dataset.pid,
                 this.data.order.out_trade_no
             )
             .then(res => {
-                return new Promise((resolve, reject) => {			     //	构建接口参数
+                return new Promise((resolve, reject) => { //	构建接口参数
                     resolve({
                         cardList: [{
                             cardId: res.data.card_id,
                             cardExt: JSON.stringify({
-                                "openid": res.data.openid,
-                                "nonce_str": res.data.nonceStr,
-                                "timestamp": res.data.timestamp,
-                                "signature": res.data.signature
+                                "openid": res.data.openid, //用户
+                                "nonce_str": res.data.nonceStr, //随机数
+                                "timestamp": res.data.timestamp, //时间戳
+                                "signature": res.data.signature //签名
                             })
                         }]
                     });
                 });
             })
-			.then(__WX_API_PROMISE__.addCard)		//	调用 wx.addCard
+            .then(__WX_API_PROMISE__.addCard) //	调用 wx.addCard
             .then(result => {
-                console.log(result)
+                console.log(result);
+                //领取成功后
+                if (result.errMsg === 'addCard:ok' &&
+                    result.cardList.length > 0 &&
+                    result.cardList[0].isSuccess) {
+                    let cardExt = JSON.parse(result.cardList[0].cardExt);
+                    //记录用户领取记录
+                    __WX_PAY_SERVICE__
+                        .recordUserCard(
+                            wx.getStorageSync('__SESSION_KEY__'), //	SESSION
+                            result.cardList[0].cardId, //卡券ID
+                            cardExt.openid, //用户
+                            cardExt.timestamp, //创建时间戳
+                            that.data.order.out_trade_no, //交易ID
+                            result.cardList[0].code) //卡券CODE
+                        .then(res => {
+                            console.log(res);
+                            wx.showToast({
+                                title: '成功领取'
+                            });
+                        });
+                }
             })
             .catch(err => {
                 console.error(err);
             })
+    },
+
+	/**
+	 *  出示卡券
+	 */
+    bindTapShowCard: function() {
+		__WX_PAY_SERVICE__
+            .openUserCardList(
+                wx.getStorageSync('__SESSION_KEY__'),
+                JSON.stringify([this.data.order.out_trade_no])
+            )
+            .then(res => {
+                console.log(res);
+            })
+    },
+
+    /**
+     * 	查询用户是否已经领取过卡券
+     */
+    queryUserCards: function() {
+        let that = this;
+
+        __WX_PAY_SERVICE__
+            .queryUserCards(
+                wx.getStorageSync('__SESSION_KEY__'), //	SESSION
+                JSON.stringify([this.data.order.out_trade_no])
+            )
+            .then(res => {
+                console.log(res)
+                if (res.data.code === 0 && res.data.msg.length > 0) {
+                    let cardList = res.data.msg.map(card => {
+                        return {
+                            cardId: card.cardid,
+                            code: card.code
+                        }
+                    })
+                    that.setData({
+                        card: cardList
+                    });
+                }
+            });
+    },
+
+    queryUserCardsWrapper: function() {
+        if (this.data.isReady) {
+            this.queryUserCards();
+        } else {
+            setTimeout(() => {
+                this.queryUserCards();
+            }, 1000);
+        }
     }
 })

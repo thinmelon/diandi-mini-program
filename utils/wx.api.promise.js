@@ -204,8 +204,16 @@ function wxUploadFilePromise(options) {
  * 		注：cardExt 需进行 JSON 序列化为字符串传入
  */
 function wxAddCardPromise(options) {
-	console.log(options);
     return Promisify(wx.addCard)({
+        cardList: options.cardList
+    });
+}
+
+/**
+ * 	查看微信卡包中的卡券
+ */
+function wxOpenCardPromise(options) {
+    return Promisify(wx.openCard)({
         cardList: options.cardList
     });
 }
@@ -226,5 +234,6 @@ module.exports = {
     chooseImage: wxChooseImagePromise,
     chooseVideo: wxChooseVideoPromise,
     uploadFile: wxUploadFilePromise,
-	addCard: wxAddCardPromise
+    addCard: wxAddCardPromise,
+    openCard: wxOpenCardPromise
 }

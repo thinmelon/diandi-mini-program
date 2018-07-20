@@ -73,6 +73,14 @@ const queryRefundInfo = (session, out_trade_no) => {
 }
 
 /**
+ *   查询用户是否已购买过该商品
+ */
+const queryEverBought = (session, stock_no) => {
+    const url = __URI__.queryEverBought(session, stock_no);
+    return __WX_API_PROMISE__.getRequest(url, {});
+}
+
+/**
  *   获取商品列表
  * 		--	传入参数
  * 			session: **
@@ -105,6 +113,63 @@ const putIntoCardHolder = (session, product_id, out_trade_no) => {
         });
 }
 
+/**
+ *  在用户领取卡券至微信卡包后，记录用户的领取记录
+ */
+const recordUserCard = (session, cardid, openid, timestamp, out_trade_no, encrypt_code) => {
+    const url = __URI__.recordUserCard();
+    return __WX_API_PROMISE__.postRequest(
+        url, {
+            encrypt_code: encrypt_code,
+            session: session,
+            cardid: cardid,
+            openid: openid,
+            timestamp: timestamp,
+            out_trade_no: out_trade_no
+        });
+}
+
+/**
+ * 对应指定订单列表，查询用户所购买的卡券列表
+ */
+const queryUserCards = (session, tradeList) => {
+    const url = __URI__.queryUserCards();
+    return __WX_API_PROMISE__
+        .postRequest(
+            url, {
+                session: session,
+                tradeList: tradeList
+            });
+}
+
+/**
+ *  对应指定订单列表，查询用户所购买的卡券列表
+ *  打开微信卡券货架
+ */
+const openUserCardList = (session, tradeList) => {
+    const url = __URI__.queryUserCards();
+    return __WX_API_PROMISE__
+        .postRequest(
+            url, {
+                session: session,
+                tradeList: tradeList
+            })
+        .then(res => {
+            let cardList = res.data.msg.map(card => {
+                return {
+                    cardId: card.cardid,
+                    code: card.code
+                }
+            })
+            return new Promise((resolve, reject) => { //	构建接口参数
+                resolve({
+                    cardList: cardList
+                });
+            });
+        })
+        .then(__WX_API_PROMISE__.openCard);
+}
+
 module.exports = {
     __ENUM_ORDER_STATUS__: __ENUM_ORDER_STATUS__,
     submitUnifiedOrder: submitUnifiedOrder,
@@ -112,7 +177,11 @@ module.exports = {
     closeOrder: closeOrder,
     queryOrder: queryWechatPayOrder,
     queryRefundInfo: queryRefundInfo,
+    queryEverBought: queryEverBought,
     fetchProductList: fetchProductList,
     fetchProductDetail: fetchProductDetail,
-    putIntoCardHolder: putIntoCardHolder
+    putIntoCardHolder: putIntoCardHolder,
+    recordUserCard: recordUserCard,
+	queryUserCards: queryUserCards,
+    openUserCardList: openUserCardList
 }

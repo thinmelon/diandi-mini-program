@@ -50,6 +50,13 @@ const queryWechatPayOrder = (out_trade_no) => {
 }
 
 /**
+ * 	  查询用户是否已购买过该商品
+ */
+const queryEverBought = (session, stock_no) => {
+    return `${PREFIX_SHOPPING}/product/everBought?session=${session}&stock_no=${stock_no}`;
+}
+
+/**
  * 	获取退款进度
  */
 const queryRefundInfo = () => {
@@ -61,6 +68,20 @@ const queryRefundInfo = () => {
  */
 const putIntoCardHolder = () => {
     return `${PREFIX_SHOPPING}/card/holder`;
+}
+
+/**
+ * 	在用户领取卡券至微信卡包后，记录用户的领取记录
+ */
+const recordUserCard = () => {
+    return `${PREFIX_SHOPPING}/card/user`;
+}
+
+/**
+ * 对应指定订单列表，用户所购买的卡券列表
+ */
+const queryUserCards = () => {
+    return `${PREFIX_SHOPPING}/card/user/orders`;
 }
 
 /**
@@ -186,7 +207,10 @@ module.exports = {
     submitRefund: submitRefund,
     queryWechatPayOrder: queryWechatPayOrder,
     queryRefundInfo: queryRefundInfo,
-	putIntoCardHolder: putIntoCardHolder,
+    queryEverBought: queryEverBought,
+    putIntoCardHolder: putIntoCardHolder,
+    recordUserCard: recordUserCard,
+    queryUserCards: queryUserCards,
     userLogin: userLogin,
     addNewConsignee: addNewConsignee,
     editConsignee: editConsignee,

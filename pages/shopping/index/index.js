@@ -25,13 +25,6 @@ Page({
      * 生命周期函数--监听页面初次渲染完成
      */
     onReady: function() {
-
-    },
-
-    /**
-     * 生命周期函数--监听页面显示
-     */
-    onShow: function() {
         console.log('isLogin  ==>  ' + getApp().isLogIn);
         if (getApp().isLogIn) {
             this.fetchProductList();
@@ -40,6 +33,13 @@ Page({
                 this.fetchProductList();
             }, 1000);
         }
+    },
+
+    /**
+     * 生命周期函数--监听页面显示
+     */
+    onShow: function() {
+
     },
 
     /**
@@ -135,7 +135,7 @@ Page({
                     __WX_API_PROMISE__
                         .showToast(res.data.msg, 'none', '/icons/public/hint.png')
                         .then(() => {
-							that.fetchProductList();
+                            that.fetchProductList();
                         });
                 }
             });

@@ -20,7 +20,10 @@ Page({
         scrollViewHeight: 0, //  ScrollView的高度
         isHidden: true, //	是否隐藏video组件
         videoContext: null, //  视频模块上下文
-        videoUrl: '' //	视频播放地址
+        videoUrl: '', //	视频播放地址
+        isReady: false, //商品信息是否已获取
+        everBought: false, //用户是否已购买过该商品
+        history: [] //用户下过的订单
     },
 
     /**
@@ -117,6 +120,7 @@ Page({
                         );
                     } else {
                         that.setData({
+                            isReady: true,
                             product: that.data.product,
                             price: Math.min.apply(null, units) + ' ~ ' + Math.max.apply(null, units)
                         });
@@ -134,6 +138,7 @@ Page({
          * 在自定义组件下，第二个参数传入组件实例this，以操作组件内 <video/> 组件
          */
         this.videoContext = wx.createVideoContext('productIntroVideo', this);
+        this.everBoughtWrapper();
     },
 
     /**
@@ -141,7 +146,7 @@ Page({
      */
     onShow: function() {
         const scale = wx.getStorageSync('__WindowScale__');
-
+		//	滚动定位
         this.setData({
             scrollViewHeight: scale.height,
             swiperHeight: scale.width
@@ -251,6 +256,14 @@ Page({
             attributes = [],
             _cart = [];
 
+        if (this.data.isReady === false) {
+            wx.showToast({
+                title: '加载中',
+                image: "/icons/public/hint.png"
+            })
+            return;
+        }
+
         index = this.isHit();
         // 如果商品参数未全部设定，则将页面滚动至指定位置
         if (index === -1) {
@@ -291,6 +304,9 @@ Page({
         this.selectSKU(e.currentTarget.dataset.attribute, e.currentTarget.dataset.valueid);
     },
 
+	/**
+	 * 	 减少购买数量
+	 */
     bindTapMinus: function() {
         if (this.data.amount > 1) {
             this.data.amount--;
@@ -300,12 +316,32 @@ Page({
         }
     },
 
+	/**
+	 * 	增加购买数量 
+	 */
     bindTapAdd: function() {
         if (this.data.amount < this.data.remaining) {
             this.data.amount++;
             this.setData({
                 amount: this.data.amount
             });
+        }
+    },
+
+	/**
+	 *  出示卡券
+	 *  跳转至微信卡券列表
+	 */
+    bindTapShowCards: function() {
+        if (this.data.history.length > 0) {
+            __SHOPPING__
+                .openUserCardList(
+                    wx.getStorageSync('__SESSION_KEY__'),
+                    JSON.stringify(this.data.history)
+                )
+                .then(res => {
+                    console.log(res);
+                })
         }
     },
 
@@ -330,6 +366,9 @@ Page({
         return -1;
     },
 
+	/**
+	 *  选中SKU
+	 */
     selectSKU: function(currentChosenAttribute, currentChosenValueId) {
         let i, j, count, length, vid, index;
 
@@ -369,6 +408,7 @@ Page({
             // 命中
             // 设置为对应的SKU参数
             this.setData({
+                isReady: true,
                 amount: 1, //  初始化购买数量 
                 product: this.data.product, //  选中的规格底色发生变化 
                 chosenSkuId: this.data.product.sku[index].stock_no, //  stock_no
@@ -395,6 +435,46 @@ Page({
             }
         }
         return "";
+    },
+
+	/**
+	 *  如果商品为卡券类
+	 *  判断用户是否之前已购买过
+	 *  如果已购买，显示打开卡包
+	 */
+    everBougth: function() {
+        let that = this;
+        
+        if (this.data.product.type === 1) {
+            __SHOPPING__
+                .queryEverBought(
+                    wx.getStorageSync('__SESSION_KEY__'),
+                    this.data.product.sku[0].stock_no
+                )
+                .then(res => {
+                    console.log(res);
+                    //	设置属性为已购买
+                    if (res.data.code === 0 && res.data.everBought === 1) {
+                        let records = res.data.msg.map(item => {
+                            return item.out_trade_no;
+                        })
+                        that.setData({
+                            everBought: true,
+                            history: records
+                        })
+                    }
+                });
+        }
+    },
+
+    everBoughtWrapper: function() {
+        if (this.data.isReady) {
+            this.everBougth();
+        } else {
+            setTimeout(() => {
+                this.everBougth();
+            }, 1000);
+        }
     },
 
     /**

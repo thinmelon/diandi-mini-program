@@ -37,7 +37,8 @@
                     </view>
                 </view>
             </view>
-            <button type='warn' wx:if="{{ item.type === 1 && order.status == '支付成功'}}" data-pid='{{ item.pid }}' bindtap='bindTapCardHolder'>领取至微信卡包</button>
+            <button type='warn' wx:if="{{ item.type === 1 && order.status == '支付成功' && card.length === 0}}" data-pid='{{ item.pid }}' bindtap='bindTapCardHolder'>领取至微信卡包</button>
+			<button type='primary' wx:if="{{ item.type === 1 && order.status == '支付成功' && card.length > 0}}" bindtap='bindTapShowCard'>出示卡券</button>
         </view>
     </view>
 
