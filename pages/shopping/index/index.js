@@ -18,21 +18,14 @@ Page({
      * 生命周期函数--监听页面加载
      */
     onLoad: function(options) {
-
+        this.fetchProductListWrapper();
     },
 
     /**
      * 生命周期函数--监听页面初次渲染完成
      */
     onReady: function() {
-        console.log('isLogin  ==>  ' + getApp().isLogIn);
-        if (getApp().isLogIn) {
-            this.fetchProductList();
-        } else {
-            setTimeout(() => {
-                this.fetchProductList();
-            }, 1000);
-        }
+        
     },
 
     /**
@@ -86,8 +79,8 @@ Page({
      */
     onShareAppMessage: function(options) {
         return {
-            title: '萌主驾到',
-            path: '/page/shopping/index/index'
+            title: '好好吃饭',
+            path: '/pages/shopping/index/index'
         }
     },
 
@@ -98,6 +91,17 @@ Page({
         wx.navigateTo({
             url: '/pages/shopping/product/product?pid=' + e.currentTarget.dataset.product.pid
         })
+    },
+
+    fetchProductListWrapper: function(){
+        console.log('isLogin  ==>  ' + getApp().isLogIn);
+        if (getApp().isLogIn) {
+            this.fetchProductList();
+        } else {
+            setTimeout(() => {
+                this.fetchProductListWrapper();
+            }, 1000);
+        }
     },
 
     /**

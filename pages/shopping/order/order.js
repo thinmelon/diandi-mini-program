@@ -78,14 +78,14 @@ Page({
      * 生命周期函数--监听页面初次渲染完成
      */
     onReady: function() {
-        this.queryUserCardsWrapper();
+        
     },
 
     /**
      * 生命周期函数--监听页面显示
      */
     onShow: function() {
-
+        this.queryUserCardsWrapper();
     },
 
     /**
@@ -225,6 +225,15 @@ Page({
                     result.cardList.length > 0 &&
                     result.cardList[0].isSuccess) {
                     let cardExt = JSON.parse(result.cardList[0].cardExt);
+                    let cardList = result.cardList.map(card => {
+                        return {
+                            cardId: card.cardId,
+                            code: card.code
+                        }
+                    })
+                    that.setData({
+                        card: cardList
+                    });
                     //记录用户领取记录
                     __WX_PAY_SERVICE__
                         .recordUserCard(
@@ -293,7 +302,7 @@ Page({
             this.queryUserCards();
         } else {
             setTimeout(() => {
-                this.queryUserCards();
+                this.queryUserCardsWrapper();
             }, 1000);
         }
     }

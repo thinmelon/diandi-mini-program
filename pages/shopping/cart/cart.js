@@ -21,13 +21,7 @@ Page({
      * 生命周期函数--监听页面加载
      */
     onLoad: function(options) {
-        if (getApp().isLogIn) {
-            this.fetchMyCart();
-        } else {
-            setTimeout(() => {
-                this.fetchMyCart();
-            }, 1000);
-        }
+        this.fetchMyCartWrapper();
     },
 
     /**
@@ -79,6 +73,16 @@ Page({
      */
     onShareAppMessage: function() {
 
+    },
+
+    fetchMyCartWrapper: function() {
+        if (getApp().isLogIn) {
+            this.fetchMyCart();
+        } else {
+            setTimeout(() => {
+                this.fetchMyCartWrapper();
+            }, 1000);
+        }
     },
 
     fetchMyCart: function() {

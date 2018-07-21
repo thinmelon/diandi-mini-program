@@ -1,7 +1,6 @@
 {
     "pages": [
         "pages/shopping/index/index",
-        "pages/shopping/mall/mall",
         "pages/shopping/product/product",
         "pages/shopping/cart/cart",
         "pages/shopping/buy/buy",
@@ -11,9 +10,7 @@
         "pages/my/index/index",
 		"pages/my/address/address",
         "pages/my/consignee/consignee",
-        "pages/my/mobile/mobile",
         "pages/my/orders/orders",
-        "pages/my/posts/posts",
 		"pages/index/index"
     ],
     "window": {

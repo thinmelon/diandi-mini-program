@@ -23,7 +23,8 @@ Page({
         videoUrl: '', //	视频播放地址
         isReady: false, //商品信息是否已获取
         everBought: false, //用户是否已购买过该商品
-        history: [] //用户下过的订单
+        history: [], //用户下过的订单
+        showCardButton: false //是否显示卡券按键
     },
 
     /**
@@ -146,7 +147,7 @@ Page({
      */
     onShow: function() {
         const scale = wx.getStorageSync('__WindowScale__');
-		//	滚动定位
+        //	滚动定位
         this.setData({
             scrollViewHeight: scale.height,
             swiperHeight: scale.width
@@ -304,9 +305,9 @@ Page({
         this.selectSKU(e.currentTarget.dataset.attribute, e.currentTarget.dataset.valueid);
     },
 
-	/**
-	 * 	 减少购买数量
-	 */
+    /**
+     * 	 减少购买数量
+     */
     bindTapMinus: function() {
         if (this.data.amount > 1) {
             this.data.amount--;
@@ -316,9 +317,9 @@ Page({
         }
     },
 
-	/**
-	 * 	增加购买数量 
-	 */
+    /**
+     * 	增加购买数量 
+     */
     bindTapAdd: function() {
         if (this.data.amount < this.data.remaining) {
             this.data.amount++;
@@ -328,10 +329,10 @@ Page({
         }
     },
 
-	/**
-	 *  出示卡券
-	 *  跳转至微信卡券列表
-	 */
+    /**
+     *  出示卡券
+     *  跳转至微信卡券列表
+     */
     bindTapShowCards: function() {
         if (this.data.history.length > 0) {
             __SHOPPING__
@@ -366,9 +367,9 @@ Page({
         return -1;
     },
 
-	/**
-	 *  选中SKU
-	 */
+    /**
+     *  选中SKU
+     */
     selectSKU: function(currentChosenAttribute, currentChosenValueId) {
         let i, j, count, length, vid, index;
 
@@ -437,14 +438,14 @@ Page({
         return "";
     },
 
-	/**
-	 *  如果商品为卡券类
-	 *  判断用户是否之前已购买过
-	 *  如果已购买，显示打开卡包
-	 */
+    /**
+     *  如果商品为卡券类
+     *  判断用户是否之前已购买过
+     *  如果已购买，显示打开卡包
+     */
     everBougth: function() {
         let that = this;
-        
+
         if (this.data.product.type === 1) {
             __SHOPPING__
                 .queryEverBought(
@@ -459,9 +460,14 @@ Page({
                             return item.out_trade_no;
                         })
                         that.setData({
+                            showCardButton: true,
                             everBought: true,
                             history: records
-                        })
+                        });
+                    } else {
+                        that.setData({
+                            showCardButton: true
+                        });
                     }
                 });
         }
@@ -472,7 +478,7 @@ Page({
             this.everBougth();
         } else {
             setTimeout(() => {
-                this.everBougth();
+                this.everBoughtWrapper();
             }, 1000);
         }
     },

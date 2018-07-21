@@ -10,7 +10,7 @@ App({
 
         wxApiPromise
             .showLoading({ //  开始，显示加载框
-                title: '登录中...',
+                title: '玩命加载中',
                 mask: true
             })
             .then(wxApiPromise.login) //	  调用登录接口获取临时登录凭证（code）

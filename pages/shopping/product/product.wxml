@@ -90,11 +90,13 @@
         </view>
     </block>
     <block wx:elif='{{product.type === 1}}'>
-        <view class="bar-buy" bindtap="bindTapBuy" wx:if='{{!everBought}}'>
-            <text>立即抢购</text>
-        </view>
-        <view class="bar-buy" bindtap="bindTapShowCards" wx:else>
-            <text>出示卡券</text>
-        </view>
+        <block wx:if='{{showCardButton}}'>
+            <view class="bar-buy" bindtap="bindTapBuy" wx:if='{{!everBought}}'>
+                <text>立即抢购</text>
+            </view>
+            <view class="bar-buy" bindtap="bindTapShowCards" wx:else>
+                <text>出示卡券</text>
+            </view>
+        </block>
     </block>
 </view>

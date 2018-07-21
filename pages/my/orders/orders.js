@@ -17,13 +17,7 @@ Page({
      * 生命周期函数--监听页面加载
      */
     onLoad: function(options) {
-        if (getApp().isLogIn) {
-            this.fetchMyOrders();
-        } else {
-            setTimeout(() => {
-                this.fetchMyOrders();
-            }, 1000);
-        }
+        this.fetchMyOrdersWrapper();
     },
 
     /**
@@ -37,7 +31,7 @@ Page({
      * 生命周期函数--监听页面显示
      */
     onShow: function() {
-        
+
     },
 
     /**
@@ -73,6 +67,16 @@ Page({
      */
     onShareAppMessage: function() {
 
+    },
+
+    fetchMyOrdersWrapper: function() {
+        if (getApp().isLogIn) {
+            this.fetchMyOrders();
+        } else {
+            setTimeout(() => {
+                this.fetchMyOrdersWrapper();
+            }, 1000);
+        }
     },
 
     fetchMyOrders: function() {
