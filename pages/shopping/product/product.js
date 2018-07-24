@@ -22,8 +22,8 @@ Page({
         videoContext: null, //  视频模块上下文
         videoUrl: '', //	视频播放地址
         isReady: false, //商品信息是否已获取
-        everBought: false, //用户是否已购买过该商品
         history: [], //用户下过的订单
+        cards: [], //用户已领取的卡券
         showCardButton: false //是否显示卡券按键
     },
 
@@ -330,6 +330,49 @@ Page({
     },
 
     /**
+     *  领取卡券
+     */
+    bindTapCardHolder: function(evt) {
+        if (this.data.history.length > 0) {
+            let that = this;
+
+            __SHOPPING__
+                .putIntoCardHolder( //	放入微信卡包
+                    wx.getStorageSync('__SESSION_KEY__'), //  用户 session
+                    this.data.product.pid,
+                    this.data.history[0]
+                )
+                .then(result => {
+                    console.log(result);
+                    //领取成功后
+                    if (result.errMsg === 'addCard:ok' &&
+                        result.cardList.length > 0 &&
+                        result.cardList[0].isSuccess) {
+                        let cardExt = JSON.parse(result.cardList[0].cardExt);
+                        //记录用户领取记录
+                        __SHOPPING__
+                            .recordUserCard(
+                                wx.getStorageSync('__SESSION_KEY__'), //	SESSION
+                                result.cardList[0].cardId, //卡券ID
+                                cardExt.openid, //用户
+                                cardExt.timestamp, //创建时间戳
+                                that.data.history[0], //交易ID
+                                result.cardList[0].code) //卡券CODE
+                            .then(res => {
+                                console.log(res);
+                                wx.showToast({
+                                    title: '成功领取'
+                                });
+                            });
+                    }
+                })
+                .catch(err => {
+                    console.error(err);
+                });
+        }
+    },
+
+    /**
      *  出示卡券
      *  跳转至微信卡券列表
      */
@@ -455,14 +498,14 @@ Page({
                 .then(res => {
                     console.log(res);
                     //	设置属性为已购买
-                    if (res.data.code === 0 && res.data.everBought === 1) {
-                        let records = res.data.msg.map(item => {
+                    if (res.data.code === 0) {
+                        let records = res.data.msg.order.map(item => {
                             return item.out_trade_no;
                         })
                         that.setData({
                             showCardButton: true,
-                            everBought: true,
-                            history: records
+                            history: records,
+                            cards: res.data.msg.card
                         });
                     } else {
                         that.setData({

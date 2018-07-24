@@ -202,22 +202,6 @@ Page({
                 evt.currentTarget.dataset.pid,
                 this.data.order.out_trade_no
             )
-            .then(res => {
-                return new Promise((resolve, reject) => { //	构建接口参数
-                    resolve({
-                        cardList: [{
-                            cardId: res.data.card_id,
-                            cardExt: JSON.stringify({
-                                "openid": res.data.openid, //用户
-                                "nonce_str": res.data.nonceStr, //随机数
-                                "timestamp": res.data.timestamp, //时间戳
-                                "signature": res.data.signature //签名
-                            })
-                        }]
-                    });
-                });
-            })
-            .then(__WX_API_PROMISE__.addCard) //	调用 wx.addCard
             .then(result => {
                 console.log(result);
                 //领取成功后
