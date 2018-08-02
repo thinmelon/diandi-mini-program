@@ -25,7 +25,7 @@ Page({
      * 生命周期函数--监听页面初次渲染完成
      */
     onReady: function() {
-        
+
     },
 
     /**
@@ -93,7 +93,7 @@ Page({
         })
     },
 
-    fetchProductListWrapper: function(){
+    fetchProductListWrapper: function() {
         console.log('isLogin  ==>  ' + getApp().isLogIn);
         if (getApp().isLogIn) {
             this.fetchProductList();
