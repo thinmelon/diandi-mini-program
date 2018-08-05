@@ -1,0 +1,12 @@
+<!--pages/official/index/index.wxml-->
+<view wx:for="{{ newsList }}" wx:key="{{ item.url }}" class='news' bindtap='bindTapNews' data-url='{{ item.url }}'>
+    <view class='title'>
+        {{ item.title }}
+    </view>
+    <view class='regular'>
+        作者：{{ item.author }}
+    </view>
+    <view class='brief'>
+        {{ item.digest }}
+    </view>
+</view>

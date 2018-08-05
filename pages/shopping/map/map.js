@@ -1,8 +1,8 @@
 // pages/shopping/map/map.js
-
+const __SHOPPING__ = require('../../../services/wechat.pay.service.js');
 // 引入SDK核心类
-const __QQ_MAP__ = require('../../../lib/qqmap-wx-jssdk.js');
-let qqMapSDK;
+// const __QQ_MAP__ = require('../../../lib/qqmap-wx-jssdk.js');
+// let qqMapSDK;
 
 Page({
 
@@ -13,58 +13,8 @@ Page({
         centerLongitude: 119.003326,
         centerLatitude: 25.43034,
         scale: 15,
-        markers: [{
-                iconPath: "/icons/public/location.png",
-                id: 0,
-                latitude: 25.43279,
-                longitude: 119.01699,
-                width: 30,
-                height: 30,
-                label: {
-					content: '德古拉比萨',
-                    color: '#000000',
-                    fontSize: 10,
-                    anchorX: -20,
-                    anchorY: 0,
-                    padding: 3,
-                    textAlign: 'center'
-                }
-            },
-            {
-                iconPath: "/icons/public/location.png",
-                id: 1,
-                latitude: 25.4239,
-                longitude: 119.01004,
-                width: 30,
-                height: 30,
-				label: {
-					content: '郝太爷',
-					color: '#000000',
-					fontSize: 10,
-					anchorX: -20,
-					anchorY: 0,
-					padding: 3,
-					textAlign: 'center'
-				}
-            },
-            {
-                iconPath: "/icons/public/location.png",
-                id: 2,
-                latitude: 25.428061,
-                longitude: 119.025383,
-                width: 30,
-                height: 30,
-				label: {
-					content: '炭再说',
-					color: '#000000',
-					fontSize: 10,
-					anchorX: -20,
-					anchorY: 0,
-					padding: 3,
-					textAlign: 'center'
-				}
-            }
-        ],
+        markers: [],
+        chosenMarker: {},
         isBusinessShow: false
     },
 
@@ -72,9 +22,11 @@ Page({
      * 生命周期函数--监听页面加载
      */
     onLoad: function(options) {
-        qqMapSDK = new __QQ_MAP__({
-            key: 'C2CBZ-MTCWO-VVBW4-STO3P-TZZDT-57BL5'
-        })
+        // qqMapSDK = new __QQ_MAP__({
+        //     key: 'C2CBZ-MTCWO-VVBW4-STO3P-TZZDT-57BL5'
+        // })
+        this.fetchOnlineBusinessListWrapper();
+
     },
 
     /**
@@ -140,40 +92,107 @@ Page({
     },
 
     bindMarkerTap: function(e) {
-        console.log('======== Marker ======== ')
-        console.log(e);
+        let marker = this.data.markers[e.markerId];
+        this.data.chosenMarker = {
+            bid: marker.bid,
+            name: marker.name,
+            address: marker.address,
+            latitude: marker.latitude,
+            longitude: marker.longitude,
+            consumptionPerPerson: marker.consumptionPerPerson,
+            phone: marker.phone,
+            shopHours: marker.shopHours,
+            mediaId: marker.mediaId,
+            productId: marker.productId
+        }
         this.setData({
-            isBusinessShow: true
+            isBusinessShow: true,
+            chosenMarker: this.data.chosenMarker
         })
     },
 
     bindTapController: function(e) {
-        console.log('======== Controller ======== ')
         this.setData({
             isBusinessShow: false
         })
     },
 
     catchTapNavigator: function(e) {
-        console.log('======== Navigator ======== ')
         wx.openLocation({
-            latitude: 23.362490,
-            longitude: 116.715790,
+            latitude: e.currentTarget.dataset.marker.latitude,
+            longitude: e.currentTarget.dataset.marker.longitude,
             scale: 18,
-            name: '华乾大厦',
-            address: '金平区长平路93号'
+            name: e.currentTarget.dataset.marker.name,
+            address: e.currentTarget.dataset.marker.address
         })
     },
 
     catchTapOfficial: function(e) {
+        console.log(e);
         wx.navigateTo({
-            url: '/pages/shopping/official/official',
+            url: '/pages/official/index/index?mid=' + e.currentTarget.dataset.media
         })
     },
 
     catchTapProduct: function(e) {
         wx.navigateTo({
-            url: '/pages/shopping/product/product?pid=' + 'DHt9gYpFFu9nFKQjA1lo3HJ2vvOvv5Mp'
+            url: '/pages/shopping/product/product?pid=' + e.currentTarget.dataset.product
         })
+    },
+
+    fetchOnlineBusinessListWrapper: function () {
+        console.log('isLogin  ==>  ' + getApp().isLogIn);
+        if (getApp().isLogIn) {
+            this.fetchOnlineBusinessList();
+        } else {
+            setTimeout(() => {
+                this.fetchOnlineBusinessListWrapper();
+            }, 1000); 
+        }
+    },
+
+    fetchOnlineBusinessList: function() {
+        var that = this;
+
+        __SHOPPING__
+            .fetchOnlineBusinessList(wx.getStorageSync('__SESSION_KEY__'))
+            .then(result => {
+                console.log(result);
+                if (result.data.code === 0) {
+                    let index = 0;
+                    result.data.msg.map(item => {
+                        that.data.markers.push({
+                            iconPath: "/icons/public/location.png",
+                            id: index++,
+                            latitude: item.latitude,
+                            longitude: item.longitude,
+                            width: 30,
+                            height: 30,
+                            label: {
+                                content: item.name,
+                                color: '#000000',
+                                fontSize: 10,
+                                anchorX: -20,
+                                anchorY: 0,
+                                padding: 3,
+                                textAlign: 'center'
+                            },
+                            bid: item.bid,
+                            name: item.name,
+                            address: item.address,
+                            shopHours: item.shopHours,
+                            consumptionPerPerson: item.consumptionPerPerson,
+                            phone: item.phone,
+                            mediaId: item.mediaId,
+                            productId: item.productId
+                        });
+                    });
+                    that.setData({
+                        markers: that.data.markers
+                    })
+                }
+            });
     }
+
+
 })

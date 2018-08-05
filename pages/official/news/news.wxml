@@ -1,0 +1,2 @@
+<!--pages/official/news/news.wxml-->
+<web-view src="{{ source }}"></web-view>

@@ -186,6 +186,11 @@ const openUserCardList = (session, tradeList) => {
         .then(__WX_API_PROMISE__.openCard);
 }
 
+const fetchOnlineBusinessList = (session) => {
+    const url = __URI__.fetchOnlineBusinessList(session);
+    return __WX_API_PROMISE__.getRequest(url, {});
+}
+
 module.exports = {
     __ENUM_ORDER_STATUS__: __ENUM_ORDER_STATUS__,
     submitUnifiedOrder: submitUnifiedOrder,
@@ -199,5 +204,6 @@ module.exports = {
     putIntoCardHolder: putIntoCardHolder,
     recordUserCard: recordUserCard,
     queryUserCards: queryUserCards,
-    openUserCardList: openUserCardList
+    openUserCardList: openUserCardList,
+    fetchOnlineBusinessList: fetchOnlineBusinessList
 }

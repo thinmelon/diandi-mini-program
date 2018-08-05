@@ -14,20 +14,26 @@
 
 .container {
     width: 80%;
-    height: 70vh;
-	background-color: #FFF;
-	display: flex;
+    height: 88vh;
+    background-color: #fff;
+    display: flex;
     flex-direction: column;
     justify-content: flex-start;
     align-items: flex-start;
 }
 
-.item{
-	width: 100%;
-	display: flex;
+.item {
+    width: 100%;
+    display: flex;
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-	padding: 1rem 0.1rem;
-	font-size: 11pt;
+    padding: 1rem 0.1rem;
+    font-size: 11pt;
+}
+
+.item cover-image {
+    width: 20px;
+    height: 20px;
+    padding-right: 0.3rem;
 }

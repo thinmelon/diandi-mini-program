@@ -6,25 +6,28 @@
                 <cover-image src="/icons/public/sample.jpeg" />
             </cover-view>
             <cover-view class="item">
-                <cover-view>营业时间: 18:00 ~ 02:00</cover-view>
+                <cover-view>{{ chosenMarker.name }}</cover-view>
             </cover-view>
-            <cover-view class="item">
-                <cover-view>折前人均: ￥60+</cover-view>
+            <cover-view class="item" wx:if="{{ chosenMarker.shopHours }}">
+                <cover-view>营业时间: {{ chosenMarker.shopHours }}</cover-view>
             </cover-view>
-            <cover-view class="item">
-                <cover-view>电话: 0594-2995777; 13859837178</cover-view>
+            <cover-view class="item" wx:if="{{ chosenMarker.consumptionPerPerson }}">
+                <cover-view>折前人均: {{ chosenMarker.consumptionPerPerson }}</cover-view>
             </cover-view>
-            <cover-view class="item" catchtap='catchTapNavigator'>
+            <cover-view class="item" wx:if="{{ chosenMarker.phone }}">
+                <cover-view>电话: {{ chosenMarker.phone }}</cover-view>
+            </cover-view>
+            <cover-view class="item" catchtap='catchTapNavigator' data-marker='{{ chosenMarker }}'>
                 <cover-view>导航</cover-view>
-                <cover-image src="/icons/public/select.png" style='width: 20px; height: 20px; padding-right: 0.3rem;' />
+                <cover-image src="/icons/public/select.png" />
             </cover-view>
-			<cover-view class="item" catchtap='catchTapOfficial'>
+            <cover-view class="item" wx:if="{{ chosenMarker.mediaId }}" catchtap='catchTapOfficial' data-media='{{ chosenMarker.mediaId }}'>
                 <cover-view>介绍</cover-view>
-                <cover-image src="/icons/public/select.png" style='width: 20px; height: 20px; padding-right: 0.3rem;' />
+                <cover-image src="/icons/public/select.png" />
             </cover-view>
-			<cover-view class="item" catchtap='catchTapProduct'>
+            <cover-view class="item" wx:if="{{ chosenMarker.productId }}" catchtap='catchTapProduct' data-product='{{ chosenMarker.productId }}'>
                 <cover-view>优惠</cover-view>
-                <cover-image src="/icons/public/select.png" style='width: 20px; height: 20px; padding-right: 0.3rem;' />
+                <cover-image src="/icons/public/select.png" />
             </cover-view>
         </cover-view>
     </cover-view>

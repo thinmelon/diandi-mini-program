@@ -85,6 +85,13 @@ const queryUserCards = () => {
 }
 
 /**
+ * 
+ */
+const fetchOnlineBusinessList = (session) => {
+    return `${PREFIX_SHOPPING}/business/online?session=${session}`;
+}
+
+/**
  *   用户登录
  */
 const userLogin = () => {
@@ -196,8 +203,25 @@ const uploadVideo = () => {
     return `${PREFIX_STORAGE}/video`;
 }
 
+/**
+ *  图片地址
+ */
 const imageUrlPrefix = (name) => {
     return `${PREFIX_STORAGE}/image/${encodeURIComponent(name)}`;
+}
+
+/**
+ *  图文素材
+ */
+const fetchOfficialMaterial = (mediaId) => {
+    return `${PREFIX_STORAGE}/official/material/${mediaId}`;
+}
+
+/**
+ *  文章地址
+ */
+const fetchOfficialNews = (url) => {
+    return `${PREFIX_STORAGE}/official/news?url=${url}`;
 }
 
 module.exports = {
@@ -211,6 +235,7 @@ module.exports = {
     putIntoCardHolder: putIntoCardHolder,
     recordUserCard: recordUserCard,
     queryUserCards: queryUserCards,
+    fetchOnlineBusinessList: fetchOnlineBusinessList,
     userLogin: userLogin,
     addNewConsignee: addNewConsignee,
     editConsignee: editConsignee,
@@ -228,5 +253,7 @@ module.exports = {
     fetchProductDetail: fetchProductDetail,
     fetchMyOrders: fetchMyOrders,
     fetchSTSToken: fetchSTSToken,
-    imageUrlPrefix: imageUrlPrefix
+    imageUrlPrefix: imageUrlPrefix,
+    fetchOfficialMaterial: fetchOfficialMaterial,
+    fetchOfficialNews: fetchOfficialNews
 }
