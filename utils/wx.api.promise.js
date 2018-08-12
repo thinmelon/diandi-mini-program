@@ -218,6 +218,16 @@ function wxOpenCardPromise(options) {
     });
 }
 
+/**
+ *  获取当前的地理位置、速度
+ */
+function wxGetLocationPromise(options) {
+    return Promisify(wx.getLocation)({
+        type: 'wgs84',
+        altitude: false
+    });
+}
+
 module.exports = {
     getRequest: wxGetRequestPromise,
     postRequest: wxPostRequestPromise,
@@ -235,5 +245,6 @@ module.exports = {
     chooseVideo: wxChooseVideoPromise,
     uploadFile: wxUploadFilePromise,
     addCard: wxAddCardPromise,
-    openCard: wxOpenCardPromise
+    openCard: wxOpenCardPromise,
+    getLocation: wxGetLocationPromise
 }

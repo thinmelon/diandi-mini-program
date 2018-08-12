@@ -1,5 +1,6 @@
 // pages/shopping/map/map.js
 const __SHOPPING__ = require('../../../services/wechat.pay.service.js');
+const __WX_API_PROMISE__ = require('../../../utils/wx.api.promise.js');
 // 引入SDK核心类
 // const __QQ_MAP__ = require('../../../lib/qqmap-wx-jssdk.js');
 // let qqMapSDK;
@@ -26,7 +27,6 @@ Page({
         //     key: 'C2CBZ-MTCWO-VVBW4-STO3P-TZZDT-57BL5'
         // })
         this.fetchOnlineBusinessListWrapper();
-
     },
 
     /**
@@ -40,6 +40,40 @@ Page({
      * 生命周期函数--监听页面显示
      */
     onShow: function() {
+        var that = this;
+
+        //  我的位置
+        __WX_API_PROMISE__
+            .getLocation()
+            .then(res => {
+                console.log(res)
+                if (res.errMsg === "getLocation:ok") {
+                    console.log(that.data.markers);
+                    that.data.markers.push({
+                        iconPath: "/icons/public/favorite.png",
+                        id: 0,
+                        latitude: res.latitude,
+                        longitude: res.longitude,
+                        width: 30,
+                        height: 30,
+                        label: {
+                            content: '我的位置',
+                            color: '#000000',
+                            fontSize: 10,
+                            anchorX: -23,
+                            anchorY: 0,
+                            padding: 3,
+                            textAlign: 'center'
+                        }
+                    });
+
+                    that.setData({
+                        markers: that.data.markers,
+                        centerLongitude: res.longitude,
+                        centerLatitude: res.latitude
+                    });
+                }
+            });
         // 调用接口
         // console.log(qqMapSDK)
         // qqMapSDK.geocoder({
@@ -140,14 +174,14 @@ Page({
         })
     },
 
-    fetchOnlineBusinessListWrapper: function () {
+    fetchOnlineBusinessListWrapper: function() {
         console.log('isLogin  ==>  ' + getApp().isLogIn);
         if (getApp().isLogIn) {
             this.fetchOnlineBusinessList();
         } else {
             setTimeout(() => {
                 this.fetchOnlineBusinessListWrapper();
-            }, 1000); 
+            }, 1000);
         }
     },
 
@@ -163,20 +197,20 @@ Page({
                     result.data.msg.map(item => {
                         that.data.markers.push({
                             iconPath: "/icons/public/location.png",
-                            id: index++,
+                            id: ++index,
                             latitude: item.latitude,
                             longitude: item.longitude,
                             width: 30,
                             height: 30,
-                            label: {
-                                content: item.name,
-                                color: '#000000',
-                                fontSize: 10,
-                                anchorX: -20,
-                                anchorY: 0,
-                                padding: 3,
-                                textAlign: 'center'
-                            },
+                            // label: {
+                            //     content: item.name,
+                            //     color: '#000000',
+                            //     fontSize: 10,
+                            //     anchorX: -20,
+                            //     anchorY: 0,
+                            //     padding: 3,
+                            //     textAlign: 'center'
+                            // },
                             bid: item.bid,
                             name: item.name,
                             address: item.address,
