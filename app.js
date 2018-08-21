@@ -13,32 +13,34 @@ App({
                 title: '玩命加载中',
                 mask: true
             })
-            .then(wxApiPromise.login) //	  调用登录接口获取临时登录凭证（code）
-            .then(__CREDENTIAL__.userLogin) //  	访问后端，用code获取session key
-            .then(result => { //   对结果进行转换
-                console.log(result);
+            .then(wxApiPromise.getExtConfig) //	获取第三方平台自定义的数据字段( appid )
+            .then(config => {
+                console.log(config);
                 return new Promise((resolve, reject) => {
-                    resolve({
-                        key: '__SESSION_KEY__',
-                        data: result.data
-                    })
-                })
+                    if (config.hasOwnProperty('errMsg') && config.errMsg === "getExtConfig: ok") {
+                        resolve({
+                            key: '__AUTHORIZER_APPID__',
+                            data: config.extConfig.appid
+                        });
+                    } else {
+                        reject(config); //	发生错误
+                    }
+                });
             })
             .then(wxApiPromise.setStorage) //  存入本地
-            .then(result => {
-                that.isLogIn = true;
-                return new Promise((resolve, reject) => {
-                    resolve('Log in.')
-                })
-            })
-            // .then(wxApiPromise.hideLoading)  				//  关闭加载框
+			.then(()=>{
+				return new Promise((resolve, reject) => {
+					resolve(0);
+				});
+			})
+            .then(that.wxLogin)
             .catch(exception => {
+                console.error('CATCH YOU')
                 console.error(exception);
             })
             .finally(() => {
                 wxApiPromise.hideLoading();
-            })
-
+            });
 
         wxApiPromise.getSystemInfo() //  获取设备信息
             .then(result => {
@@ -53,6 +55,52 @@ App({
                 });
             })
             .then(wxApiPromise.setStorage); //  存入本地
+    },
+
+	/**
+	 * 		第三方登录
+	 */
+    wxLogin: function(refreshTokenInForce) {
+		let that = this;
+
+        return wxApiPromise.login() //	  调用登录接口获取临时登录凭证（code）
+            .then(message => {
+                console.log(message);
+                return new Promise((resolve, reject) => {
+                    if (message.hasOwnProperty('errMsg') && message.errMsg === 'login:ok') {
+                        resolve({
+                            authorizer_appid: wx.getStorageSync('__AUTHORIZER_APPID__'),
+                            code: message.code,
+                            refreshTokenInForce: refreshTokenInForce
+                        });
+                    } else {
+                        reject(message); //	发生错误
+                    }
+                });
+            })
+            .then(__CREDENTIAL__.userLogin) //  	访问后端，用code获取session key
+            .then(result => { //   对结果进行转换
+                console.log(result);
+                return new Promise((resolve, reject) => {
+                    if (result.statusCode === 404) {
+                        reject('Not found'); //	发生错误
+                    } else if (result.data.hasOwnProperty('errcode') && result.data.errcode !== 0) {
+                        reject(result.data); //	发生错误
+                    } else {
+                        resolve({
+                            key: '__SESSION_KEY__',
+                            data: result.data
+                        });
+                    }
+                });
+            })
+            .then(wxApiPromise.setStorage) //  存入本地
+            .then(result => {
+                that.isLogIn = true;
+                return new Promise((resolve, reject) => {
+                    resolve('Log in.')
+                })
+            });
     }
 })
 

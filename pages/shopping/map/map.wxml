@@ -1,4 +1,7 @@
 <!--pages/shopping/map/map.wxml-->
+<view class='item'>
+    <input type='text' confirm-type='search' placeholder='请输入您要查询的位置' style='width: 100%' bindconfirm='bindConfirmLocation' bindinput='bindInputLocation'></input>
+</view>
 <map class="pusuMap" longitude="{{centerLongitude}}" latitude="{{centerLatitude}}" scale="{{scale}}" markers="{{markers}}" bindmarkertap="bindMarkerTap">
     <cover-view class="controller" wx:if="{{isBusinessShow}}" bindtap='bindTapController'>
         <cover-view class='container'>

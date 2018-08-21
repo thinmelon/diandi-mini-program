@@ -2,8 +2,8 @@
 const __SHOPPING__ = require('../../../services/wechat.pay.service.js');
 const __WX_API_PROMISE__ = require('../../../utils/wx.api.promise.js');
 // 引入SDK核心类
-// const __QQ_MAP__ = require('../../../lib/qqmap-wx-jssdk.js');
-// let qqMapSDK;
+const __QQ_MAP__ = require('../../../lib/qqmap-wx-jssdk.js');
+let qqMapSDK;
 
 Page({
 
@@ -16,16 +16,25 @@ Page({
         scale: 15,
         markers: [],
         chosenMarker: {},
-        isBusinessShow: false
+        isBusinessShow: false,
+        location: ''
     },
 
     /**
      * 生命周期函数--监听页面加载
      */
     onLoad: function(options) {
-        // qqMapSDK = new __QQ_MAP__({
-        //     key: 'C2CBZ-MTCWO-VVBW4-STO3P-TZZDT-57BL5'
-        // })
+        qqMapSDK = new __QQ_MAP__({
+            key: 'C2CBZ-MTCWO-VVBW4-STO3P-TZZDT-57BL5'
+        })
+        // if (wx.getExtConfig) {
+        //     wx.getExtConfig({
+        //         success: function(res) {
+		// 			console.log('====== getExtConfig ======')
+        //             console.log(res.extConfig)
+        //         }
+        //     })
+        // }
         this.fetchOnlineBusinessListWrapper();
     },
 
@@ -49,45 +58,9 @@ Page({
                 console.log(res)
                 if (res.errMsg === "getLocation:ok") {
                     console.log(that.data.markers);
-                    that.data.markers.push({
-                        iconPath: "/icons/public/favorite.png",
-                        id: 0,
-                        latitude: res.latitude,
-                        longitude: res.longitude,
-                        width: 30,
-                        height: 30,
-                        label: {
-                            content: '我的位置',
-                            color: '#000000',
-                            fontSize: 10,
-                            anchorX: -23,
-                            anchorY: 0,
-                            padding: 3,
-                            textAlign: 'center'
-                        }
-                    });
-
-                    that.setData({
-                        markers: that.data.markers,
-                        centerLongitude: res.longitude,
-                        centerLatitude: res.latitude
-                    });
+                    that.setMyLocation(res.longitude, res.latitude);
                 }
             });
-        // 调用接口
-        // console.log(qqMapSDK)
-        // qqMapSDK.geocoder({
-        //     address: '莆田市荔城区坊巷119号',
-        //     success: function(res) {
-        //         console.log(res);
-        //     },
-        //     fail: function(res) {
-        //         console.log(res);
-        //     },
-        //     complete: function(res) {
-        //         console.log(res);
-        //     }
-        // })
     },
 
     /**
@@ -125,6 +98,9 @@ Page({
 
     },
 
+    /**
+     * 		显示浮层
+     */
     bindMarkerTap: function(e) {
         let marker = this.data.markers[e.markerId];
         this.data.chosenMarker = {
@@ -145,12 +121,18 @@ Page({
         })
     },
 
+    /**
+     * 		关闭浮层
+     */
     bindTapController: function(e) {
         this.setData({
             isBusinessShow: false
         })
     },
 
+    /**
+     * 		进入商户导航
+     */
     catchTapNavigator: function(e) {
         wx.openLocation({
             latitude: e.currentTarget.dataset.marker.latitude,
@@ -161,6 +143,9 @@ Page({
         })
     },
 
+    /**
+     * 		进入商户所关联的软文
+     */
     catchTapOfficial: function(e) {
         console.log(e);
         wx.navigateTo({
@@ -168,12 +153,19 @@ Page({
         })
     },
 
+    /**
+     * 		进入商户所关联的优惠政策
+     */
     catchTapProduct: function(e) {
         wx.navigateTo({
             url: '/pages/shopping/product/product?pid=' + e.currentTarget.dataset.product
         })
     },
 
+    /**
+     * 		确认是否已登录
+     * 		登录后获取在线的商户列表
+     */
     fetchOnlineBusinessListWrapper: function() {
         console.log('isLogin  ==>  ' + getApp().isLogIn);
         if (getApp().isLogIn) {
@@ -185,6 +177,9 @@ Page({
         }
     },
 
+    /**
+     * 		获取在线的商户列表
+     */
     fetchOnlineBusinessList: function() {
         var that = this;
 
@@ -226,7 +221,68 @@ Page({
                     })
                 }
             });
-    }
+    },
 
+    /**
+     * 		更换定位
+     */
+    bindConfirmLocation: function() {
+        var that = this;
+
+        // 调用由地址描述到所述位置坐标的转换接口
+        qqMapSDK.geocoder({
+            address: this.data.location,
+            success: function(res) {},
+            fail: function(res) {},
+            complete: function(res) {
+                console.log(res);
+                if (res.status === 0) {
+                    that.setMyLocation(res.result.location.lng, res.result.location.lat);
+                } else if (res.status === 347) {
+                    wx.showToast({
+                        title: res.message,
+                        icon: 'success',
+                        duration: 2000
+                    });
+                }
+            }
+        });
+    },
+
+    /**
+     * 		定位输入文本框输入事件
+     */
+    bindInputLocation: function(evt) {
+        this.data.location = evt.detail.value;
+    },
+
+    /**
+     * 		设置我的位置
+     */
+    setMyLocation: function(longitude, latitude) {
+        this.data.markers.push({
+            iconPath: "/icons/public/favorite.png",
+            id: 0,
+            longitude: longitude,
+            latitude: latitude,
+            width: 30,
+            height: 30,
+            label: {
+                content: '我的位置',
+                color: '#000000',
+                fontSize: 10,
+                anchorX: -23,
+                anchorY: 0,
+                padding: 3,
+                textAlign: 'center'
+            }
+        });
+
+        this.setData({
+            markers: this.data.markers,
+            centerLongitude: longitude,
+            centerLatitude: latitude
+        });
+    }
 
 })

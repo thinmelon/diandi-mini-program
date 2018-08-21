@@ -94,8 +94,9 @@ const fetchOnlineBusinessList = (session) => {
 /**
  *   用户登录
  */
-const userLogin = () => {
-    return `${PREFIX_USER}/login`;
+const userLogin = (appid) => {
+    // return `${PREFIX_USER}/login`;
+    return `${PREFIX_USER}/miniprogram/${appid}`;
 }
 
 /**

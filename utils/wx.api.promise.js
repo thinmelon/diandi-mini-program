@@ -228,6 +228,13 @@ function wxGetLocationPromise(options) {
     });
 }
 
+/**
+ * 	获取第三方平台自定义的数据字段
+ */
+function wxGetExtConfigPromise(options) {
+    return Promisify(wx.getExtConfig)();
+}
+
 module.exports = {
     getRequest: wxGetRequestPromise,
     postRequest: wxPostRequestPromise,
@@ -246,5 +253,6 @@ module.exports = {
     uploadFile: wxUploadFilePromise,
     addCard: wxAddCardPromise,
     openCard: wxOpenCardPromise,
-    getLocation: wxGetLocationPromise
+    getLocation: wxGetLocationPromise,
+    getExtConfig: wxGetExtConfigPromise
 }
