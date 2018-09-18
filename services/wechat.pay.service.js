@@ -87,8 +87,8 @@ const queryEverBought = (session, stock_no) => {
  * 			startTime: 起始时间
  * 			n: 返回数目
  */
-const fetchProductList = (session, startTime, n) => {
-    const url = __URI__.fetchProductList(session, startTime, n);
+const fetchProductList = (session, businessId, offset, amount) => {
+    const url = __URI__.fetchProductList(session, businessId, offset, amount);
     return __WX_API_PROMISE__.getRequest(url, {});
 }
 

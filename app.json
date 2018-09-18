@@ -13,8 +13,7 @@
 		"pages/my/index/index",
 		"pages/my/address/address",
 		"pages/my/consignee/consignee",
-		"pages/my/orders/orders",
-		"pages/index/index"
+		"pages/my/orders/orders"
 	],
 	"window": {
 		"backgroundTextStyle": "light",

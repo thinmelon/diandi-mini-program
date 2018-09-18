@@ -18,21 +18,14 @@ App({
                 console.log(config);
                 return new Promise((resolve, reject) => {
                     if (config.hasOwnProperty('errMsg') && config.errMsg === "getExtConfig: ok") {
-                        resolve({
-                            key: '__AUTHORIZER_APPID__',
-                            data: config.extConfig.appid
-                        });
+                        wx.setStorageSync('__AUTHORIZER_APPID__', config.extConfig.appid)
+                        wx.setStorageSync('__AUTHORIZER_BUSINESSID__', config.extConfig.businessid)
+                        resolve('OK');
                     } else {
                         reject(config); //	发生错误
                     }
                 });
             })
-            .then(wxApiPromise.setStorage) //  存入本地
-			.then(()=>{
-				return new Promise((resolve, reject) => {
-					resolve(0);
-				});
-			})
             .then(that.wxLogin)
             .catch(exception => {
                 console.error('CATCH YOU')
@@ -57,11 +50,11 @@ App({
             .then(wxApiPromise.setStorage); //  存入本地
     },
 
-	/**
-	 * 		第三方登录
-	 */
+    /**
+     * 		第三方登录
+     */
     wxLogin: function(refreshTokenInForce) {
-		let that = this;
+        let that = this;
 
         return wxApiPromise.login() //	  调用登录接口获取临时登录凭证（code）
             .then(message => {

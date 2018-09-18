@@ -197,15 +197,15 @@ Page({
                             longitude: item.longitude,
                             width: 30,
                             height: 30,
-                            // label: {
-                            //     content: item.name,
-                            //     color: '#000000',
-                            //     fontSize: 10,
-                            //     anchorX: -20,
-                            //     anchorY: 0,
-                            //     padding: 3,
-                            //     textAlign: 'center'
-                            // },
+                            label: {
+                                content: item.name,
+                                color: '#000000',
+                                fontSize: 10,
+                                anchorX: -20,
+                                anchorY: 0,
+                                padding: 3,
+                                textAlign: 'center'
+                            },
                             bid: item.bid,
                             name: item.name,
                             address: item.address,

@@ -10,8 +10,8 @@ const PREFIX_STORAGE = PROTOCOL + HOST + '/oss';
 /**
  *  商品列表
  */
-const fetchProductList = (session, startTime, n) => {
-    return `${PREFIX_SHOPPING}/product/list?session=${session}&startTime=${startTime}&number=${n}`;
+const fetchProductList = (session, businessId, offset, amount) => {
+    return `${PREFIX_SHOPPING}/product/partial?session=${ session }&businessId=${ businessId }&offset=${ offset }&amount=${ amount }`;
 }
 
 /** 

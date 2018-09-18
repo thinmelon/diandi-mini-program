@@ -113,8 +113,8 @@ Page({
         __SHOPPING__
             .fetchProductList(
                 wx.getStorageSync('__SESSION_KEY__'),
-                __DATE__.formatTime(new Date()),
-                10)
+                wx.getStorageSync('__AUTHORIZER_BUSINESSID__'),
+                0, 5)
             .then(res => {
                 console.log(res)
                 if (res.data.code === 0) {
