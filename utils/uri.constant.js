@@ -87,15 +87,14 @@ const queryUserCards = () => {
 /**
  * 
  */
-const fetchOnlineBusinessList = (session) => {
-    return `${PREFIX_SHOPPING}/business/online?session=${session}`;
+const fetchOnlineBusinessList = (session, appid) => {
+    return `${PREFIX_SHOPPING}/business/online?session=${session}&appid=${appid}`;
 }
 
 /**
  *   用户登录
  */
 const userLogin = (appid) => {
-    // return `${PREFIX_USER}/login`;
     return `${PREFIX_USER}/miniprogram/${appid}`;
 }
 

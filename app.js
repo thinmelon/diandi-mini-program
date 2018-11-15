@@ -28,7 +28,7 @@ App({
             })
             .then(that.wxLogin)
             .catch(exception => {
-                console.error('CATCH YOU')
+                console.error('Login failed!')
                 console.error(exception);
             })
             .finally(() => {
@@ -79,11 +79,13 @@ App({
                         reject('Not found'); //	发生错误
                     } else if (result.data.hasOwnProperty('errcode') && result.data.errcode !== 0) {
                         reject(result.data); //	发生错误
-                    } else {
+                    } else if (result.data.hasOwnProperty('code') && result.data.code === 0) {
                         resolve({
                             key: '__SESSION_KEY__',
-                            data: result.data
+                            data: result.data.data.value.session
                         });
+                    } else {
+                        reject(result.data); //	发生错误
                     }
                 });
             })

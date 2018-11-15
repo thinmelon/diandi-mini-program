@@ -186,8 +186,11 @@ const openUserCardList = (session, tradeList) => {
         .then(__WX_API_PROMISE__.openCard);
 }
 
-const fetchOnlineBusinessList = (session) => {
-    const url = __URI__.fetchOnlineBusinessList(session);
+/**
+ * 	获取当前appid下所有已上线的商户列表
+ */
+const fetchOnlineBusinessList = (session, appid) => {
+    const url = __URI__.fetchOnlineBusinessList(session, appid);
     return __WX_API_PROMISE__.getRequest(url, {});
 }
 

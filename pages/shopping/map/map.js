@@ -27,14 +27,6 @@ Page({
         qqMapSDK = new __QQ_MAP__({
             key: 'C2CBZ-MTCWO-VVBW4-STO3P-TZZDT-57BL5'
         })
-        // if (wx.getExtConfig) {
-        //     wx.getExtConfig({
-        //         success: function(res) {
-		// 			console.log('====== getExtConfig ======')
-        //             console.log(res.extConfig)
-        //         }
-        //     })
-        // }
         this.fetchOnlineBusinessListWrapper();
     },
 
@@ -102,23 +94,28 @@ Page({
      * 		显示浮层
      */
     bindMarkerTap: function(e) {
-        let marker = this.data.markers[e.markerId];
-        this.data.chosenMarker = {
-            bid: marker.bid,
-            name: marker.name,
-            address: marker.address,
-            latitude: marker.latitude,
-            longitude: marker.longitude,
-            consumptionPerPerson: marker.consumptionPerPerson,
-            phone: marker.phone,
-            shopHours: marker.shopHours,
-            mediaId: marker.mediaId,
-            productId: marker.productId
+        let tmp = this.data.markers.filter(marker => {
+            return marker.id === e.markerId;
+        });
+        let marker = tmp.length > 0 ? tmp[0] : null;
+        if (marker) {
+            this.data.chosenMarker = {
+                bid: marker.bid,
+                name: marker.name,
+                address: marker.address,
+                latitude: marker.latitude,
+                longitude: marker.longitude,
+                consumptionPerPerson: marker.consumptionPerPerson,
+                phone: marker.phone,
+                shopHours: marker.shopHours,
+                mediaId: marker.mediaId,
+                productId: marker.productId
+            }
+            this.setData({
+                isBusinessShow: true,
+                chosenMarker: this.data.chosenMarker
+            })
         }
-        this.setData({
-            isBusinessShow: true,
-            chosenMarker: this.data.chosenMarker
-        })
     },
 
     /**
@@ -184,14 +181,17 @@ Page({
         var that = this;
 
         __SHOPPING__
-            .fetchOnlineBusinessList(wx.getStorageSync('__SESSION_KEY__'))
+            .fetchOnlineBusinessList(
+                wx.getStorageSync('__SESSION_KEY__'),
+                wx.getStorageSync('__AUTHORIZER_APPID__')
+            )
             .then(result => {
                 console.log(result);
                 if (result.data.code === 0) {
                     let index = 0;
-                    result.data.msg.map(item => {
+                    result.data.data.map(item => {
                         that.data.markers.push({
-                            iconPath: "/icons/public/location.png",
+							iconPath: "/icons/public/favorite.png",
                             id: ++index,
                             latitude: item.latitude,
                             longitude: item.longitude,
@@ -206,13 +206,13 @@ Page({
                                 padding: 3,
                                 textAlign: 'center'
                             },
-                            bid: item.bid,
+                            bid: item._id,
                             name: item.name,
                             address: item.address,
                             shopHours: item.shopHours,
                             consumptionPerPerson: item.consumptionPerPerson,
                             phone: item.phone,
-                            mediaId: item.mediaId,
+                            mediaId: item.material.length > 0 ? item.material[0] : null,
                             productId: item.productId
                         });
                     });
@@ -261,7 +261,7 @@ Page({
      */
     setMyLocation: function(longitude, latitude) {
         this.data.markers.push({
-            iconPath: "/icons/public/favorite.png",
+			iconPath: "/icons/public/location.png",
             id: 0,
             longitude: longitude,
             latitude: latitude,
@@ -277,6 +277,8 @@ Page({
                 textAlign: 'center'
             }
         });
+
+        console.log(this.data.markers)
 
         this.setData({
             markers: this.data.markers,

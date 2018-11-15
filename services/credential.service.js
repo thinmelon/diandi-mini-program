@@ -11,8 +11,7 @@ const userLogin = (request) => {
     // });
     const url = __URI__.userLogin(request.authorizer_appid);
     return __WX_API_PROMISE__.postRequest(url, {
-        code: request.code,
-        refreshTokenInForce: request.refreshTokenInForce
+        code: request.code
     });
 }
 
