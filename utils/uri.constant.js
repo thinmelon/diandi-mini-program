@@ -3,6 +3,7 @@
  */
 const PROTOCOL = 'https://';
 const HOST = 'www.pusudo.cn';
+const PREFIX_PLATFORM = PROTOCOL + HOST + '/platform';
 const PREFIX_SHOPPING = PROTOCOL + HOST + '/shopping';
 const PREFIX_USER = PROTOCOL + HOST + '/user';
 const PREFIX_STORAGE = PROTOCOL + HOST + '/oss';
@@ -95,7 +96,7 @@ const fetchOnlineBusinessList = (session, appid) => {
  *   用户登录
  */
 const userLogin = (appid) => {
-    return `${PREFIX_USER}/miniprogram/${appid}`;
+	return `${PREFIX_PLATFORM}/miniprogram/${appid}`;
 }
 
 /**

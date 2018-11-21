@@ -54,13 +54,15 @@ App({
      * 		第三方登录
      */
     wxLogin: function(refreshTokenInForce) {
-        let that = this;
+        let that = this,
+            startTime;
 
         return wxApiPromise.login() //	  调用登录接口获取临时登录凭证（code）
             .then(message => {
                 console.log(message);
                 return new Promise((resolve, reject) => {
                     if (message.hasOwnProperty('errMsg') && message.errMsg === 'login:ok') {
+                        startTime = Date.now();
                         resolve({
                             authorizer_appid: wx.getStorageSync('__AUTHORIZER_APPID__'),
                             code: message.code,
@@ -81,8 +83,14 @@ App({
                         reject(result.data); //	发生错误
                     } else if (result.data.hasOwnProperty('code') && result.data.code === 0) {
                         resolve({
-                            key: '__SESSION_KEY__',
-                            data: result.data.data.value.session
+                            key: '__KEY__',
+                            data: {
+                                session: result.data.data.value.session,
+                                publicKey: result.data.data.publicKey,
+								//	与服务端的系统时间进行校准
+								//	将请求时间 + 网络延误与系统时间进行比较，计算误差
+								duration: Math.round(result.data.data.serverTime - ((startTime + Date.now()) / 2))
+                            }
                         });
                     } else {
                         reject(result.data); //	发生错误

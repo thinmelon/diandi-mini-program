@@ -1,4 +1,5 @@
 // pages/shopping/map/map.js
+const __CRYPT__ = require('../../../utils/crypt.js');
 const __SHOPPING__ = require('../../../services/wechat.pay.service.js');
 const __WX_API_PROMISE__ = require('../../../utils/wx.api.promise.js');
 // 引入SDK核心类
@@ -182,7 +183,7 @@ Page({
 
         __SHOPPING__
             .fetchOnlineBusinessList(
-                wx.getStorageSync('__SESSION_KEY__'),
+                encodeURIComponent(__CRYPT__.encryptData('')),
                 wx.getStorageSync('__AUTHORIZER_APPID__')
             )
             .then(result => {
@@ -191,7 +192,7 @@ Page({
                     let index = 0;
                     result.data.data.map(item => {
                         that.data.markers.push({
-							iconPath: "/icons/public/favorite.png",
+                            iconPath: "/icons/public/favorite.png",
                             id: ++index,
                             latitude: item.latitude,
                             longitude: item.longitude,
@@ -261,7 +262,7 @@ Page({
      */
     setMyLocation: function(longitude, latitude) {
         this.data.markers.push({
-			iconPath: "/icons/public/location.png",
+            iconPath: "/icons/public/location.png",
             id: 0,
             longitude: longitude,
             latitude: latitude,
