@@ -1,4 +1,5 @@
 // pages/shopping/index/index.js
+const __CRYPT__ = require('../../../utils/crypt.js');
 const __URI__ = require('../../../utils/uri.constant.js');
 const __DATE__ = require('../../../utils/date.formatter.js');
 const __WX_API_PROMISE__ = require('../../../utils/wx.api.promise.js');
@@ -18,7 +19,8 @@ Page({
      * 生命周期函数--监听页面加载
      */
     onLoad: function(options) {
-        this.fetchProductListWrapper();
+        console.log(options)
+        this.fetchProductListWrapper(options.bid);
     },
 
     /**
@@ -89,17 +91,17 @@ Page({
      */
     bindTapCollections: function(e) {
         wx.navigateTo({
-            url: '/pages/shopping/product/product?pid=' + e.currentTarget.dataset.product.pid
+            url: '/pages/shopping/product/product?pid=' + e.currentTarget.dataset.product._id
         })
     },
 
-    fetchProductListWrapper: function() {
+    fetchProductListWrapper: function(bid) {
         console.log('isLogin  ==>  ' + getApp().isLogIn);
         if (getApp().isLogIn) {
-            this.fetchProductList();
+            this.fetchProductList(bid);
         } else {
             setTimeout(() => {
-                this.fetchProductListWrapper();
+                this.fetchProductListWrapper(bid);
             }, 1000);
         }
     },
@@ -107,31 +109,22 @@ Page({
     /**
      * 	获取商品列表
      */
-    fetchProductList: function() {
+    fetchProductList: function(bid) {
         let that = this;
 
         __SHOPPING__
             .fetchProductList(
-                wx.getStorageSync('__SESSION_KEY__'),
-                wx.getStorageSync('__AUTHORIZER_BUSINESSID__'),
+                encodeURIComponent(__CRYPT__.encryptData('')),
+                bid,
                 0, 5)
             .then(res => {
-                console.log(res)
                 if (res.data.code === 0) {
-                    let products = res.data.msg.product.map(item => {
-                        let thumbnails = res.data.msg.gallery.filter(image => {
-                            return image.productid === item.pid;
-                        }).map(thumbnail => {
-                            thumbnail.name = __URI__.imageUrlPrefix(thumbnail.name);
-                            return thumbnail;
-                        })
+                    let products = res.data.data.map(item => {
                         item.name = decodeURIComponent(item.name);
-                        item.thumbnails = thumbnails;
-
+						// item.thumbnails[0].url = __URI__.imageUrlPrefix(item.thumbnails[0].path);
                         return item;
                     })
                     console.log(products);
-
                     that.setData({
                         collections: products
                     })
@@ -139,7 +132,7 @@ Page({
                     __WX_API_PROMISE__
                         .showToast(res.data.msg, 'none', '/icons/public/hint.png')
                         .then(() => {
-                            that.fetchProductList();
+                            that.fetchProductList(bid);
                         });
                 }
             });

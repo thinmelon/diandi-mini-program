@@ -95,8 +95,8 @@ const fetchProductList = (session, businessId, offset, amount) => {
 /**
  *   获取商品详情
  */
-const fetchProductDetail = (product_id) => {
-    const url = __URI__.fetchProductDetail(product_id);
+const fetchProductDetail = (session, product_id) => {
+    const url = __URI__.fetchProductDetail(session, product_id);
     return __WX_API_PROMISE__.getRequest(url, {});
 }
 

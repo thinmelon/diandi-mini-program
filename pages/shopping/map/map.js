@@ -28,6 +28,25 @@ Page({
         qqMapSDK = new __QQ_MAP__({
             key: 'C2CBZ-MTCWO-VVBW4-STO3P-TZZDT-57BL5'
         })
+        //	我的定位	-	初始值
+        this.data.markers.push({
+            iconPath: "/icons/public/location.png",
+            id: 0,
+            longitude: 0,
+            latitude: 0,
+            width: 30,
+            height: 30,
+            label: {
+                content: '我的位置',
+                color: '#000000',
+                fontSize: 10,
+                anchorX: -23,
+                anchorY: 0,
+                padding: 3,
+                textAlign: 'center'
+            }
+        });
+        //	获取在线商户列表
         this.fetchOnlineBusinessListWrapper();
     },
 
@@ -50,7 +69,6 @@ Page({
             .then(res => {
                 console.log(res)
                 if (res.errMsg === "getLocation:ok") {
-                    console.log(that.data.markers);
                     that.setMyLocation(res.longitude, res.latitude);
                 }
             });
@@ -99,7 +117,7 @@ Page({
             return marker.id === e.markerId;
         });
         let marker = tmp.length > 0 ? tmp[0] : null;
-        if (marker) {
+        if (marker && marker.id !== 0) {
             this.data.chosenMarker = {
                 bid: marker.bid,
                 name: marker.name,
@@ -156,7 +174,7 @@ Page({
      */
     catchTapProduct: function(e) {
         wx.navigateTo({
-            url: '/pages/shopping/product/product?pid=' + e.currentTarget.dataset.product
+            url: '/pages/shopping/index/index?bid=' + e.currentTarget.dataset.bid
         })
     },
 
@@ -225,7 +243,7 @@ Page({
     },
 
     /**
-     * 		更换定位
+     * 		根据用户在搜索栏输入的地址查找坐标并更换地图定位
      */
     bindConfirmLocation: function() {
         var that = this;
@@ -261,23 +279,8 @@ Page({
      * 		设置我的位置
      */
     setMyLocation: function(longitude, latitude) {
-        this.data.markers.push({
-            iconPath: "/icons/public/location.png",
-            id: 0,
-            longitude: longitude,
-            latitude: latitude,
-            width: 30,
-            height: 30,
-            label: {
-                content: '我的位置',
-                color: '#000000',
-                fontSize: 10,
-                anchorX: -23,
-                anchorY: 0,
-                padding: 3,
-                textAlign: 'center'
-            }
-        });
+        this.data.markers[0].longitude = longitude;
+        this.data.markers[0].latitude = latitude;
 
         console.log(this.data.markers)
 

@@ -9,17 +9,31 @@ const PREFIX_USER = PROTOCOL + HOST + '/user';
 const PREFIX_STORAGE = PROTOCOL + HOST + '/oss';
 
 /**
+ *   用户登录
+ */
+const userLogin = (appid) => {
+    return `${PREFIX_PLATFORM}/miniprogram/${appid}`;
+}
+
+/**
+ * 	获取在线商户列表
+ */
+const fetchOnlineBusinessList = (session, appid) => {
+    return `${PREFIX_SHOPPING}/business/online?session=${session}&appid=${appid}`;
+}
+
+/**
  *  商品列表
  */
 const fetchProductList = (session, businessId, offset, amount) => {
-    return `${PREFIX_SHOPPING}/product/partial?session=${ session }&businessId=${ businessId }&offset=${ offset }&amount=${ amount }`;
+    return `${PREFIX_SHOPPING}/product/partial?session=${ session }&bid=${ businessId }&offset=${ offset }&amount=${ amount }`;
 }
 
 /** 
  *   商品详情
  */
-const fetchProductDetail = (product_id) => {
-    return `${PREFIX_SHOPPING}/product/detail/${product_id}`;
+const fetchProductDetail = (session, product_id) => {
+    return `${PREFIX_SHOPPING}/product/detail/${product_id}?session=${session }`;
 }
 
 /**
@@ -58,6 +72,13 @@ const queryEverBought = (session, stock_no) => {
 }
 
 /**
+ *  由用户发起退款申请
+ */
+const submitRefund = () => {
+    return `${PREFIX_USER}/my/refund`;
+}
+
+/**
  * 	获取退款进度
  */
 const queryRefundInfo = () => {
@@ -83,20 +104,6 @@ const recordUserCard = () => {
  */
 const queryUserCards = () => {
     return `${PREFIX_SHOPPING}/card/user/orders`;
-}
-
-/**
- * 
- */
-const fetchOnlineBusinessList = (session, appid) => {
-    return `${PREFIX_SHOPPING}/business/online?session=${session}&appid=${appid}`;
-}
-
-/**
- *   用户登录
- */
-const userLogin = (appid) => {
-	return `${PREFIX_PLATFORM}/miniprogram/${appid}`;
 }
 
 /**
@@ -149,7 +156,7 @@ const joinToCart = () => {
 }
 
 /**
- *   添加至购物车
+ *   更新购物车
  */
 const updateMyCart = () => {
     return `${PREFIX_USER}/cart`;
@@ -177,13 +184,6 @@ const fetchMyOrders = () => {
 }
 
 /**
- *  由用户发起退款申请
- */
-const submitRefund = () => {
-    return `${PREFIX_USER}/my/refund`;
-}
-
-/**
  * 	获得临时Token
  */
 const fetchSTSToken = (session) => {
@@ -198,7 +198,7 @@ const uploadImage = () => {
 }
 
 /**
- *   上传图片
+ *   上传视频
  */
 const uploadVideo = () => {
     return `${PREFIX_STORAGE}/video`;
@@ -212,14 +212,14 @@ const imageUrlPrefix = (name) => {
 }
 
 /**
- *  图文素材
+ *  公众号图文素材
  */
 const fetchOfficialMaterial = (mediaId) => {
     return `${PREFIX_STORAGE}/official/material/${mediaId}`;
 }
 
 /**
- *  文章地址
+ *  公众号文章详情地址
  */
 const fetchOfficialNews = (url) => {
     return `${PREFIX_STORAGE}/official/news?url=${url}`;

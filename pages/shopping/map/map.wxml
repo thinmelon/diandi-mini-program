@@ -28,7 +28,7 @@
                 <cover-view>介绍</cover-view>
                 <cover-image src="/icons/public/select.png" />
             </cover-view>
-            <cover-view class="item" wx:if="{{ chosenMarker.productId }}" catchtap='catchTapProduct' data-product='{{ chosenMarker.productId }}'>
+            <cover-view class="item" catchtap='catchTapProduct' data-bid='{{ chosenMarker.bid }}'>
                 <cover-view>优惠</cover-view>
                 <cover-image src="/icons/public/select.png" />
             </cover-view>

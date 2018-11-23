@@ -9,7 +9,7 @@
 		"postcss": true,
 		"minified": true,
 		"newFeature": true,
-		"nodeModules": false
+		"nodeModules": true
 	},
 	"compileType": "miniprogram",
 	"libVersion": "2.2.3",
@@ -34,43 +34,13 @@
 			"list": []
 		},
 		"miniprogram": {
-			"current": -1,
+			"current": 0,
 			"list": [
 				{
-					"id": -1,
-					"name": "待支付订单",
-					"pathName": "pages/shopping/buy/buy",
-					"query": ""
-				},
-				{
-					"id": -1,
-					"name": "订单详情",
-					"pathName": "pages/shopping/order/order",
-					"query": ""
-				},
-				{
-					"id": 2,
-					"name": "商品详情",
-					"pathName": "pages/shopping/product/product",
-					"query": "product={\"pid\":\"lJfQQu4AQGmxNCwfwrpzBnvxk9nRus2z\",\"name\":\"Test\",\"description\":\"Test\",\"sales\":0,\"status\":0}"
-				},
-				{
-					"id": -1,
-					"name": "我的收件人",
-					"pathName": "pages/my/consignee/consignee",
-					"query": ""
-				},
-				{
-					"id": -1,
-					"name": "购物车",
-					"pathName": "pages/shopping/cart/cart",
-					"query": ""
-				},
-				{
-					"id": 5,
+					"id": 0,
 					"name": "我的订单",
-					"pathName": "pages/my/orders/orders",
-					"query": ""
+					"pathName": "pages/shopping/index/index",
+					"query": "bid=5bdbf6960220aeeb768f865c"
 				}
 			]
 		}

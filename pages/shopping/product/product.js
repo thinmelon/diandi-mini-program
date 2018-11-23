@@ -1,4 +1,5 @@
 // pages/shopping/product/product.js
+const __CRYPT__ = require('../../../utils/crypt.js');
 const __USER__ = require('../../../services/credential.service.js');
 const __SHOPPING__ = require('../../../services/wechat.pay.service.js');
 const __URI__ = require('../../../utils/uri.constant.js');
@@ -32,100 +33,84 @@ Page({
      */
     onLoad: function(options) {
         const that = this;
-
+        console.log(options);
         //	商品ID
         that.data.product.pid = options.pid;
         // 获取详细数据
         __SHOPPING__
-            .fetchProductDetail(options.pid)
+            .fetchProductDetail(encodeURIComponent(__CRYPT__.encryptData('')), options.pid)
             .then(res => {
-                console.log(res)
                 if (0 === res.data.code) { //	code: 0 返回正确结果
                     //	商品标题
-                    that.data.product.name = decodeURIComponent(res.data.msg.product[0].name);
+                    that.data.product.name = decodeURIComponent(res.data.data.name);
                     //  商品详情
-                    that.data.product.description = decodeURIComponent(res.data.msg.product[0].description);
+                    that.data.product.description = decodeURIComponent(res.data.data.description);
                     //  商品类型
-                    that.data.product.type = res.data.msg.product[0].type;
-                    that.data.product.freight = 0; // 初始设置运费为 0
+                    that.data.product.type = res.data.data.type;
+					// 初始设置运费为 0
+                    that.data.product.freight = 0; 
                     //  赋值 skuList
-                    that.data.product.sku = res.data.msg.skuList;
-                    let isHit, standards = [];
-                    //  遍历规格数组
-                    for (let i = 0; i < res.data.msg.standards.length; i++) {
-                        isHit = false;
-                        for (let j = 0; j < standards.length; j++) {
-                            if (standards[j].attribute === res.data.msg.standards[i].name) {
-                                isHit = true;
-                                //	聚集有相同的 attribute 的 属性值 
-                                standards[j].collections.push({
-                                    skuValueId: res.data.msg.standards[i].vid,
-                                    value: res.data.msg.standards[i].value
-                                })
-                            } /** end of if */
-                        } /** end of for */
-                        if (!isHit) { // 如果未命中
-                            standards.push({ // 则添加为新元素 属性名 + 值 
-                                attribute: res.data.msg.standards[i].name,
-                                collections: [{
-                                    skuValueId: res.data.msg.standards[i].vid,
-                                    value: res.data.msg.standards[i].value
-                                }]
-                            })
-                        } /** end of if */
-                    } /**	end of for */
+                    that.data.product.sku = res.data.data.sku;
+                    // let isHit, standards = [];
+                    // //  遍历规格数组
+                    // for (let i = 0; i < res.data.msg.standards.length; i++) {
+                    //     isHit = false;
+                    //     for (let j = 0; j < standards.length; j++) {
+                    //         if (standards[j].attribute === res.data.msg.standards[i].name) {
+                    //             isHit = true;
+                    //             //	聚集有相同的 attribute 的 属性值 
+                    //             standards[j].collections.push({
+                    //                 skuValueId: res.data.msg.standards[i].vid,
+                    //                 value: res.data.msg.standards[i].value
+                    //             })
+                    //         } /** end of if */
+                    //     } /** end of for */
+                    //     if (!isHit) { // 如果未命中
+                    //         standards.push({ // 则添加为新元素 属性名 + 值 
+                    //             attribute: res.data.msg.standards[i].name,
+                    //             collections: [{
+                    //                 skuValueId: res.data.msg.standards[i].vid,
+                    //                 value: res.data.msg.standards[i].value
+                    //             }]
+                    //         })
+                    //     } /** end of if */
+                    // } /**	end of for */
                     //  赋值 standards
-                    that.data.product.standards = standards;
+                    that.data.product.standards = res.data.data.attributes;
                     //  获取SKU的单价数组
-                    const units = that.data.product.sku.map((item) => {
+                    const units = res.data.data.sku.map((item) => {
                         return item.unit;
                     });
+                    console.log(units);
                     //  商品微缩图
-                    that.data.product.thumbnails = res.data.msg.gallery
-                        .filter(image => {
-                            return image.type === 0;
-                        })
-                        .map(image => {
-                            image.name = __URI__.imageUrlPrefix(image.name);
-                            return image;
-                        })
+                    that.data.product.thumbnails = res.data.data.thumbnails;
                     //  商品详情图
-                    that.data.product.gallery = res.data.msg.gallery
-                        .filter(image => {
-                            return image.type === 1;
-                        })
-                        .map(image => {
-                            image.name = __URI__.imageUrlPrefix(image.name);
-                            return image;
-                        })
+                    that.data.product.gallery = res.data.data.details;
                     //  商品视频
-                    that.data.product.videos = res.data.msg.gallery
-                        .filter(image => {
-                            return image.type === 2;
-                        })
-                        .map(image => {
-                            image.name = __URI__.imageUrlPrefix(image.name);
-                            that.data.product.thumbnails.unshift(image);
-                            return image;
-                        })
+                    that.data.product.videos = res.data.data.videos;
                     console.log(that.data.product);
 
                     /**
                      * 如果商品当前的属性，以及属性下的值个数仅为1
                      * 则默认选中
                      */
-                    if (that.data.product.standards.length === 1 &&
-                        that.data.product.standards[0].collections.length === 1) {
-                        that.selectSKU(that.data.product.standards[0].attribute,
-                            that.data.product.standards[0].collections[0].skuValueId
-                        );
-                    } else {
-                        that.setData({
-                            isReady: true,
-                            product: that.data.product,
-                            price: Math.min.apply(null, units) + ' ~ ' + Math.max.apply(null, units)
-                        });
-                    }
+                    // if (that.data.product.standards.length === 1 &&
+                    //     that.data.product.standards[0].collections.length === 1) {
+                    //     that.selectSKU(that.data.product.standards[0].attribute,
+                    //         that.data.product.standards[0].collections[0].skuValueId
+                    //     );
+                    // } else {
+                    //     that.setData({
+                    //         isReady: true,
+                    //         product: that.data.product,
+                    //         price: Math.min.apply(null, units) + ' ~ ' + Math.max.apply(null, units)
+                    //     });
+                    // }
+                    that.setData({
+                        isReady: true,
+                        product: that.data.product,
+                        price: Math.min.apply(null, units) + ' ~ ' + Math.max.apply(null, units)
+                    });
                 }
             });
     },
