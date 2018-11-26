@@ -110,35 +110,35 @@ const queryUserCards = () => {
  *   添加新的收件人
  */
 const addNewConsignee = (session) => {
-    return `${PREFIX_USER}/consignee/${session}`;
+    return `${PREFIX_USER}/consignee?session=${session }`;
 }
 
 /**
  *   编辑收件人
  */
 const editConsignee = (session) => {
-    return `${PREFIX_USER}/consignee/${session}`;
+    return `${PREFIX_USER}/consignee?session=${session }`;
 }
 
 /**
  *   移除收件人
  */
 const removeConsignee = (session) => {
-    return `${PREFIX_USER}/consignee/${session}`;
+    return `${PREFIX_USER}/consignee?session=${session }`;
 }
 
 /**
  *   缺省收件人
  */
 const defaultConsignee = (session) => {
-    return `${PREFIX_USER}/default/consignee/${session}`;
+    return `${PREFIX_USER}/default/consignee?session=${session }`;
 }
 
 /**
  *   我的收件人列表
  */
 const myConsignee = (session) => {
-    return `${PREFIX_USER}/my/consignee/${session}`;
+    return `${PREFIX_USER}/my/consignee?session=${session }`;
 }
 
 /**

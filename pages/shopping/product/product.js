@@ -33,7 +33,7 @@ Page({
      */
     onLoad: function(options) {
         const that = this;
-        console.log(options);
+
         //	商品ID
         that.data.product.pid = options.pid;
         // 获取详细数据
@@ -47,41 +47,26 @@ Page({
                     that.data.product.description = decodeURIComponent(res.data.data.description);
                     //  商品类型
                     that.data.product.type = res.data.data.type;
-					// 初始设置运费为 0
-                    that.data.product.freight = 0; 
+                    // 初始设置运费为 0
+                    that.data.product.freight = 0;
                     //  赋值 skuList
                     that.data.product.sku = res.data.data.sku;
-                    // let isHit, standards = [];
-                    // //  遍历规格数组
-                    // for (let i = 0; i < res.data.msg.standards.length; i++) {
-                    //     isHit = false;
-                    //     for (let j = 0; j < standards.length; j++) {
-                    //         if (standards[j].attribute === res.data.msg.standards[i].name) {
-                    //             isHit = true;
-                    //             //	聚集有相同的 attribute 的 属性值 
-                    //             standards[j].collections.push({
-                    //                 skuValueId: res.data.msg.standards[i].vid,
-                    //                 value: res.data.msg.standards[i].value
-                    //             })
-                    //         } /** end of if */
-                    //     } /** end of for */
-                    //     if (!isHit) { // 如果未命中
-                    //         standards.push({ // 则添加为新元素 属性名 + 值 
-                    //             attribute: res.data.msg.standards[i].name,
-                    //             collections: [{
-                    //                 skuValueId: res.data.msg.standards[i].vid,
-                    //                 value: res.data.msg.standards[i].value
-                    //             }]
-                    //         })
-                    //     } /** end of if */
-                    // } /**	end of for */
                     //  赋值 standards
-                    that.data.product.standards = res.data.data.attributes;
+                    that.data.product.standards = res.data.data.attributes.map(item => {
+                        let index = 0;
+                        item.values = item.values.map(value => {
+                            return {
+                                index: ++index,
+                                value: value,
+                                enable: false
+                            };
+                        });
+                        return item;
+                    });
                     //  获取SKU的单价数组
                     const units = res.data.data.sku.map((item) => {
                         return item.unit;
                     });
-                    console.log(units);
                     //  商品微缩图
                     that.data.product.thumbnails = res.data.data.thumbnails;
                     //  商品详情图
@@ -94,23 +79,16 @@ Page({
                      * 如果商品当前的属性，以及属性下的值个数仅为1
                      * 则默认选中
                      */
-                    // if (that.data.product.standards.length === 1 &&
-                    //     that.data.product.standards[0].collections.length === 1) {
-                    //     that.selectSKU(that.data.product.standards[0].attribute,
-                    //         that.data.product.standards[0].collections[0].skuValueId
-                    //     );
-                    // } else {
-                    //     that.setData({
-                    //         isReady: true,
-                    //         product: that.data.product,
-                    //         price: Math.min.apply(null, units) + ' ~ ' + Math.max.apply(null, units)
-                    //     });
-                    // }
-                    that.setData({
-                        isReady: true,
-                        product: that.data.product,
-                        price: Math.min.apply(null, units) + ' ~ ' + Math.max.apply(null, units)
-                    });
+                    if (that.data.product.standards.length === 1 &&
+                        that.data.product.standards[0].values.length === 1) {
+                        that.selectSKU(that.data.product.standards[0].name, that.data.product.standards[0].values[0].value);
+                    } else {
+                        that.setData({
+                            isReady: true,
+                            product: that.data.product,
+                            price: Math.min.apply(null, units) + ' ~ ' + Math.max.apply(null, units)
+                        });
+                    }
                 }
             });
     },
@@ -239,7 +217,6 @@ Page({
         var i,
             length,
             index,
-            attributes = [],
             _cart = [];
 
         if (this.data.isReady === false) {
@@ -263,16 +240,13 @@ Page({
                     image: "/icons/public/hint.png"
                 })
             } else {
-                for (i = 0, length = this.data.chosenItems.length; i < length; i++) {
-                    attributes.push(this.getSku(this.data.chosenItems[i]));
-                }
                 _cart.push({
                     stock_no: this.data.chosenSkuId,
                     name: this.data.product.name,
                     type: this.data.product.type,
                     unit: this.data.price,
                     amount: this.data.amount,
-                    attributes: attributes,
+                    attributes: this.data.chosenItems,
                     thumbnails: this.data.product.thumbnails
                 });
 
@@ -287,7 +261,7 @@ Page({
      *   选择规格参数
      */
     bindTapChooseItem: function(e) {
-        this.selectSKU(e.currentTarget.dataset.attribute, e.currentTarget.dataset.valueid);
+        this.selectSKU(e.currentTarget.dataset.attribute, e.currentTarget.dataset.value);
     },
 
     /**
@@ -378,17 +352,21 @@ Page({
      *   判断是否已选择全部参数
      */
     isHit: function() {
-        let i, count, currentStandards;
+        let i, j, count, length, isHit;
 
         //  如果已选参数数组长度不足，直接返回 -1
         if (this.data.chosenItems.length === this.data.product.standards.length) {
-            currentStandards = this.data.chosenItems.sort().join(',');
             //  遍历sku数组，找到对应参数的 SKU
             for (i = 0, count = this.data.product.sku.length; i < count; i++) {
-                if (currentStandards === this.data.product.sku[i].attributes.split(',').filter(char => {
-                        return char !== '';
-                    }).sort().join(',')) {
-                    return i; // 返回sku数组的索引值 
+                isHit = true;
+                for (j = 0, length = this.data.chosenItems.length; j < length; j++) {
+                    if (this.data.product.sku[i][this.data.chosenItems[j].name] !== this.data.chosenItems[j].value) {
+                        isHit = false;
+                        break;
+                    }
+                }
+                if (isHit) {
+                    return i;
                 }
             }
         }
@@ -398,34 +376,37 @@ Page({
     /**
      *  选中SKU
      */
-    selectSKU: function(currentChosenAttribute, currentChosenValueId) {
-        let i, j, count, length, vid, index;
+    selectSKU: function(currentChosenAttribute, currentChosenValue) {
+        let i, j, count, length, isExist, index;
 
         // 遍历standards数组
         for (i = 0, count = this.data.product.standards.length; i < count; i++) {
             // 判断是否等于当前的attribute
-            if (this.data.product.standards[i].attribute === currentChosenAttribute) {
-                for (j = 0, length = this.data.product.standards[i].collections.length; j < length; j++) {
+            if (this.data.product.standards[i].name === currentChosenAttribute) {
+                for (j = 0, length = this.data.product.standards[i].values.length; j < length; j++) {
                     // 遍历已选择的元素数组 chosenItems 
-                    index = this.data.chosenItems.indexOf(this.data.product.standards[i].collections[j].skuValueId);
-                    // 判断是否等于当前的 valueId
-                    if (currentChosenValueId === this.data.product.standards[i].collections[j].skuValueId) {
-                        this.data.product.standards[i].collections[j].enable = true;
-                        // 判断是否已在数组 chosenItems
-                        if (index === -1) {
-                            this.data.chosenItems.push(this.data.product.standards[i].collections[j].skuValueId)
+                    isExist = false;
+                    if (currentChosenValue === this.data.product.standards[i].values[j].value) {
+                        this.data.product.standards[i].values[j].enable = true;
+                        // 判断所选择的元素是否已在 chosenItems 数组中
+                        this.data.chosenItems = this.data.chosenItems.map(item => {
+                            if (item.name === currentChosenAttribute) {
+                                item.value = currentChosenValue;
+                                isExist = true;
+                            }
+                            return item;
+                        });
+                        // 如果不存在，则加入 chosenItems 数组
+                        if (!isExist) {
+                            this.data.chosenItems.push({
+                                name: currentChosenAttribute,
+                                value: this.data.product.standards[i].values[j].value
+                            })
                         }
                     } else {
-                        // 判断其之前是否已选中
-                        if (this.data.product.standards[i].collections[j].enable) {
-                            this.data.product.standards[i].collections[j].enable = false;
-                            if (index > -1) {
-                                this.data.chosenItems.splice(index, 1);
-                            }
-                        }
+                        this.data.product.standards[i].values[j].enable = false;
                     }
                 }
-                break;
             }
         } /** end of for */
         index = this.isHit();
@@ -440,30 +421,11 @@ Page({
                 isReady: true,
                 amount: 1, //  初始化购买数量 
                 product: this.data.product, //  选中的规格底色发生变化 
-                chosenSkuId: this.data.product.sku[index].stock_no, //  stock_no
+                chosenSkuId: this.data.product.sku[index]._id, //  stock_no
                 price: this.data.product.sku[index].unit, //  单价
-                remaining: this.data.product.sku[index].stock //  库存
+                remaining: this.data.product.sku[index].amount //  库存
             })
         }
-    },
-
-    /**
-     *   获取SKU的属性名及属性值
-     */
-    getSku: function(skuValueId) {
-        var i,
-            j,
-            count,
-            length;
-
-        for (i = 0, count = this.data.product.standards.length; i < count; i++) {
-            for (j = 0, length = this.data.product.standards[i].collections.length; j < length; j++) {
-                if (skuValueId === this.data.product.standards[i].collections[j].skuValueId) {
-                    return this.data.product.standards[i].attribute + ": " + this.data.product.standards[i].collections[j].value;
-                }
-            }
-        }
-        return "";
     },
 
     /**

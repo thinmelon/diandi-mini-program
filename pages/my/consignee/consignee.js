@@ -1,4 +1,5 @@
 // pages/my/consignee/consignee.js
+const __CRYPT__ = require('../../../utils/crypt.js');
 const __USER__ = require('../../../services/credential.service.js');
 Page({
 
@@ -13,7 +14,7 @@ Page({
      * 生命周期函数--监听页面加载
      */
     onLoad: function(options) {
-        this.fetchMyConsigneeWrapper();
+
     },
 
     /**
@@ -27,7 +28,7 @@ Page({
      * 生命周期函数--监听页面显示
      */
     onShow: function() {
-
+        this.fetchMyConsigneeWrapper();
     },
 
     /**
@@ -79,12 +80,12 @@ Page({
         const that = this;
 
         __USER__
-            .fetchMyConsignee(wx.getStorageSync('__SESSION_KEY__'))
+            .fetchMyConsignee(encodeURIComponent(__CRYPT__.encryptData('')))
             .then(res => {
                 console.log(res);
                 if (res.data.code === 0) {
                     that.setData({
-                        consignees: res.data.msg
+                        consignees: res.data.data
                     })
                 }
             });
@@ -107,16 +108,25 @@ Page({
         });
     },
 
-    bindTapDelete: function() {
-
+    bindTapDelete: function(e) {
+        console.log(e.currentTarget.dataset.aid)
+		
+        __USER__
+            .removeConsignee(
+                encodeURIComponent(__CRYPT__.encryptData('')),
+                e.currentTarget.dataset.aid
+            )
+            .then(() => {
+                wx.navigateBack();
+            });
     },
 
     radioChange: function(e) {
         const that = this;
 
-        __USER__.
-        setAsDefaultConsignee(
-                wx.getStorageSync('__SESSION_KEY__'),
+        __USER__
+            .setAsDefaultConsignee(
+                encodeURIComponent(__CRYPT__.encryptData('')),
                 e.detail.value
             )
             .then(() => {

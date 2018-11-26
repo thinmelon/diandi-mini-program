@@ -1,10 +1,10 @@
 <!--pages/my/consignee/consignee.wxml-->
 <view class='container'>
     <radio-group bindchange="radioChange" style="width: 100%;">
-        <view class='consignee' wx:for="{{consignees}}" wx:key="{{item.consignee_no}}">
+        <view class='consignee' wx:for="{{consignees}}" wx:key="{{item._id}}">
             <view class='intro'>
                 <view class='left'>
-                    <radio color='#8076a3' value='{{item.consignee_no}}' checked='{{item.isDefault=="1"}}'></radio>
+                    <radio color='#8076a3' value='{{item._id}}' checked='{{item.default === 1}}'></radio>
                 </view>
                 <view class='right'>
                     <view class='top'>
@@ -21,14 +21,14 @@
             </view>
 
             <view class='operator'>
-                <view class='edit' id='{{item.consignee_no}}' data-name='{{item.name}}' data-mobile='{{item.mobile}}'  data-address='{{item.address}}' data-postcode='{{item.postcode}}' bindtap='bindTapEdit'>
+                <view class='edit' id='{{item._id}}' data-name='{{item.name}}' data-mobile='{{item.mobile}}' data-address='{{item.address}}' data-postcode='{{item.postcode}}' bindtap='bindTapEdit'>
                     <image src='/icons/public/edit.png'></image>
                     <text>编辑</text>
                 </view>
-                <!-- <view class='delete' data-aid='{{item.consignee_no}}' bindtap='bindTapDelete'>
+                <view class='delete' data-aid='{{item._id}}' bindtap='bindTapDelete'>
                     <image src='/icons/public/delete.png'></image>
                     <text>删除</text>
-                </view> -->
+                </view>
             </view>
         </view>
     </radio-group>

@@ -25,7 +25,7 @@ const addNewConsignee = (session, receiver, mobile, address, postcode) => {
         'mobile': mobile,
         'address': address,
         'postcode': postcode,
-        'isDefault': 0
+        'default': 1
     });
 }
 
@@ -46,10 +46,10 @@ const editConsignee = (session, consignee_no, receiver, mobile, address, postcod
 /**
  *   移除收件人
  */
-const removeConsignee = (session) => {
+const removeConsignee = (session, consignee_no) => {
     const url = __URI__.removeConsignee(session);
     return __WX_API_PROMISE__.deleteRequest(url, {
-
+        consignee_no: consignee_no
     });
 }
 

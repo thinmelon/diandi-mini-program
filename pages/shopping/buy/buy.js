@@ -1,5 +1,5 @@
 // pages/shopping/buy/buy.js
-
+const __CRYPT__ = require('../../../utils/crypt.js');
 const __PRICE__ = require('../../../utils/math.price.js');
 const __USER__ = require('../../../services/credential.service.js');
 const __SHOPPING__ = require('../../../services/wechat.pay.service.js');
@@ -67,14 +67,18 @@ Page({
     onShow: function() {
         if (this.data.isConsigneeShow) {
             const that = this;
-            const session = wx.getStorageSync('__SESSION_KEY__');
-            __USER__.
-            fetchDefaultConsignee(session)
+            __USER__
+                .fetchDefaultConsignee(encodeURIComponent(__CRYPT__.encryptData('')))
                 .then(res => {
-                    if (0 === res.data.code) {
+                    console.log(res);
+                    if (0 === res.data.code && res.data.data.length > 0) {
                         this.setData({
                             isConsigneeSet: true,
-                            consignee: res.data.msg[0]
+                            consignee: res.data.data[0]
+                        })
+                    } else {
+                        this.setData({
+                            isConsigneeSet: false
                         })
                     }
                 });

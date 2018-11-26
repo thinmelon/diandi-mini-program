@@ -1,20 +1,16 @@
 <!--pages/shopping/product/product.wxml-->
 <wxs src="../../../utils/page.config.wxs" module="config" />
-<!-- <button open-type="contact">联系客服</button> -->
-<view class='videoPlayWrapper' hidden='{{isHidden}}'>
+<!-- <button open-type="contact">联系客服</button> -->
+<!-- <view class='videoPlayWrapper' hidden='{{isHidden}}'>
     <video id='productIntroVideo' src="{{ videoUrl }}" style='width: 100%'>
     </video>
     <image src='/icons/public/close.png' class='closeVideo' bindtap='onCloseVideo' />
-</view>
-
+</view> -->
 <scroll-view scroll-y style="height: {{ scrollViewHeight }}px;" scroll-into-view="{{toView}}">
     <swiper indicator-dots="{{config.swipe.indicatorDots}}" autoplay="{{config.swipe.autoplay}}" interval="{{config.swipe.interval}}" duration="{{config.swipe.duration}}" circular="{{config.swipe.circular}}" style='height: {{ swiperHeight }}px'>
-        <block wx:for="{{product.thumbnails}}" wx:for-item="thumbnail" wx:key="thumbnail.name">
-            <swiper-item wx:if="{{ thumbnail.type === 0 }}">
-                <image mode="widthFix" src="{{thumbnail.name}}" style='width: 100%' />
-            </swiper-item>
-            <swiper-item wx:elif="{{ thumbnail.type === 2 }}">
-                <image mode="widthFix" src="/icons/public/swiper-bg.png" style='width: 100%' data-url="{{thumbnail.name}}" bindtap='onPlayVideo' />
+        <block wx:for="{{product.thumbnails}}" wx:key="*this">
+            <swiper-item>
+                <image src="{{item.url}}" style='width: 100%' />
             </swiper-item>
         </block>
     </swiper>
@@ -38,12 +34,12 @@
                 <text>销量：{{ product.totalSale }}</text>
             </view> -->
         </view>
-        <view wx:for="{{product.standards}}" wx:key="{{item.attribute}}">
+        <view wx:for="{{product.standards}}" wx:key="{{item.name}}">
             <view class='regular'>
-                <text>{{item.attribute}}:</text>
+                <text>{{item.name}}:</text>
             </view>
             <view class="sku-values">
-                <view class="sku-values-item" wx:for="{{item.collections}}" wx:key="{{skuValue.skuValueId}}" wx:for-item="skuValue" data-valueid='{{skuValue.skuValueId}}' data-attribute='{{item.attribute}}' bindtap='bindTapChooseItem'>
+                <view class="sku-values-item" wx:for="{{item.values}}" wx:for-item="skuValue" wx:key="{{skuValue.index}}" data-value='{{skuValue.value}}' data-attribute='{{item.name}}' bindtap='bindTapChooseItem'>
                     <text wx:if="{{skuValue.enable}}" class='chosen-item'>{{skuValue.value}}</text>
                     <text wx:else>{{skuValue.value}}</text>
                 </view>
@@ -65,8 +61,8 @@
         <text class='brief'>{{ product.description }}</text>
     </view>
     <view>
-        <view wx:for="{{product.gallery}}" wx:for-item="image" wx:key="image.name">
-            <image mode="widthFix" src="{{image.name}}" style='width: 100%' />
+        <view wx:for="{{product.gallery}}" wx:for-item="image" wx:key="image.url">
+            <image mode="widthFix" src="{{ image.url }}" style='width: 100%' />
         </view>
     </view>
     <view class="cut-off-rule"></view>
