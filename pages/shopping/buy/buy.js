@@ -141,7 +141,7 @@ Page({
      *     --  微信支付
      */
     bindTapSubmitOrder: function() {
-        if (this.data.isConsigneeShow && false === this.data.isConsigneeSet) {
+        if (this.data.isConsigneeShow && !this.data.isConsigneeSet) {
             //	提示
             __WX_API_PROMISE__
                 .showToast('收件地址未设置', 'none', '/icons/public/hint.png')
