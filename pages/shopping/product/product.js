@@ -179,8 +179,7 @@ Page({
      *   加入购物车
      */
     bindTapJoinToCart: function(e) {
-        var index,
-            _cart = [];
+        var index;
 
         index = this.isHit();
         // 如果商品参数未全部设定，则将页面滚动至指定位置
@@ -189,15 +188,11 @@ Page({
                 toView: 'intro'
             })
         } else {
-            _cart.push({
-                stock_no: this.data.chosenSkuId,
-                amount: this.data.amount,
-            });
-
             __USER__
                 .joinToCart(
-                    wx.getStorageSync('__SESSION_KEY__'),
-                    JSON.stringify(_cart)
+                    encodeURIComponent(__CRYPT__.encryptData('')),
+                    this.data.chosenSkuId,
+                    this.data.amount
                 )
                 .then((res) => {
                     console.log(res);

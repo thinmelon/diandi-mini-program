@@ -1,4 +1,5 @@
 // pages/shopping/cart/cart.js
+const __CRYPT__ = require('../../../utils/crypt.js');
 const __URI__ = require('../../../utils/uri.constant.js');
 const __PRICE__ = require('../../../utils/math.price.js');
 const __USER__ = require('../../../services/credential.service.js');
@@ -12,7 +13,7 @@ Page({
         hint: "购物车空空也~ ~",
         editBtnText: "编辑",
         subtotal: 0.00,
-        cart: Array,
+        cart: [],
         selectAll: false,
         editModal: false,
     },
@@ -90,41 +91,38 @@ Page({
             cart = [];
 
         __USER__
-            .fetchMyCart(wx.getStorageSync('__SESSION_KEY__'))
+            .fetchMyCart(encodeURIComponent(__CRYPT__.encryptData('')))
             .then(res => {
                 console.log(res.data)
                 if (res.data.code === 0) {
-                    for (let key in res.data.msg.cart) {
-                        let attributes = [],
-                            /** SKU相应的属性值ID 将字符串分隔为数组 */
-                            tmpArray = res.data.msg.cart[key].attributes.split(',');
-                        /** 转换为属性值名称 */
-                        for (let i = 0; i < tmpArray.length; i++) {
-                            for (let j = 0; j < res.data.msg.sku.length; j++) {
-                                if (parseInt(tmpArray[i]) === res.data.msg.sku[j].vid) {
-                                    attributes.push(res.data.msg.sku[j].name + ": " + res.data.msg.sku[j].value);
-                                    break;
+                    for (let key in res.data.data.cart) {
+                        for (let i = 0, length = res.data.data.product.length; i < length; i++) {
+                            let isHit = false,
+                                attributes = [],
+                                unit;
+
+                            res.data.data.product[i].sku.map(item => {
+                                if (item._id === res.data.data.cart[key].stock_no) {
+                                    isHit = true;
+                                    for (let param in item) {
+                                        if (param !== '_id' && param !== 'unit' && param !== 'amount') {
+                                            attributes.push(param + ": " + item[param]);
+                                        }
+                                    }
+                                    unit = item.unit;
                                 }
-                            } /** end of for */
-                        } /** end of for */
-
-                        let thumbnails = res.data.msg.thumbnails.filter(thumbnail => {
-                                return thumbnail.productid === res.data.msg.cart[key].pid;
                             })
-                            .map(image => {
-                                return {
-                                    name: __URI__.imageUrlPrefix(image.name)
-                                };
-                            });
-
-                        cart.push({
-                            "stock_no": res.data.msg.cart[key].stock_no,
-                            "name": decodeURIComponent(res.data.msg.cart[key].name),
-                            "unit": res.data.msg.cart[key].unit,
-                            "amount": res.data.msg.cart[key].amount,
-                            "attributes": attributes,
-                            "thumbnails": thumbnails
-                        });
+                            if (isHit) {
+                                cart.push({
+                                    "stock_no": res.data.data.cart[key].stock_no,
+                                    "name": decodeURIComponent(res.data.data.product[i].name),
+                                    "unit": unit,
+                                    "amount": res.data.data.cart[key].amount,
+                                    "attributes": attributes,
+                                    "thumbnail": res.data.data.product[i].thumbnails[0].url
+                                });
+                            }
+                        } /** end of for */
                     } /** end of for */
                     if (cart.length > 0) {
                         that.setData({
@@ -174,10 +172,16 @@ Page({
             this.data.editBtnText = '完成'
         } else {
             if (this.data.cart.length > 0) {
+                let cart = this.data.cart.map(item => {
+                    return {
+                        stock_no: item.stock_no,
+                        amount: item.amount
+                    }
+                })
                 __USER__
                     .updateMyCart(
-                        wx.getStorageSync('__SESSION_KEY__'),
-                        JSON.stringify(this.data.cart)
+                        encodeURIComponent(__CRYPT__.encryptData('')),
+                        JSON.stringify(cart)
                     )
                     .then((res) => {
                         console.log(res);
@@ -203,11 +207,10 @@ Page({
             content: '',
             success: function(res) {
                 if (res.confirm) {
-                    console.log('用户点击确定')
                     __USER__
                         .removeMyCart(
-                            wx.getStorageSync('__SESSION_KEY__'),
-                            e.currentTarget.dataset.stock_no)
+                            encodeURIComponent(__CRYPT__.encryptData('')),
+                            JSON.stringify([e.currentTarget.dataset.stock_no]))
                         .then((res) => {
                             // 调用从购物车删除商品接口，检验返回结果
                             console.log(res);

@@ -25,7 +25,7 @@ const addNewConsignee = (session, receiver, mobile, address, postcode) => {
         'mobile': mobile,
         'address': address,
         'postcode': postcode,
-        'default': 1
+        'default': 0
     });
 }
 
@@ -90,11 +90,11 @@ const fetchMyCart = (session) => {
 /**
  *   加入购物车
  */
-const joinToCart = (session, cart) => {
-    const url = __URI__.joinToCart();
+const joinToCart = (session, stock_no, amount) => {
+    const url = __URI__.joinToCart(session);
     return __WX_API_PROMISE__.postRequest(url, {
-        session: session,
-        cart: cart
+        stock_no: stock_no,
+        amount: amount
     });
 }
 
@@ -102,9 +102,8 @@ const joinToCart = (session, cart) => {
  *    编辑购物车
  */
 const updateMyCart = (session, cart) => {
-    const url = __URI__.updateMyCart();
+    const url = __URI__.updateMyCart(session);
     return __WX_API_PROMISE__.putRequest(url, {
-        session: session,
         cart: cart
     });
 }
@@ -112,11 +111,10 @@ const updateMyCart = (session, cart) => {
 /**
  *   从购物车中移除商品
  */
-const removeMyCart = (session, stock_no) => {
-    const url = __URI__.removeMyCart();
+const removeMyCart = (session, cart) => {
+    const url = __URI__.removeMyCart(session);
     return __WX_API_PROMISE__.deleteRequest(url, {
-        session: session,
-        stock_no: stock_no
+        cart: cart
     });
 }
 

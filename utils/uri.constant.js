@@ -145,28 +145,28 @@ const myConsignee = (session) => {
  *   我的购物车
  */
 const myCart = (session) => {
-    return `${PREFIX_USER}/my/cart/${session}`;
+    return `${PREFIX_USER}/my/cart?session=${session }`;
 }
 
 /**
  *   添加至购物车
  */
-const joinToCart = () => {
-    return `${PREFIX_USER}/cart`;
+const joinToCart = (session) => {
+    return `${PREFIX_USER}/cart?session=${session }`;
 }
 
 /**
  *   更新购物车
  */
-const updateMyCart = () => {
-    return `${PREFIX_USER}/cart`;
+const updateMyCart = (session) => {
+    return `${PREFIX_USER}/cart?session=${session }`;
 }
 
 /**
  *   从购物车移除商品
  */
-const removeMyCart = () => {
-    return `${PREFIX_USER}/cart`;
+const removeMyCart = (session) => {
+    return `${PREFIX_USER}/cart?session=${session }`;
 }
 
 /**
