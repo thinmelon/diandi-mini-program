@@ -3,7 +3,7 @@ const __CRYPT__ = require('../../../utils/crypt.js');
 const __URI__ = require('../../../utils/uri.constant.js');
 const __DATE__ = require('../../../utils/date.formatter.js');
 const __WX_API_PROMISE__ = require('../../../utils/wx.api.promise.js');
-const __SHOPPING__ = require('../../../services/wechat.pay.service.js');
+const __SHOPPING__ = require('../../../services/shopping.service.js');
 
 Page({
 
@@ -11,7 +11,7 @@ Page({
      * 页面的初始数据
      */
     data: {
-        collections: Array,
+        collections: [],
         swiperHeight: 320, //  滚动图片的高度
     },
 
@@ -19,7 +19,8 @@ Page({
      * 生命周期函数--监听页面加载
      */
     onLoad: function(options) {
-        console.log(options)
+        console.log(options);
+        wx.setStorageSync('__AUTHORIZER_BUSINESSID__', options.bid);
         this.fetchProductListWrapper(options.bid);
     },
 
@@ -91,7 +92,7 @@ Page({
      */
     bindTapCollections: function(e) {
         wx.navigateTo({
-            url: '/pages/shopping/product/product?pid=' + e.currentTarget.dataset.product._id
+            url: '/pages/shopping/product/product?bid=' + wx.getStorageSync('__AUTHORIZER_BUSINESSID__') + '&pid=' + e.currentTarget.dataset.product._id
         })
     },
 
@@ -121,7 +122,7 @@ Page({
                 if (res.data.code === 0) {
                     let products = res.data.data.map(item => {
                         item.name = decodeURIComponent(item.name);
-						// item.thumbnails[0].url = __URI__.imageUrlPrefix(item.thumbnails[0].path);
+                        // item.thumbnails[0].url = __URI__.imageUrlPrefix(item.thumbnails[0].path);
                         return item;
                     })
                     console.log(products);

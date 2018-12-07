@@ -1,8 +1,9 @@
 // pages/my/orders/orders.js
+const __CRYPT__ = require('../../../utils/crypt.js');
 const __URI__ = require('../../../utils/uri.constant.js');
 const __DATE__ = require('../../../utils/date.formatter.js');
-const __USER__ = require('../../../services/credential.service.js');
-const __WX_PAY_SERVICE__ = require('../../../services/wechat.pay.service.js');
+const __USER__ = require('../../../services/user.service.js');
+const __WX_PAY_SERVICE__ = require('../../../services/shopping.service.js');
 
 Page({
 
@@ -83,77 +84,90 @@ Page({
         let orders = [],
             that = this;
 
-        __USER__
-            .fetchMyOrders(
-                wx.getStorageSync('__SESSION_KEY__'), __DATE__.formatTime(new Date()))
+        __USER__.fetchMyOrders(
+                encodeURIComponent(__CRYPT__.encryptData('')),
+                0, 5
+            )
             .then(res => {
-                console.log(res);
                 if (res.data.code === 0) {
-                    for (let key in res.data.msg.order) {
-                        let attributes = [],
-                            /** SKU相应的属性值ID 将字符串分隔为数组 */
-                            tmpArray = res.data.msg.order[key].attributes.split(',');
+                    res.data.data.order.map(order => {
+                        console.log(order)
+                        let skuList = [];
+                        for (let key in order.sku) {
+                            for (let i = 0, length = res.data.data.product.length; i < length; i++) {
+                                let isHit = false,
+                                    attributes = [],
+                                    unit;
 
-                        /** 转换为属性值名称 */
-                        for (let i = 0; i < tmpArray.length; i++) {
-                            for (let j = 0; j < res.data.msg.sku.length; j++) {
-                                if (parseInt(tmpArray[i]) === res.data.msg.sku[j].vid) {
-                                    attributes.push(res.data.msg.sku[j].name + ": " + res.data.msg.sku[j].value);
-                                    break;
+                                res.data.data.product[i].sku.map(item => {
+                                    if (item._id === order.sku[key].stock_no) {
+                                        isHit = true;
+                                        for (let param in item) {
+                                            if (param !== '_id' && param !== 'unit' && param !== 'amount') {
+                                                attributes.push({
+                                                    name: param,
+                                                    value: item[param]
+                                                });
+                                            }
+                                        }
+                                        unit = item.unit;
+                                    }
+                                })
+                                if (isHit) {
+                                    skuList.push({
+                                        "stock_no": order.sku[key].stock_no,
+                                        "name": decodeURIComponent(res.data.data.product[i].name),
+                                        "unit": unit,
+                                        "amount": order.sku[key].amount,
+                                        "attributes": attributes,
+                                        "thumbnail": res.data.data.product[i].thumbnails[0].url,
+                                        "type": res.data.data.product[i].type
+                                    });
                                 }
                             } /** end of for */
                         } /** end of for */
-
-                        let thumbnails = res.data.msg.thumbnails.filter(thumbnail => {
-                                return thumbnail.productid === res.data.msg.order[key].pid;
-                            })
-                            .map(image => {
-                                return {
-                                    name: __URI__.imageUrlPrefix(image.name)
-                                };
-                            });
-
-                        let sku = {
-                            name: decodeURIComponent(res.data.msg.order[key].name), //	商品名称
-                            stock_no: res.data.msg.order[key].stock_no, //	SKU ID
-                            unit: res.data.msg.order[key].unit, //	SKU 单价
-                            attributes: attributes, //	SKU 属性值 
-                            amount: res.data.msg.order[key].amount, //	购买数量
-                            thumbnails: thumbnails
-                        };
-
-                        if (0 === orders.filter((item) => item.out_trade_no === res.data.msg.order[key].out_trade_no).length) {
-                            orders.push({
-                                //  订单编号
-                                out_trade_no: res.data.msg.order[key].out_trade_no,
-                                //	创建时间
-                                createTime: res.data.msg.order[key].createTime,
-                                //  找到状态值相应的文字描述
-                                status: __WX_PAY_SERVICE__.__ENUM_ORDER_STATUS__[res.data.msg.order[key].status],
-                                //  订单总金额，保留小数点后两位，单位：元
-                                totalFee: (res.data.msg.order[key].totalFee / 100).toFixed(2),
-                                //  SKU列表
-                                skuList: [sku]
-                            });
-                        } else {
-                            orders = orders.map((item) => {
-                                if (item.out_trade_no === res.data.msg.order[key].out_trade_no) {
-                                    item.skuList.push(sku)
-                                }
-                                return item;
-                            });
-                        }
-                    }
-
+                        orders.push({
+                            out_trade_no: order._id, //  订单编号
+                            createTime: order.createTime, //	创建时间
+                            completeTime: order.completeTime, //	创建时间
+                            status: __WX_PAY_SERVICE__.__ENUM_ORDER_STATUS__[order.status], //  找到状态值相应的文字描述
+                            //  订单总金额，保留小数点后两位，单位：元
+                            totalFee: (order.totalFee / 100).toFixed(2),
+                            consignee: order.consignee,
+                            skuList: skuList //  SKU列表
+                        });
+                    });
                     if (orders.length > 0) {
                         that.setData({
                             orderList: orders
                         });
                     }
+                }
 
-                } /** end of if */
-
+                //     if (0 === orders.filter((item) => item.out_trade_no === res.data.msg.order[key].out_trade_no).length) {
+                //         orders.push({
+                //             //  订单编号
+                //             out_trade_no: res.data.msg.order[key].out_trade_no,
+                //             //	创建时间
+                //             createTime: res.data.msg.order[key].createTime,
+                //             //  找到状态值相应的文字描述
+                //             status: __WX_PAY_SERVICE__.__ENUM_ORDER_STATUS__[res.data.msg.order[key].status],
+                //             //  订单总金额，保留小数点后两位，单位：元
+                //             totalFee: (res.data.msg.order[key].totalFee / 100).toFixed(2),
+                //             //  SKU列表
+                //             skuList: [sku]
+                //         });
+                //     } else {
+                //         orders = orders.map((item) => {
+                //             if (item.out_trade_no === res.data.msg.order[key].out_trade_no) {
+                //                 item.skuList.push(sku)
+                //             }
+                //             return item;
+                //         });
+                //     }
+                // }
             });
+
     },
 
     bindTapOrderDetail: function(e) {

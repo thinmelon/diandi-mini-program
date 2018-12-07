@@ -1,9 +1,9 @@
 // pages/shopping/buy/buy.js
 const __CRYPT__ = require('../../../utils/crypt.js');
 const __PRICE__ = require('../../../utils/math.price.js');
-const __USER__ = require('../../../services/credential.service.js');
-const __SHOPPING__ = require('../../../services/wechat.pay.service.js');
 const __WX_API_PROMISE__ = require('../../../utils/wx.api.promise.js');
+const __USER__ = require('../../../services/user.service.js');
+const __SHOPPING__ = require('../../../services/shopping.service.js');
 
 Page({
 
@@ -11,6 +11,7 @@ Page({
      * 页面的初始数据
      */
     data: {
+        businessId: '',
         cart: [],
         subtotal: 0.00,
         carriage: 0.00,
@@ -33,7 +34,6 @@ Page({
             isConsigneeShow = false;
 
         this.data.cart = JSON.parse(options.cart);
-        console.log(this.data.cart);
         // 判断是否需要显示收件人（虚拟物品无需收货）
         for (index = 0, length = this.data.cart.length; index < length; index++) {
             if (this.data.cart[index].type === 0) {
@@ -47,6 +47,7 @@ Page({
         this.data.total = Math.round((this.data.subtotal + this.data.carriage) * 100) / 100;
 
         this.setData({
+            businessId: options.bid,
             cart: this.data.cart,
             isConsigneeShow: isConsigneeShow,
             subtotal: this.data.subtotal,
@@ -154,7 +155,15 @@ Page({
         var that = this,
             body = '',
             sku_list = [],
-            out_trade_no;
+            out_trade_no,
+            appid = wx.getStorageSync('__AUTHORIZER_APPID__');
+
+        if (!appid || !this.data.businessId) {
+            //	提示
+            __WX_API_PROMISE__
+                .showToast('未知商户', 'none', '/icons/public/hint.png')
+            return;
+        }
 
         for (var key in this.data.cart) {
             body += this.data.cart[key].name + ' | ';
@@ -166,12 +175,14 @@ Page({
 
         __SHOPPING__
             .submitUnifiedOrder({
+                appid: appid, //	APPID
+                businessId: this.data.businessId, //  商户ID
+                session: encodeURIComponent(__CRYPT__.encryptData('')), //  用户 session
                 body: body.substr(0, 32), //  商品描述，最大长度128
-                attach: this.data.message, //  用户留言
                 total_fee: Math.round(this.data.total * 100), //  总金额
-                session: wx.getStorageSync('__SESSION_KEY__'), //  用户 session
-                consignee_no: this.data.consignee.consignee_no, //  地址
-                sku_list: JSON.stringify(sku_list) //  SKU 列表 
+                attach: this.data.message, //  用户留言
+                consignee: JSON.stringify(this.data.consignee), //  地址
+                sku: JSON.stringify(sku_list) //  SKU 列表 
             })
             .then(result => {
                 console.log(result);
@@ -205,7 +216,11 @@ Page({
             })
             .finally(result => {
                 __USER__
-                    .renewMyCart(wx.getStorageSync('__SESSION_KEY__'), JSON.stringify(sku_list))
+                    .renewMyCart(
+                        encodeURIComponent(__CRYPT__.encryptData('')), //  用户 session
+                        JSON.stringify(sku_list.map(item => {
+                            return item.stock_no;
+                        })))
                     .then((res) => {
                         console.log(res)
                     });

@@ -1,7 +1,7 @@
 // pages/my/address/address.js
 const __CRYPT__ = require('../../../utils/crypt.js');
-const __USER__ = require('../../../services/credential.service.js');
 const __WX_API_PROMISE__ = require('../../../utils/wx.api.promise.js');
+const __USER__ = require('../../../services/user.service.js');
 
 Page({
 

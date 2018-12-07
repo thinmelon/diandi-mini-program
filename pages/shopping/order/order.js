@@ -1,7 +1,8 @@
 // pages/shopping/order/order.js
+const __CRYPT__ = require('../../../utils/crypt.js');
 const __PRICE__ = require('../../../utils/math.price.js');
-const __WX_PAY_SERVICE__ = require('../../../services/wechat.pay.service.js');
 const __WX_API_PROMISE__ = require('../../../utils/wx.api.promise.js');
+const __WX_PAY_SERVICE__ = require('../../../services/shopping.service.js');
 
 Page({
 
@@ -10,7 +11,6 @@ Page({
      */
     data: {
         isReady: false, //是否已加载完成
-        isConsigneeShown: true, //是否显示收件人信息
         order: {}, //订单信息
         subtotal: 0.00, //小计
         card: [] //已领取的卡券信息
@@ -20,65 +20,20 @@ Page({
      * 生命周期函数--监听页面加载
      */
     onLoad: function(options) {
-        const that = this;
-        const order = JSON.parse(options.order);
-        console.log(order);
+        const that = this,
+            order = JSON.parse(options.order);
 
-        __WX_PAY_SERVICE__
-            .queryOrder(order.out_trade_no)
-            .then(res => {
-                console.log(res)
-                if (res.data.code === 0) {
-                    //	创建时间
-                    order.createTime = res.data.msg.detail[0].createTime;
-                    //  支付时间
-                    order.payTime = res.data.msg.detail[0].payTime;
-                    //  找到状态值相应的文字描述
-                    order.status = __WX_PAY_SERVICE__.__ENUM_ORDER_STATUS__[res.data.msg.detail[0].status];
-                    //  订单总金额，保留小数点后两位，单位：元
-                    order.totalFee = (res.data.msg.detail[0].totalFee / 100).toFixed(2);
-                    //  运费
-                    order.freight = res.data.msg.detail[0].freight;
-                    //  附加信息，如用户留言
-                    order.attach = res.data.msg.detail[0].attach;
-                    //	收件人信息
-                    if (res.data.msg.detail[0].name && res.data.msg.detail[0].address) {
-                        order.consignee = {
-                            receiver: res.data.msg.detail[0].name, //	姓名
-                            address: res.data.msg.detail[0].address, //	地址
-                            mobile: res.data.msg.detail[0].mobile, //	手机号码
-                            postcode: res.data.msg.detail[0].postcode //  邮政编码
-                        }
-                    } else {
-                        that.data.isConsigneeShown = false;
-                    }
-                    // 为SKU添加商品类型属性
-                    // 若是卡券类，则显示领取至微信卡包
-                    order.skuList = order.skuList.map(sku => {
-                        for (let i = 0; i < res.data.msg.product.length; i++) {
-                            if (res.data.msg.product[i].stock_no === sku.stock_no) {
-                                sku.pid = res.data.msg.product[i].pid;
-                                sku.type = res.data.msg.product[i].type;
-                            }
-                        }
-                        return sku;
-                    })
-
-                    that.setData({
-                        isReady: true,
-                        isConsigneeShown: that.data.isConsigneeShown,
-                        subtotal: __PRICE__.totalPrice(order.skuList),
-                        order: order
-                    })
-                } /** end of if */
-            });
+        this.setData({
+            subtotal: __PRICE__.totalPrice(order.skuList),
+            order: order
+        })
     },
 
     /**
      * 生命周期函数--监听页面初次渲染完成
      */
     onReady: function() {
-        
+
     },
 
     /**
@@ -240,11 +195,11 @@ Page({
             })
     },
 
-	/**
-	 *  出示卡券
-	 */
+    /**
+     *  出示卡券
+     */
     bindTapShowCard: function() {
-		__WX_PAY_SERVICE__
+        __WX_PAY_SERVICE__
             .openUserCardList(
                 wx.getStorageSync('__SESSION_KEY__'),
                 JSON.stringify([this.data.order.out_trade_no])

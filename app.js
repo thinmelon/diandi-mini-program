@@ -1,6 +1,6 @@
 //app.js
 const wxApiPromise = require('./utils/wx.api.promise.js');
-const __CREDENTIAL__ = require('./services/credential.service.js');
+const __CREDENTIAL__ = require('./services/user.service.js');
 
 App({
     isLogIn: false,
@@ -18,7 +18,7 @@ App({
                 console.log(config);
                 return new Promise((resolve, reject) => {
                     if (config.hasOwnProperty('errMsg') && config.errMsg === "getExtConfig: ok") {
-                        wx.setStorageSync('__AUTHORIZER_APPID__', config.extConfig.appid)
+                        wx.setStorageSync('__AUTHORIZER_APPID__', config.extConfig.appid || 'wxc91180e424549fbf')
                         wx.setStorageSync('__AUTHORIZER_BUSINESSID__', config.extConfig.businessid)
                         resolve('OK');
                     } else {
@@ -39,7 +39,7 @@ App({
             .then(result => {
                 return new Promise((resolve, reject) => { //  获取屏宽高
                     resolve({
-                        key: '__WindowScale__',
+                        key: '__WINDOW_SCALE__',
                         data: {
                             height: result.windowHeight,
                             width: result.windowWidth
@@ -87,9 +87,9 @@ App({
                             data: {
                                 session: result.data.data.value.session,
                                 publicKey: result.data.data.publicKey,
-								//	与服务端的系统时间进行校准
-								//	将请求时间 + 网络延误与系统时间进行比较，计算误差
-								duration: Math.round(result.data.data.serverTime - ((startTime + Date.now()) / 2))
+                                //	与服务端的系统时间进行校准
+                                //	将请求时间 + 网络延误与系统时间进行比较，计算误差
+                                duration: Math.round(result.data.data.serverTime - ((startTime + Date.now()) / 2))
                             }
                         });
                     } else {

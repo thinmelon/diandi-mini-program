@@ -55,6 +55,10 @@
 
 /* 已购商品简介 */
 
+.right {
+    margin-right: 50rpx;
+}
+
 .left text, .right text, .input-placeholder {
     font-size: 11pt;
 }
@@ -67,7 +71,7 @@
 }
 
 .shipping, .message {
-	padding: 15px 0 8px 0;
+    padding: 15rpx 0 8rpx 24rpx;
     border-bottom: 1rpx solid #dcdcdc;
 }
 

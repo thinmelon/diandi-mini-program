@@ -1,7 +1,7 @@
 // pages/shopping/map/map.js
 const __CRYPT__ = require('../../../utils/crypt.js');
-const __SHOPPING__ = require('../../../services/wechat.pay.service.js');
 const __WX_API_PROMISE__ = require('../../../utils/wx.api.promise.js');
+const __SHOPPING__ = require('../../../services/shopping.service.js');
 // 引入SDK核心类
 const __QQ_MAP__ = require('../../../lib/qqmap-wx-jssdk.js');
 let qqMapSDK;

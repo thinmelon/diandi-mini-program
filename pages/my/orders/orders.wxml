@@ -1,30 +1,10 @@
 <!--pages/my/orders/orders.wxml-->
-<view class="order-list" wx:for="{{orderList}}" wx:key="{{item.out_trade_no}}">
+<view class="order-list" wx:for="{{orderList}}" wx:key="{{item.out_trade_no}}" data-order='{{ item }}' bindtap='bindTapOrderDetail'>
     <view class="status">
         <text>{{item.createTime}}</text>
         <text>{{item.status}}</text>
     </view>
-    <view class="sku-list" data-order='{{item}}' bindtap='bindTapOrderDetail'>
-        <view class='sku' wx:for="{{ item.skuList }}" wx:key="{{ item.stock_no }}" wx:for-item="sku">
-            <view class="thumbnail">
-                <image src="{{ sku.thumbnails[0].name }}"></image>
-            </view>
-            <view class="description">
-                <view class="top">
-                    <view class="name">
-                        <text>{{sku.name}}</text>
-                    </view>
-                    <view class="price">
-                        <text>￥{{sku.unit}}</text>
-                    </view>
-                </view>
-                <view class="center">
-                    <text>{{sku.attributes}}</text>
-                    <text>X {{sku.amount}}</text>
-                </view>
-            </view>
-        </view>
-    </view>
+    <sku model='NORMAL' skuList='{{ item.skuList }}'></sku>
     <view class="total">
         <text>合计</text>
         <text class="text-price">￥{{item.totalFee}}</text>

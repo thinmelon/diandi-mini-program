@@ -1,0 +1,17 @@
+/* components/background/background.wxss */
+
+/*  					分隔区 	                       */
+
+.cut-off-rule {
+    width: 100%;
+    height: 360rpx;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #eee;
+}
+
+.cut-off-rule text {
+    font-size: 11pt;
+    color: #aaa;
+}

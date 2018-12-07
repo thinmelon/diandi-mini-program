@@ -1,8 +1,8 @@
 // pages/shopping/product/product.js
 const __CRYPT__ = require('../../../utils/crypt.js');
-const __USER__ = require('../../../services/credential.service.js');
-const __SHOPPING__ = require('../../../services/wechat.pay.service.js');
 const __URI__ = require('../../../utils/uri.constant.js');
+const __USER__ = require('../../../services/user.service.js');
+const __SHOPPING__ = require('../../../services/shopping.service.js');
 
 Page({
 
@@ -34,8 +34,8 @@ Page({
     onLoad: function(options) {
         const that = this;
 
-        //	商品ID
-        that.data.product.pid = options.pid;
+        wx.setStorageSync('__AUTHORIZER_BUSINESSID__', options.bid); //	商户ID
+        that.data.product.pid = options.pid; //	商品ID
         // 获取详细数据
         __SHOPPING__
             .fetchProductDetail(encodeURIComponent(__CRYPT__.encryptData('')), options.pid)
@@ -109,7 +109,7 @@ Page({
      * 生命周期函数--监听页面显示
      */
     onShow: function() {
-        const scale = wx.getStorageSync('__WindowScale__');
+		const scale = wx.getStorageSync('__WINDOW_SCALE__');
         //	滚动定位
         this.setData({
             scrollViewHeight: scale.height,
@@ -242,11 +242,11 @@ Page({
                     unit: this.data.price,
                     amount: this.data.amount,
                     attributes: this.data.chosenItems,
-                    thumbnails: this.data.product.thumbnails
+                    thumbnail: this.data.product.thumbnails[0].url
                 });
 
                 wx.navigateTo({
-                    url: '/pages/shopping/buy/buy?cart=' + JSON.stringify(_cart)
+                    url: '/pages/shopping/buy/buy?bid=' + wx.getStorageSync('__AUTHORIZER_BUSINESSID__') + '&cart=' + JSON.stringify(_cart)
                 })
             }
         }

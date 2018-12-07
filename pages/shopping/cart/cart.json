@@ -1,4 +1,8 @@
 {
-    "navigationBarTitleText": "购物车",
-	"enablePullDownRefresh": true
+	"navigationBarTitleText": "购物车",
+	"enablePullDownRefresh": true,
+	"usingComponents": {
+		"sku": "/components/sku/sku",
+		"background": "/components/background/background"
+	}
 }

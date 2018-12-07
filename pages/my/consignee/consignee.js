@@ -1,6 +1,7 @@
 // pages/my/consignee/consignee.js
 const __CRYPT__ = require('../../../utils/crypt.js');
-const __USER__ = require('../../../services/credential.service.js');
+const __USER__ = require('../../../services/user.service.js');
+
 Page({
 
     /**

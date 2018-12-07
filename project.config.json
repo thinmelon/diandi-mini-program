@@ -34,7 +34,7 @@
 			"list": []
 		},
 		"miniprogram": {
-			"current": 0,
+			"current": 4,
 			"list": [
 				{
 					"id": 0,
@@ -46,12 +46,24 @@
 					"id": 1,
 					"name": "待付款订单",
 					"pathName": "pages/shopping/buy/buy",
-					"query": "cart=[{\"stock_no\":\"3xvHNHXz6AQ4VETIBzhMMwdhnsGtoVUY\",\"name\":\"有品\",\"type\":0,\"unit\":44,\"amount\":2,\"attributes\":[{\"name\":\"颜色\",\"value\":\"Red\"},{\"name\":\"大小\",\"value\":\"M\"}],\"thumbnails\":[{\"url\":\"https://www.pusudo.cn/oss/image/backbone%2Fps2018112415523313575898.png\",\"index\":0},{\"url\":\"https://www.pusudo.cn/oss/image/backbone%2Fps2018112415523313575898.png\",\"index\":1},{\"url\":\"https://www.pusudo.cn/oss/image/backbone%2Fps2018112415523496956628.png\",\"index\":2},{\"url\":\"https://www.pusudo.cn/oss/image/backbone%2Fps2018112415523413533431.png\",\"index\":3},{\"url\":\"https://www.pusudo.cn/oss/image/backbone%2Fps2018112415523476482647.png\",\"index\":4},{\"url\":\"https://www.pusudo.cn/oss/image/backbone%2Fps2018112415523434326656.png\",\"index\":5}]}]"
+					"query": "bid=5bdbf6960220aeeb768f865c&cart=[{\"stock_no\":\"3xvHNHXz6AQ4VETIBzhMMwdhnsGtoVUY\",\"name\":\"有品\",\"type\":0,\"unit\":44,\"amount\":1,\"attributes\":[{\"name\":\"大小\",\"value\":\"M\"},{\"name\":\"颜色\",\"value\":\"Red\"}],\"thumbnail\":\"https://www.pusudo.cn/oss/image/backbone%2Fps2018112415523313575898.png\"}]"
 				},
 				{
 					"id": -1,
 					"name": "我的购物车",
 					"pathName": "pages/shopping/cart/cart",
+					"query": ""
+				},
+				{
+					"id": 3,
+					"name": "订单详情",
+					"pathName": "pages/shopping/order/order",
+					"query": "out_trade_no=13297414012018120515381721439292"
+				},
+				{
+					"id": -1,
+					"name": "我的订单",
+					"pathName": "pages/my/orders/orders",
 					"query": ""
 				}
 			]

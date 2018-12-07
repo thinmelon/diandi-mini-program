@@ -10,7 +10,6 @@
 		"pages/shopping/refund-reason/refund-reason",
         "pages/official/index/index",
         "pages/official/news/news",
-		"pages/my/index/index",
 		"pages/my/address/address",
 		"pages/my/consignee/consignee",
 		"pages/my/orders/orders"

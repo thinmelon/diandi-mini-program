@@ -1,0 +1,4 @@
+<!--components/background/background.wxml-->
+<view class="cut-off-rule" style="height: {{ backgroundFillHeight }}px;">
+    <text>{{ hint }}</text>
+</view>

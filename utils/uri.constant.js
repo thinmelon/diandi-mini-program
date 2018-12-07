@@ -39,8 +39,8 @@ const fetchProductDetail = (session, product_id) => {
 /**
  *   提交统一订单
  */
-const submitUnifiedOrder = () => {
-    return `${PREFIX_SHOPPING}/order`;
+const submitUnifiedOrder = (session) => {
+    return `${PREFIX_SHOPPING}/order?session=${session }`;
 }
 
 /**
@@ -60,8 +60,8 @@ const closeOrder = () => {
 /**
  *   查询微信支付订单
  */
-const queryWechatPayOrder = (out_trade_no) => {
-    return `${PREFIX_SHOPPING}/order/${out_trade_no}`;
+const queryWechatPayOrder = (session, out_trade_no) => {
+    return `${PREFIX_SHOPPING}/order/${out_trade_no}?session=${session}`;
 }
 
 /**
@@ -172,15 +172,15 @@ const removeMyCart = (session) => {
 /**
  *   提交订单后从购物车移除要买的商品
  */
-const renewMyCart = () => {
-    return `${PREFIX_USER}/cart/afterSubmit`;
+const renewMyCart = (session) => {
+    return `${PREFIX_USER}/cart/afterSubmit?session=${session }`;
 }
 
 /**
  *   获取我的历史订单
  */
-const fetchMyOrders = () => {
-    return `${PREFIX_USER}/my/order`;
+const fetchMyOrders = (session) => {
+    return `${PREFIX_USER}/my/order?session=${session }`;
 }
 
 /**

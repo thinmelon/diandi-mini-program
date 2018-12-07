@@ -119,25 +119,23 @@ const removeMyCart = (session, cart) => {
 }
 
 /**
- *   
+ *   购买后更新购物车
  */
 const renewMyCart = (session, skuList) => {
-    const url = __URI__.renewMyCart();
-    console.log(url)
+    const url = __URI__.renewMyCart(session);
     return __WX_API_PROMISE__.putRequest(url, {
-        session: session,
-        skuList: skuList
+        cart: skuList
     });
 }
 
 /**
  * 	获取我的历史订单列表
  */
-const fetchMyOrders = (session, startTime) => {
-    const url = __URI__.fetchMyOrders();
+const fetchMyOrders = (session, offset, amount) => {
+    const url = __URI__.fetchMyOrders(session);
     return __WX_API_PROMISE__.postRequest(url, {
-        session: session,
-        startTime: startTime
+        offset: offset,
+        amount: amount
     });
 }
 
