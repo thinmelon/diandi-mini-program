@@ -1,4 +1,5 @@
 // pages/shopping/refund/refund.js
+const __CRYPT__ = require('../../../utils/crypt.js');
 const __WX_PAY_SERVICE__ = require('../../../services/shopping.service.js');
 
 Page({
@@ -7,7 +8,8 @@ Page({
      * 页面的初始数据
      */
     data: {
-        order: {},
+        createTime: '',
+        completeTime: '',
         refund: {}
     },
 
@@ -20,15 +22,16 @@ Page({
 
         __WX_PAY_SERVICE__
             .queryRefundInfo( //  发起重新支付的动作
-                wx.getStorageSync('__SESSION_KEY__'), //  用户 session
+                encodeURIComponent(__CRYPT__.encryptData('')),
                 this.data.order.out_trade_no
             )
             .then(res => {
                 console.log(res);
                 if (res.data.code === 0) {
                     that.setData({
-                        order: that.data.order,
-                        refund: res.data.msg[0]
+                        createTime: res.data.data.createTime,
+                        completeTime: res.data.data.completeTime,
+                        refund: res.data.data.refund
                     });
                 }
             });

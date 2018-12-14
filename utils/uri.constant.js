@@ -74,36 +74,36 @@ const queryEverBought = (session, stock_no) => {
 /**
  *  由用户发起退款申请
  */
-const submitRefund = () => {
-    return `${PREFIX_USER}/my/refund`;
+const submitRefund = (session) => {
+    return `${PREFIX_USER}/my/refund?session=${session}`;
 }
 
 /**
  * 	获取退款进度
  */
-const queryRefundInfo = () => {
-    return `${PREFIX_SHOPPING}/refund/progress`;
+const queryRefundInfo = (session) => {
+    return `${PREFIX_SHOPPING}/refund/progress?session=${session}`;
 }
 
 /**
  * 	将卡券放入卡包
  */
-const putIntoCardHolder = () => {
-    return `${PREFIX_SHOPPING}/card/holder`;
+const putIntoCardHolder = (session) => {
+    return `${PREFIX_SHOPPING}/card/holder?session=${session}`;
 }
 
 /**
  * 	在用户领取卡券至微信卡包后，记录用户的领取记录
  */
-const recordUserCard = () => {
-    return `${PREFIX_SHOPPING}/card/user`;
+const recordUserCard = (session) => {
+    return `${PREFIX_SHOPPING}/card/user?session=${session}`;
 }
 
 /**
  * 对应指定订单列表，用户所购买的卡券列表
  */
-const queryUserCards = () => {
-    return `${PREFIX_SHOPPING}/card/user/orders`;
+const queryUserCards = (session) => {
+    return `${PREFIX_SHOPPING}/card/user/orders?session=${session}`;
 }
 
 /**

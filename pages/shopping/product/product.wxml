@@ -93,11 +93,11 @@
                 </view>
             </block>
             <block wx:else>
-                <view class="bar-buy" bindtap="bindTapCardHolder" wx:if='{{ cards.length === 0 }}'>
-                    <text>领取卡券</text>
-                </view>
-                <view class="bar-buy" bindtap="bindTapShowCards" wx:else>
+                <view class="bar-buy" bindtap="bindTapShowCards" wx:if='{{ card }}'>
                     <text>出示卡券</text>
+                </view>
+                <view class="bar-buy" bindtap="bindTapCardHolder" wx:else>
+                    <text>领取卡券</text>
                 </view>
             </block>
         </block>

@@ -143,9 +143,8 @@ const fetchMyOrders = (session, offset, amount) => {
  * 	提交退款申请
  */
 const submitRefund = (session, out_trade_no, refundFee, totalFee, reason, skuList) => {
-    const url = __URI__.submitRefund();
+    const url = __URI__.submitRefund(session);
     return __WX_API_PROMISE__.postRequest(url, {
-        session: session,
         out_trade_no: out_trade_no,
         refundFee: refundFee,
         totalFee: totalFee,

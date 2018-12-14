@@ -65,12 +65,10 @@ const queryWechatPayOrder = (session, out_trade_no) => {
  * 	 查询退款进度
  */
 const queryRefundInfo = (session, out_trade_no) => {
-    const url = __URI__.queryRefundInfo();
-    return __WX_API_PROMISE__.postRequest(
-        url, {
-            session: session,
-            out_trade_no: out_trade_no
-        });
+    const url = __URI__.queryRefundInfo(session);
+    return __WX_API_PROMISE__.postRequest(url, {
+        out_trade_no: out_trade_no
+    });
 }
 
 /**
@@ -104,11 +102,11 @@ const fetchProductDetail = (session, product_id) => {
 /**
  * 	将卡券放入卡包
  */
-const putIntoCardHolder = (session, product_id, out_trade_no) => {
-    const url = __URI__.putIntoCardHolder();
+const putIntoCardHolder = (session, appid, product_id, out_trade_no) => {
+    const url = __URI__.putIntoCardHolder(session);
     return __WX_API_PROMISE__.postRequest(
             url, {
-                session: session,
+                appid: appid,
                 product_id: product_id,
                 out_trade_no: out_trade_no
             })
@@ -134,11 +132,10 @@ const putIntoCardHolder = (session, product_id, out_trade_no) => {
  *  在用户领取卡券至微信卡包后，记录用户的领取记录
  */
 const recordUserCard = (session, cardid, openid, timestamp, out_trade_no, encrypt_code) => {
-    const url = __URI__.recordUserCard();
+    const url = __URI__.recordUserCard(session);
     return __WX_API_PROMISE__.postRequest(
         url, {
             encrypt_code: encrypt_code,
-            session: session,
             cardid: cardid,
             openid: openid,
             timestamp: timestamp,
@@ -163,24 +160,20 @@ const queryUserCards = (session, tradeList) => {
  *  对应指定订单列表，查询用户所购买的卡券列表
  *  打开微信卡券货架
  */
-const openUserCardList = (session, tradeList) => {
-    const url = __URI__.queryUserCards();
+const openUserCardList = (session, out_trade_no) => {
+    const url = __URI__.queryUserCards(session);
     return __WX_API_PROMISE__
         .postRequest(
             url, {
-                session: session,
-                tradeList: tradeList
+                out_trade_no: out_trade_no
             })
         .then(res => {
-            let cardList = res.data.msg.map(card => {
-                return {
-                    cardId: card.cardid,
-                    code: card.code
-                }
-            })
             return new Promise((resolve, reject) => { //	构建接口参数
                 resolve({
-                    cardList: cardList
+                    cardList: [{
+                        cardId: res.data.data.card.id,
+                        code: res.data.data.card.code
+                    }]
                 });
             });
         })

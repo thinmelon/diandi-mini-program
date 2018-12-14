@@ -22,9 +22,9 @@ Page({
         isHidden: true, //	是否隐藏video组件
         videoContext: null, //  视频模块上下文
         videoUrl: '', //	视频播放地址
-        isReady: false, //商品信息是否已获取
-        history: [], //用户下过的订单
-        cards: [], //用户已领取的卡券
+        isProductDataReady: false, //商品信息是否已获取
+        orderId: '', //用户下过的订单号
+        card: null, //用户已领取的卡券
         showCardButton: false //是否显示卡券按键
     },
 
@@ -84,7 +84,7 @@ Page({
                         that.selectSKU(that.data.product.standards[0].name, that.data.product.standards[0].values[0].value);
                     } else {
                         that.setData({
-                            isReady: true,
+                            isProductDataReady: true,
                             product: that.data.product,
                             price: Math.min.apply(null, units) + ' ~ ' + Math.max.apply(null, units)
                         });
@@ -109,7 +109,7 @@ Page({
      * 生命周期函数--监听页面显示
      */
     onShow: function() {
-		const scale = wx.getStorageSync('__WINDOW_SCALE__');
+        const scale = wx.getStorageSync('__WINDOW_SCALE__');
         //	滚动定位
         this.setData({
             scrollViewHeight: scale.height,
@@ -155,6 +155,51 @@ Page({
             imageUrl: this.data.product.thumbnails[0].name
         }
 
+    },
+
+    /**
+     *  如果商品为卡券类
+     *  判断用户是否之前已购买过
+     *  如果已购买，显示打开卡包
+     */
+    everBougthCoupon: function() {
+        let that = this;
+
+        if (this.data.product.type === 1) {
+            console.log(this.data.product)
+            __SHOPPING__
+                .queryEverBought(
+                    encodeURIComponent(__CRYPT__.encryptData('')),
+                    this.data.product.sku[0]._id
+                )
+                .then(res => {
+                    console.log(res);
+                    if (res.data.code === 0) { //	设置属性为已购买
+                        that.setData({
+                            showCardButton: true,
+                            orderId: res.data.data._id,
+                            card: res.data.data.card ? res.data.data.card : null
+                        });
+                    } else {
+                        that.setData({
+                            showCardButton: true
+                        });
+                    }
+                });
+        }
+    },
+
+    /**
+     * 		判断数据是否已完备
+     */
+    everBoughtWrapper: function() {
+        if (this.data.isProductDataReady) {
+            this.everBougthCoupon();
+        } else {
+            setTimeout(() => {
+                this.everBoughtWrapper();
+            }, 1000);
+        }
     },
 
     /**
@@ -214,7 +259,7 @@ Page({
             index,
             _cart = [];
 
-        if (this.data.isReady === false) {
+        if (this.data.isProductDataReady === false) {
             wx.showToast({
                 title: '加载中',
                 image: "/icons/public/hint.png"
@@ -287,43 +332,42 @@ Page({
      *  领取卡券
      */
     bindTapCardHolder: function(evt) {
-        if (this.data.history.length > 0) {
-            let that = this;
+        let that = this;
 
-            __SHOPPING__
-                .putIntoCardHolder( //	放入微信卡包
-                    wx.getStorageSync('__SESSION_KEY__'), //  用户 session
-                    this.data.product.pid,
-                    this.data.history[0]
-                )
-                .then(result => {
-                    console.log(result);
-                    //领取成功后
-                    if (result.errMsg === 'addCard:ok' &&
-                        result.cardList.length > 0 &&
-                        result.cardList[0].isSuccess) {
-                        let cardExt = JSON.parse(result.cardList[0].cardExt);
-                        //记录用户领取记录
-                        __SHOPPING__
-                            .recordUserCard(
-                                wx.getStorageSync('__SESSION_KEY__'), //	SESSION
-                                result.cardList[0].cardId, //卡券ID
-                                cardExt.openid, //用户
-                                cardExt.timestamp, //创建时间戳
-                                that.data.history[0], //交易ID
-                                result.cardList[0].code) //卡券CODE
-                            .then(res => {
-                                console.log(res);
-                                wx.showToast({
-                                    title: '成功领取'
-                                });
+        __SHOPPING__
+            .putIntoCardHolder( //	放入微信卡包
+                encodeURIComponent(__CRYPT__.encryptData('')),
+                wx.getStorageSync('__AUTHORIZER_APPID__'),
+                this.data.product.pid,
+                this.data.orderId
+            )
+            .then(result => {
+                console.log(result);
+                //领取成功后
+                if (result.errMsg === 'addCard:ok' &&
+                    result.cardList.length > 0 &&
+                    result.cardList[0].isSuccess) {
+                    let cardExt = JSON.parse(result.cardList[0].cardExt);
+                    //记录用户领取记录
+                    __SHOPPING__
+                        .recordUserCard(
+                            encodeURIComponent(__CRYPT__.encryptData('')),
+                            result.cardList[0].cardId, //卡券ID
+                            cardExt.openid, //用户
+                            cardExt.timestamp, //创建时间戳
+                            that.data.orderId, //交易订单号
+                            result.cardList[0].code) //卡券CODE
+                        .then(res => {
+                            console.log(res);
+                            wx.showToast({
+                                title: '成功领取'
                             });
-                    }
-                })
-                .catch(err => {
-                    console.error(err);
-                });
-        }
+                        });
+                }
+            })
+            .catch(err => {
+                console.error(err);
+            });
     },
 
     /**
@@ -331,16 +375,14 @@ Page({
      *  跳转至微信卡券列表
      */
     bindTapShowCards: function() {
-        if (this.data.history.length > 0) {
-            __SHOPPING__
-                .openUserCardList(
-                    wx.getStorageSync('__SESSION_KEY__'),
-                    JSON.stringify(this.data.history)
-                )
-                .then(res => {
-                    console.log(res);
-                })
-        }
+        __SHOPPING__
+            .openUserCardList(
+                encodeURIComponent(__CRYPT__.encryptData('')),
+                this.data.orderId
+            )
+            .then(res => {
+                console.log(res);
+            })
     },
 
     /**
@@ -413,58 +455,13 @@ Page({
             // 命中
             // 设置为对应的SKU参数
             this.setData({
-                isReady: true,
+                isProductDataReady: true,
                 amount: 1, //  初始化购买数量 
                 product: this.data.product, //  选中的规格底色发生变化 
                 chosenSkuId: this.data.product.sku[index]._id, //  stock_no
                 price: this.data.product.sku[index].unit, //  单价
                 remaining: this.data.product.sku[index].amount //  库存
             })
-        }
-    },
-
-    /**
-     *  如果商品为卡券类
-     *  判断用户是否之前已购买过
-     *  如果已购买，显示打开卡包
-     */
-    everBougth: function() {
-        let that = this;
-
-        if (this.data.product.type === 1) {
-            __SHOPPING__
-                .queryEverBought(
-                    wx.getStorageSync('__SESSION_KEY__'),
-                    this.data.product.sku[0].stock_no
-                )
-                .then(res => {
-                    console.log(res);
-                    //	设置属性为已购买
-                    if (res.data.code === 0) {
-                        let records = res.data.msg.order.map(item => {
-                            return item.out_trade_no;
-                        })
-                        that.setData({
-                            showCardButton: true,
-                            history: records,
-                            cards: res.data.msg.card
-                        });
-                    } else {
-                        that.setData({
-                            showCardButton: true
-                        });
-                    }
-                });
-        }
-    },
-
-    everBoughtWrapper: function() {
-        if (this.data.isReady) {
-            this.everBougth();
-        } else {
-            setTimeout(() => {
-                this.everBoughtWrapper();
-            }, 1000);
         }
     },
 

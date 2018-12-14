@@ -1,6 +1,7 @@
 // pages/shopping/refund-reason/refund-reason.js
-const __USER_SERVICE__ = require('../../../services/user.service.js');
+const __CRYPT__ = require('../../../utils/crypt.js');
 const __WX_API_PROMISE__ = require('../../../utils/wx.api.promise.js');
+const __USER_SERVICE__ = require('../../../services/user.service.js');
 
 Page({
 
@@ -119,9 +120,14 @@ Page({
             skuList.push(this.data.order.skuList[i].stock_no);
         }
 
+        console.log(this.data.order.out_trade_no)
+        console.log(Math.round(this.data.order.totalFee * 100))
+        console.log(reason)
+        console.log(JSON.stringify(skuList))
+
         __USER_SERVICE__
             .submitRefund(
-                wx.getStorageSync('__SESSION_KEY__'), //  用户 session
+                encodeURIComponent(__CRYPT__.encryptData('')),
                 this.data.order.out_trade_no,
                 Math.round(this.data.order.totalFee * 100),
                 Math.round(this.data.order.totalFee * 100),
