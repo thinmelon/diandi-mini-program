@@ -1,6 +1,7 @@
 //app.js
 const wxApiPromise = require('./utils/wx.api.promise.js');
-const __CREDENTIAL__ = require('./services/user.service.js');
+const __USER__ = require('./services/user.service.js');
+const __SHOPPING__ = require('./services/shopping.service.js');
 
 App({
     isLogIn: false,
@@ -18,13 +19,29 @@ App({
                 console.log(config);
                 return new Promise((resolve, reject) => {
                     if (config.hasOwnProperty('errMsg') && config.errMsg === "getExtConfig: ok") {
+                        console.log("app.js | userid  ===> ", config.extConfig.userid);
+                        console.log("app.js | templateid  ===> ", config.extConfig.templateid);
                         wx.setStorageSync('__AUTHORIZER_APPID__', config.extConfig.appid || 'wxc91180e424549fbf')
-                        wx.setStorageSync('__AUTHORIZER_BUSINESSID__', config.extConfig.businessid)
-                        resolve('OK');
+                        // wx.setStorageSync('__AUTHORIZER_BUSINESSID__', config.extConfig.businessid)
+                        resolve({
+                            userid: config.extConfig.userid,
+                            templateid: config.extConfig.templateid
+                        });
                     } else {
                         reject(config); //	发生错误
                     }
                 });
+            })
+            .then(__SHOPPING__.checkTemplateValidity)
+            .then(validity => {
+                console.log(validity)
+                return new Promise((resolve, reject) => {
+                    if (validity.data.code === 0) {
+                        resolve("OK");
+                    } else {
+						reject(validity.data.msg);
+                    }
+                })
             })
             .then(that.wxLogin)
             .catch(exception => {
@@ -73,7 +90,7 @@ App({
                     }
                 });
             })
-            .then(__CREDENTIAL__.userLogin) //  	访问后端，用code获取session key
+            .then(__USER__.userLogin) //  	访问后端，用code获取session key
             .then(result => { //   对结果进行转换
                 console.log(result);
                 return new Promise((resolve, reject) => {

@@ -16,6 +16,13 @@ const userLogin = (appid) => {
 }
 
 /**
+ * 模板有效性验证
+ */
+const checkTemplateValidity = () => {
+    return `${PREFIX_PLATFORM}/template/ever/bought`;
+}
+
+/**
  * 	获取在线商户列表
  */
 const fetchOnlineBusinessList = (session, appid) => {
@@ -58,14 +65,14 @@ const closeOrder = () => {
 }
 
 /**
- *   查询微信支付订单
+ *  查询微信支付订单
  */
 const queryWechatPayOrder = (session, out_trade_no) => {
     return `${PREFIX_SHOPPING}/order/${out_trade_no}?session=${session}`;
 }
 
 /**
- * 	  查询用户是否已购买过该商品
+ * 	 查询用户是否已购买过该商品
  */
 const queryEverBought = (session, stock_no) => {
     return `${PREFIX_SHOPPING}/product/everBought?session=${session}&stock_no=${stock_no}`;
@@ -226,6 +233,8 @@ const fetchOfficialNews = (url) => {
 }
 
 module.exports = {
+    userLogin: userLogin,
+    checkTemplateValidity: checkTemplateValidity,
     submitUnifiedOrder: submitUnifiedOrder,
     repay: repay,
     closeOrder: closeOrder,
@@ -237,7 +246,6 @@ module.exports = {
     recordUserCard: recordUserCard,
     queryUserCards: queryUserCards,
     fetchOnlineBusinessList: fetchOnlineBusinessList,
-    userLogin: userLogin,
     addNewConsignee: addNewConsignee,
     editConsignee: editConsignee,
     removeConsignee: removeConsignee,

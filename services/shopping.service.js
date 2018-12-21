@@ -188,6 +188,19 @@ const fetchOnlineBusinessList = (session, appid) => {
     return __WX_API_PROMISE__.getRequest(url, {});
 }
 
+/**
+ * 	验证模板有效性
+ */
+const checkTemplateValidity = (data) => {
+    const url = __URI__.checkTemplateValidity();
+    console.log('checkTemplateValidity	===> ', url);
+    return __WX_API_PROMISE__.postRequest(
+        url, {
+            user_id: data.userid,
+            template_id: data.templateid
+        });
+}
+
 module.exports = {
     __ENUM_ORDER_STATUS__: __ENUM_ORDER_STATUS__,
     submitUnifiedOrder: submitUnifiedOrder,
@@ -196,11 +209,12 @@ module.exports = {
     queryOrder: queryWechatPayOrder,
     queryRefundInfo: queryRefundInfo,
     queryEverBought: queryEverBought,
+    fetchOnlineBusinessList: fetchOnlineBusinessList,
     fetchProductList: fetchProductList,
     fetchProductDetail: fetchProductDetail,
     putIntoCardHolder: putIntoCardHolder,
     recordUserCard: recordUserCard,
     queryUserCards: queryUserCards,
     openUserCardList: openUserCardList,
-    fetchOnlineBusinessList: fetchOnlineBusinessList
+    checkTemplateValidity: checkTemplateValidity
 }
