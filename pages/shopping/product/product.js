@@ -206,8 +206,8 @@ Page({
      *   跳转至商城
      */
     bindTapBackToMall: function(e) {
-        wx.redirectTo({
-            url: '/pages/shopping/index/index',
+        wx.reLaunch({
+            url: '/pages/shopping/index/index?bid=' + wx.getStorageSync('__AUTHORIZER_BUSINESSID__')
         })
     },
 
@@ -281,6 +281,7 @@ Page({
                 })
             } else {
                 _cart.push({
+                    pid: this.data.product.pid,
                     stock_no: this.data.chosenSkuId,
                     name: this.data.product.name,
                     type: this.data.product.type,

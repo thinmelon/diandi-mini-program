@@ -53,15 +53,15 @@ const submitUnifiedOrder = (session) => {
 /**
  * 	重新支付
  */
-const repay = () => {
-    return `${PREFIX_SHOPPING}/order/repay`;
+const repay = (session) => {
+    return `${PREFIX_SHOPPING}/order/repay?session=${session }`;
 }
 
 /**
  * 	关闭订单
  */
-const closeOrder = () => {
-    return `${PREFIX_SHOPPING}/order`;
+const closeOrder = (session) => {
+    return `${PREFIX_SHOPPING}/order?session=${session }`;
 }
 
 /**

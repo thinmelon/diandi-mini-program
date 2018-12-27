@@ -185,7 +185,6 @@ Page({
                 sku: JSON.stringify(sku_list) //  SKU 列表 
             })
             .then(result => {
-                console.log(result);
                 out_trade_no = result.data.out_trade_no;
                 return new Promise((resolve, reject) => {
                     resolve(result);
@@ -198,8 +197,12 @@ Page({
                     __WX_API_PROMISE__
                         .showToast('支付成功', 'success', '') //  提示
                         .then(() => {
-                            var order = {
+                            var order = { //	构建参数
+                                attach: that.data.message,
                                 out_trade_no: out_trade_no,
+                                consignee: that.data.consignee,
+                                status: "支付成功",
+                                totalFee: that.data.total,
                                 skuList: that.data.cart
                             }
                             __WX_API_PROMISE__

@@ -90,8 +90,8 @@ Page({
             )
             .then(res => {
                 if (res.data.code === 0) {
+                    console.log(res.data.data.product)
                     res.data.data.order.map(order => {
-                        console.log(order)
                         let skuList = [];
                         for (let key in order.sku) {
                             for (let i = 0, length = res.data.data.product.length; i < length; i++) {
@@ -115,6 +115,7 @@ Page({
                                 })
                                 if (isHit) {
                                     skuList.push({
+                                        "pid": res.data.data.product[i]._id,
                                         "stock_no": order.sku[key].stock_no,
                                         "name": decodeURIComponent(res.data.data.product[i].name),
                                         "unit": unit,

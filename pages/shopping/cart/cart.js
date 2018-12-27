@@ -113,6 +113,7 @@ Page({
                             })
                             if (isHit) {
                                 cart.push({
+                                    "pid": res.data.data.product[i]._id,
                                     "stock_no": res.data.data.cart[key].stock_no,
                                     "name": decodeURIComponent(res.data.data.product[i].name),
                                     "unit": unit,

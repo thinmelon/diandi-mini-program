@@ -32,11 +32,11 @@ const submitUnifiedOrder = (order) => {
 /**
  * 	重新支付
  */
-const repay = (session, out_trade_no) => {
-    const url = __URI__.repay();
+const repay = (session, appid, out_trade_no) => {
+    const url = __URI__.repay(session);
     return __WX_API_PROMISE__.postRequest(
         url, {
-            session: session,
+            appid: appid,
             out_trade_no: out_trade_no
         });
 }
@@ -44,11 +44,11 @@ const repay = (session, out_trade_no) => {
 /**
  *  关闭订单
  */
-const closeOrder = (session, out_trade_no) => {
-    const url = __URI__.closeOrder();
+const closeOrder = (session, appid, out_trade_no) => {
+    const url = __URI__.closeOrder(session);
     return __WX_API_PROMISE__.deleteRequest(
         url, {
-            session: session,
+            appid: appid,
             out_trade_no: out_trade_no
         });
 }
@@ -146,13 +146,12 @@ const recordUserCard = (session, cardid, openid, timestamp, out_trade_no, encryp
 /**
  * 对应指定订单列表，查询用户所购买的卡券列表
  */
-const queryUserCards = (session, tradeList) => {
-    const url = __URI__.queryUserCards();
+const queryUserCards = (session, out_trade_no) => {
+    const url = __URI__.queryUserCards(session);
     return __WX_API_PROMISE__
         .postRequest(
             url, {
-                session: session,
-                tradeList: tradeList
+                out_trade_no: out_trade_no
             });
 }
 

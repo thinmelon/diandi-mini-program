@@ -1,5 +1,5 @@
 <!--pages/shopping/order/order.wxml-->
-<view class="receiver-address" wx:if="{{order.consignee}}">
+<view class="receiver-address" wx:if="{{order.consignee && order.consignee.name}}">
     <view class="location-icon">
         <image src="/icons/public/location.png"></image>
     </view>
@@ -41,9 +41,21 @@
 </view>
 <view class='operator'>
     <block wx:if="{{order.status == '支付成功'}}">
-        <view class="refund" bindtap='bindTapRefund'>
-            <text>申请退款</text>
-        </view>
+
+        <block wx:if="{{ isCoupon }}">
+            <view wx:if="{{ cardId === '' }}" class="refund" bindtap='bindTapCardHolder'>
+                <text>领取卡券</text>
+            </view>
+            <view wx:else class="refund" bindtap='bindTapShowCard'>
+                <text>出示卡券</text>
+            </view>
+        </block>
+        <block wx:else>
+            <view class="refund" bindtap='bindTapRefund'>
+                <text>申请退款</text>
+            </view>
+        </block>
+
     </block>
     <block wx:elif="{{order.status == '转入退款'}}">
         <view class="queryRefund" bindtap='bindTapQueryRefund'>

@@ -120,11 +120,6 @@ Page({
             skuList.push(this.data.order.skuList[i].stock_no);
         }
 
-        console.log(this.data.order.out_trade_no)
-        console.log(Math.round(this.data.order.totalFee * 100))
-        console.log(reason)
-        console.log(JSON.stringify(skuList))
-
         __USER_SERVICE__
             .submitRefund(
                 encodeURIComponent(__CRYPT__.encryptData('')),

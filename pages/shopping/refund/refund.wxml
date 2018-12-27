@@ -11,8 +11,8 @@
     <text>已转入系统后台处理</text>
 </view>
 <view class='progress' wx:if="{{ refund.status === 1 || refund.status === 2 }}">
-    <text>【{{ refund.startTime }}】后台启动退款流程</text>
+    <text>【{{ refund.refundTime }}】后台启动退款流程</text>
 </view>
 <view class='progress' wx:if="{{ refund.status === 2}}">
-    <text>【{{ refund.complete }}】款额已退回至用户账户</text>
+    <text>【{{ refund.completeTime }}】款额已退回至用户账户</text>
 </view>

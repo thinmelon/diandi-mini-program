@@ -2,19 +2,23 @@
 const __CRYPT__ = require('../../../utils/crypt.js');
 const __PRICE__ = require('../../../utils/math.price.js');
 const __WX_API_PROMISE__ = require('../../../utils/wx.api.promise.js');
-const __WX_PAY_SERVICE__ = require('../../../services/shopping.service.js');
+const __SHOPPING_SERVICE__ = require('../../../services/shopping.service.js');
 
 Page({
-
     /**
      * 页面的初始数据
      */
     data: {
-        isReady: false, //是否已加载完成
         order: {}, //订单信息
         subtotal: 0.00, //小计
-        card: [] //已领取的卡券信息
+        isCoupon: false, //是否虚拟商品
+        cardId: '' //已领取的卡券ID
     },
+
+    /**
+     * 用于记录卡券的商品ID
+     */
+    productId: '',
 
     /**
      * 生命周期函数--监听页面加载
@@ -23,9 +27,19 @@ Page({
         const that = this,
             order = JSON.parse(options.order);
 
+        console.log(order);
+        order.skuList.map(sku => { //	判断是否是卡券类商品
+            if (sku.type === 1) {
+                this.data.isCoupon = true;
+                this.productId = sku.pid;
+            }
+            return sku;
+        })
+        order.freight = order.freight ? order.freight : 0.00; //运费默认为0
         this.setData({
-            subtotal: __PRICE__.totalPrice(order.skuList),
-            order: order
+            subtotal: __PRICE__.totalPrice(order.skuList), //总价
+            isCoupon: this.data.isCoupon, //是否卡券
+            order: order //订单详情
         })
     },
 
@@ -40,7 +54,7 @@ Page({
      * 生命周期函数--监听页面显示
      */
     onShow: function() {
-        this.queryUserCardsWrapper();
+        this.queryUserCards();
     },
 
     /**
@@ -100,26 +114,24 @@ Page({
      * 	重新支付
      */
     bindTapRepay: function() {
-        __WX_PAY_SERVICE__
+        __SHOPPING_SERVICE__
             .repay( //  发起重新支付的动作
-                wx.getStorageSync('__SESSION_KEY__'), //  用户 session
+                encodeURIComponent(__CRYPT__.encryptData('')),
+                wx.getStorageSync('__AUTHORIZER_APPID__'),
                 this.data.order.out_trade_no
             )
             .then(__WX_API_PROMISE__.requestPayment) //  调用支付接口
             .then(res => {
-                // 支付成功
-                if (res.errMsg === 'requestPayment:ok') {
+                if (res.errMsg === 'requestPayment:ok') { // 支付成功
                     __WX_API_PROMISE__
                         .showToast('支付成功', 'success', '') //  提示
                         .then(() => __WX_API_PROMISE__.redirectTo('/pages/my/orders/orders')) //	跳转至 我的订单
                 }
             }, res => {
-                if (res.errMsg === "requestPayment:fail cancel") {
-                    // 用户取消支付
+                if (res.errMsg === "requestPayment:fail cancel") { // 用户取消支付
                     __WX_API_PROMISE__
                         .showToast('支付已取消', 'none', '/icons/public/hint.png') //	提示
-                } else {
-                    // 订单已过期，请重新下单
+                } else { // 订单已过期，请重新下单
                     __WX_API_PROMISE__
                         .showToast(res.err_desc, 'none', '/icons/public/hint.png') //	提示
                 }
@@ -130,9 +142,10 @@ Page({
      *  关闭订单
      */
     bindTapCloseOrder: function() {
-        __WX_PAY_SERVICE__
+        __SHOPPING_SERVICE__
             .closeOrder( //  发起重新支付的动作
-                wx.getStorageSync('__SESSION_KEY__'), //  用户 session
+                encodeURIComponent(__CRYPT__.encryptData('')), //  用户 session
+                wx.getStorageSync('__AUTHORIZER_APPID__'),
                 this.data.order.out_trade_no
             )
             .then(res => {
@@ -146,16 +159,39 @@ Page({
     },
 
     /**
-     * 	领取至微信卡包
+     * 	查询用户是否已经领取过卡券
      */
-    bindTapCardHolder: function(evt) {
+    queryUserCards: function() {
         let that = this;
 
-        __WX_PAY_SERVICE__
-            .putIntoCardHolder( //	放入微信卡包
-                wx.getStorageSync('__SESSION_KEY__'), //  用户 session
-                evt.currentTarget.dataset.pid,
+        __SHOPPING_SERVICE__
+            .queryUserCards(
+                encodeURIComponent(__CRYPT__.encryptData('')),
                 this.data.order.out_trade_no
+            )
+            .then(res => {
+                console.log(res)
+                if (res.data.code === 0 && res.data.data.hasOwnProperty('card')) {
+                    that.setData({
+                        cardId: res.data.data.card.id
+                    });
+                }
+            });
+    },
+
+    /**
+     * 	将领取卡券以及成功领取后记录操作两个步骤封装起来
+     */
+    bindTapCardHolder: function() {
+        let that = this,
+            orderId = this.data.order.out_trade_no;
+
+        __SHOPPING_SERVICE__
+            .putIntoCardHolder( //	放入微信卡包
+                encodeURIComponent(__CRYPT__.encryptData('')),
+                wx.getStorageSync('__AUTHORIZER_APPID__'),
+                this.productId,
+                orderId
             )
             .then(result => {
                 console.log(result);
@@ -164,85 +200,48 @@ Page({
                     result.cardList.length > 0 &&
                     result.cardList[0].isSuccess) {
                     let cardExt = JSON.parse(result.cardList[0].cardExt);
-                    let cardList = result.cardList.map(card => {
-                        return {
-                            cardId: card.cardId,
-                            code: card.code
-                        }
-                    })
-                    that.setData({
-                        card: cardList
-                    });
                     //记录用户领取记录
-                    __WX_PAY_SERVICE__
+                    __SHOPPING_SERVICE__
                         .recordUserCard(
-                            wx.getStorageSync('__SESSION_KEY__'), //	SESSION
+                            encodeURIComponent(__CRYPT__.encryptData('')),
                             result.cardList[0].cardId, //卡券ID
                             cardExt.openid, //用户
                             cardExt.timestamp, //创建时间戳
-                            that.data.order.out_trade_no, //交易ID
+                            orderId, //交易订单号
                             result.cardList[0].code) //卡券CODE
                         .then(res => {
                             console.log(res);
-                            wx.showToast({
-                                title: '成功领取'
-                            });
+                            if (res.data.code === 0) {
+                                that.setData({
+                                    cardId: result.cardList[0].cardId
+                                });
+                                wx.showToast({
+                                    title: '成功领取卡券'
+                                });
+                            } else {
+                                wx.showToast({
+                                    title: '领取卡券失败'
+                                });
+                            }
                         });
                 }
             })
             .catch(err => {
                 console.error(err);
-            })
+            });
     },
 
     /**
      *  出示卡券
      */
     bindTapShowCard: function() {
-        __WX_PAY_SERVICE__
+        __SHOPPING_SERVICE__
             .openUserCardList(
-                wx.getStorageSync('__SESSION_KEY__'),
-                JSON.stringify([this.data.order.out_trade_no])
+                encodeURIComponent(__CRYPT__.encryptData('')),
+                this.data.order.out_trade_no
             )
             .then(res => {
                 console.log(res);
             })
-    },
-
-    /**
-     * 	查询用户是否已经领取过卡券
-     */
-    queryUserCards: function() {
-        let that = this;
-
-        __WX_PAY_SERVICE__
-            .queryUserCards(
-                wx.getStorageSync('__SESSION_KEY__'), //	SESSION
-                JSON.stringify([this.data.order.out_trade_no])
-            )
-            .then(res => {
-                console.log(res)
-                if (res.data.code === 0 && res.data.msg.length > 0) {
-                    let cardList = res.data.msg.map(card => {
-                        return {
-                            cardId: card.cardid,
-                            code: card.code
-                        }
-                    })
-                    that.setData({
-                        card: cardList
-                    });
-                }
-            });
-    },
-
-    queryUserCardsWrapper: function() {
-        if (this.data.isReady) {
-            this.queryUserCards();
-        } else {
-            setTimeout(() => {
-                this.queryUserCardsWrapper();
-            }, 1000);
-        }
     }
 })

@@ -21,7 +21,7 @@ Page({
         this.data.order = JSON.parse(options.order);
 
         __WX_PAY_SERVICE__
-            .queryRefundInfo( //  发起重新支付的动作
+            .queryRefundInfo( //  查询退款单
                 encodeURIComponent(__CRYPT__.encryptData('')),
                 this.data.order.out_trade_no
             )

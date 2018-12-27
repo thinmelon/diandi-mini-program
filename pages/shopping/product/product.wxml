@@ -87,7 +87,7 @@
     </block>
     <block wx:elif='{{product.type === 1}}'>
         <block wx:if='{{showCardButton}}'>
-            <block wx:if='{{ history.length === 0 }}'>
+            <block wx:if='{{ orderId === "" }}'>
                 <view class="bar-buy" bindtap="bindTapBuy">
                     <text>立即抢购</text>
                 </view>
