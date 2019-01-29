@@ -1,6 +1,5 @@
 {
 	"pages": [
-		"pages/shopping/map/map",
 		"pages/shopping/index/index",
 		"pages/shopping/product/product",
 		"pages/shopping/cart/cart",
@@ -8,6 +7,7 @@
 		"pages/shopping/order/order",
 		"pages/shopping/refund/refund",
 		"pages/shopping/refund-reason/refund-reason",
+        "pages/shopping/map/map",
         "pages/official/index/index",
         "pages/official/news/news",
 		"pages/my/address/address",
@@ -17,7 +17,26 @@
 	"window": {
 		"backgroundTextStyle": "light",
 		"navigationBarBackgroundColor": "#813c85",
-		"navigationBarTitleText": "莆素",
+		"navigationBarTitleText": "线上渠道",
 		"navigationBarTextStyle": "white"
-	}
+	},
+    "tabBar": {
+        "color": "#888888",
+        "selectedColor": "#FFFFFF",
+        "backgroundColor": "#813c85",
+        "borderStyle": "white",
+        "list": [{
+                "pagePath": "pages/shopping/index/index",
+                "text": "商城",
+                "iconPath": "icons/tabBar/shopping-grey.png",
+                "selectedIconPath": "icons/tabBar/shopping-white.png"
+            },
+            {
+                "pagePath": "pages/my/orders/orders",
+                "text": "我",
+                "iconPath": "icons/tabBar/my-grey.png",
+                "selectedIconPath": "icons/tabBar/my-white.png"
+            }
+        ]
+    }
 }

@@ -133,11 +133,15 @@ Page({
                 if (res.data.code === 0) {
                     __WX_API_PROMISE__
                         .showToast('已申请退款', 'success', '') //  提示
-                        .then(() => __WX_API_PROMISE__.redirectTo('/pages/my/orders/orders')) //	跳转至 我的订单
+                        .then(() => wx.reLaunch({
+                            url: '/pages/shopping/index/index'
+                        })) //	跳转至 首页
                 } else if (res.data.code === -500) {
                     __WX_API_PROMISE__
                         .showToast('已提交，请等待', 'none', '/icons/public/hint.png') //	提示
-                        .then(() => __WX_API_PROMISE__.redirectTo('/pages/my/orders/orders')) //	跳转至 我的订单
+                        .then(() => wx.reLaunch({
+                            url: '/pages/shopping/index/index'
+                        })) //	跳转至 首页
                 }
             })
     }

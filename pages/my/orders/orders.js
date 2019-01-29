@@ -4,6 +4,7 @@ const __URI__ = require('../../../utils/uri.constant.js');
 const __DATE__ = require('../../../utils/date.formatter.js');
 const __USER__ = require('../../../services/user.service.js');
 const __WX_PAY_SERVICE__ = require('../../../services/shopping.service.js');
+const __MAX_ITEMS_PER_TIME__ = 5;
 
 Page({
 
@@ -13,6 +14,8 @@ Page({
     data: {
         orderList: []
     },
+
+    currentOffset: 0,
 
     /**
      * 生命周期函数--监听页面加载
@@ -60,7 +63,7 @@ Page({
      * 页面上拉触底事件的处理函数
      */
     onReachBottom: function() {
-
+        this.fetchMyOrders();
     },
 
     /**
@@ -86,11 +89,11 @@ Page({
 
         __USER__.fetchMyOrders(
                 encodeURIComponent(__CRYPT__.encryptData('')),
-                0, 5
+                this.currentOffset, __MAX_ITEMS_PER_TIME__
             )
             .then(res => {
                 if (res.data.code === 0) {
-                    console.log(res.data.data.product)
+                    console.log(res.data)
                     res.data.data.order.map(order => {
                         let skuList = [];
                         for (let key in order.sku) {
@@ -139,34 +142,14 @@ Page({
                         });
                     });
                     if (orders.length > 0) {
+                        that.currentOffset += orders.length;
+                        that.data.orderList = that.data.orderList.concat(orders);
+
                         that.setData({
-                            orderList: orders
+                            orderList: that.data.orderList
                         });
                     }
                 }
-
-                //     if (0 === orders.filter((item) => item.out_trade_no === res.data.msg.order[key].out_trade_no).length) {
-                //         orders.push({
-                //             //  订单编号
-                //             out_trade_no: res.data.msg.order[key].out_trade_no,
-                //             //	创建时间
-                //             createTime: res.data.msg.order[key].createTime,
-                //             //  找到状态值相应的文字描述
-                //             status: __WX_PAY_SERVICE__.__ENUM_ORDER_STATUS__[res.data.msg.order[key].status],
-                //             //  订单总金额，保留小数点后两位，单位：元
-                //             totalFee: (res.data.msg.order[key].totalFee / 100).toFixed(2),
-                //             //  SKU列表
-                //             skuList: [sku]
-                //         });
-                //     } else {
-                //         orders = orders.map((item) => {
-                //             if (item.out_trade_no === res.data.msg.order[key].out_trade_no) {
-                //                 item.skuList.push(sku)
-                //             }
-                //             return item;
-                //         });
-                //     }
-                // }
             });
 
     },

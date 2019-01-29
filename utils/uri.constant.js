@@ -33,7 +33,7 @@ const fetchOnlineBusinessList = (session, appid) => {
  *  商品列表
  */
 const fetchProductList = (session, businessId, offset, amount) => {
-    return `${PREFIX_SHOPPING}/product/partial?session=${ session }&bid=${ businessId }&offset=${ offset }&amount=${ amount }`;
+    return `${PREFIX_SHOPPING}/product/partial?session=${ session }&bid=${ businessId }&skip=${ offset }&limit=${ amount }`;
 }
 
 /** 

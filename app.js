@@ -19,10 +19,10 @@ App({
                 console.log(config);
                 return new Promise((resolve, reject) => {
                     if (config.hasOwnProperty('errMsg') && config.errMsg === "getExtConfig: ok") {
-                        console.log("app.js | userid  ===> ", config.extConfig.userid);
-                        console.log("app.js | templateid  ===> ", config.extConfig.templateid);
+                        // console.log("app.js | userid  ===> ", config.extConfig.userid);
+                        // console.log("app.js | templateid  ===> ", config.extConfig.templateid);
                         wx.setStorageSync('__AUTHORIZER_APPID__', config.extConfig.appid || 'wxc91180e424549fbf')
-                        // wx.setStorageSync('__AUTHORIZER_BUSINESSID__', config.extConfig.businessid)
+                        wx.setStorageSync('__AUTHORIZER_BUSINESSID__', config.extConfig.businessid)
                         resolve({
                             userid: config.extConfig.userid,
                             templateid: config.extConfig.templateid
@@ -39,7 +39,7 @@ App({
                     if (validity.data.code === 0) {
                         resolve("OK");
                     } else {
-						reject(validity.data.msg);
+                        reject(validity.data.msg);
                     }
                 })
             })

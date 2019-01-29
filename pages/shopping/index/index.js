@@ -4,6 +4,7 @@ const __URI__ = require('../../../utils/uri.constant.js');
 const __DATE__ = require('../../../utils/date.formatter.js');
 const __WX_API_PROMISE__ = require('../../../utils/wx.api.promise.js');
 const __SHOPPING__ = require('../../../services/shopping.service.js');
+const __MAX_ITEMS_PER_TIME__ = 5;
 
 Page({
 
@@ -15,13 +16,23 @@ Page({
         swiperHeight: 320, //  滚动图片的高度
     },
 
+    currentOffset: 0,
+
     /**
      * 生命周期函数--监听页面加载
      */
     onLoad: function(options) {
-        console.log(options);
-        wx.setStorageSync('__AUTHORIZER_BUSINESSID__', options.bid);
-        this.fetchProductListWrapper(options.bid);
+        // 如果options.bid不为空，则是点击美食地图上的商户进入
+        // 否则，从localStorage读取ext.json中的商户ID
+        const bid = wx.getStorageSync('__AUTHORIZER_BUSINESSID__');
+        console.log('index.js | bid ===> ', bid);
+        if (options.bid) {
+            wx.setStorageSync('__AUTHORIZER_BUSINESSID__', options.bid);
+            this.fetchProductListWrapper(options.bid);
+        } else if (bid) {
+            this.fetchProductListWrapper(bid);
+        }
+
     },
 
     /**
@@ -63,7 +74,7 @@ Page({
      * 页面上拉触底事件的处理函数
      */
     onReachBottom: function() {
-
+        this.fetchProductList(wx.getStorageSync('__AUTHORIZER_BUSINESSID__'));
     },
 
     /**
@@ -82,7 +93,7 @@ Page({
      */
     onShareAppMessage: function(options) {
         return {
-            title: '好好吃饭',
+            title: '产品列表',
             path: '/pages/shopping/index/index'
         }
     },
@@ -117,18 +128,22 @@ Page({
             .fetchProductList(
                 encodeURIComponent(__CRYPT__.encryptData('')),
                 bid,
-                0, 5)
+                this.currentOffset,
+                __MAX_ITEMS_PER_TIME__)
             .then(res => {
                 if (res.data.code === 0) {
-                    let products = res.data.data.map(item => {
+                    let products = res.data.data.products.map(item => {
                         item.name = decodeURIComponent(item.name);
                         // item.thumbnails[0].url = __URI__.imageUrlPrefix(item.thumbnails[0].path);
                         return item;
                     })
-                    console.log(products);
-                    that.setData({
-                        collections: products
-                    })
+                    if (products.length > 0) {
+                        this.currentOffset += products.length;
+                        this.data.collections = this.data.collections.concat(products);
+                        that.setData({
+                            collections: this.data.collections
+                        })
+                    }
                 } else if (res.data.code === -800) {
                     __WX_API_PROMISE__
                         .showToast(res.data.msg, 'none', '/icons/public/hint.png')
